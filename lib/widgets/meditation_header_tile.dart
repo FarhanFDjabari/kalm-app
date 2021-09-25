@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:kalm/utilities/kalm_theme.dart';
+import 'package:kalm/views/meditation/meditation_audio_list.dart';
+
+class MeditationHeaderTile extends StatelessWidget {
+  const MeditationHeaderTile({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.25,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: AssetImage(
+            'assets/picture/picture-meditasi_1.png',
+          ),
+          fit: BoxFit.fill,
+        ),
+      ),
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            child: Text(
+              'Untuk kamu di \nhari ini',
+              style: kalmOfflineTheme.textTheme.headline2!
+                  .apply(color: primaryText, fontSizeFactor: 1.2),
+            ),
+          ),
+          SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.1,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: tertiaryColor,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Peaceful Mind',
+                      style: kalmOfflineTheme.textTheme.subtitle1!
+                          .apply(color: primaryText, fontSizeFactor: 1.2),
+                    ),
+                    Text(
+                      '10 menit',
+                      style: kalmOfflineTheme.textTheme.subtitle1!
+                          .apply(color: secondaryText, fontSizeFactor: 1.2),
+                    )
+                  ],
+                ),
+                CircleAvatar(
+                  backgroundColor: accentColor,
+                  radius: 25,
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MeditationAudioList(),
+                        ),
+                      );
+                    },
+                    icon: Icon(
+                      Iconsax.play5,
+                      color: primaryColor,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
