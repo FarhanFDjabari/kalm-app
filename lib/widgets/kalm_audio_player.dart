@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
+import 'kalm_playlist_tile.dart';
 import 'kalm_slider.dart';
 
 class KalmAudioPlayer extends StatefulWidget {
@@ -125,7 +126,80 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  enableDrag: false,
+                  isDismissible: true,
+                  builder: (context) => BottomSheet(
+                    backgroundColor: tertiaryColor,
+                    enableDrag: false,
+                    onClosing: () {
+                      print('close');
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    builder: (context) => Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                color: backgroundColor,
+                                child: Text(
+                                  'Playlist',
+                                  style: kalmOfflineTheme.textTheme.bodyText1!
+                                      .apply(
+                                          color: primaryText,
+                                          fontSizeFactor: 1.2),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(Icons.close),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: ListView.builder(
+                                itemCount: 5,
+                                shrinkWrap: true,
+                                primary: true,
+                                padding: const EdgeInsets.only(top: 10),
+                                itemBuilder: (context, index) => Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: KalmPlaylistTile(
+                                    onTap: () {},
+                                    icon: Iconsax.play,
+                                    tileColor: tertiaryColor,
+                                    iconColor: primaryColor,
+                                    iconBackgroundColor: accentColor,
+                                    title: 'Peaceful Mind',
+                                    subtitle: '10 Menit',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 icon: Icon(
                   Iconsax.menu4,
                   color: primaryText,
@@ -179,7 +253,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
               IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  Iconsax.frame4,
+                  Iconsax.archive,
                   color: primaryText,
                 ),
               ),

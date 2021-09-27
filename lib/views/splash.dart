@@ -24,7 +24,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
     _animationController.forward().then(
           (value) => Timer(
-            Duration(seconds: 5),
+            Duration(seconds: 3),
             () => Navigator.pushNamedAndRemoveUntil(
                 context, '/onboarding', (route) => false),
           ),
@@ -83,7 +83,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                 opacity: _animationController,
                 child: Image.asset(
                   'assets/picture/kalm-font-logo.png',
-                  scale: 1.5,
+                  scale: 2,
                 ),
               ),
             ),

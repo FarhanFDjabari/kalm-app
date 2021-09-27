@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_button.dart';
+import 'package:kalm/widgets/mood_factor_tile.dart';
 
 class MoodFactorPage extends StatefulWidget {
   @override
@@ -56,13 +57,19 @@ class _MoodFactorPageState extends State<MoodFactorPage> {
                       textAlign: TextAlign.center,
                     ),
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.40,
                     child: GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 15,
+                        childAspectRatio: 0.85,
                       ),
-                      itemBuilder: (context, index) => Container(),
+                      itemCount: 8,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) => MoodFactorTile(),
                     ),
                   ),
                   KalmButton(

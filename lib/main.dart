@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'KALM',
       theme: kalmOfflineTheme,
+      debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => View(),
         '/meditation-playlist': (context) => MeditationAudioList(),

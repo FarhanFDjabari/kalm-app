@@ -99,26 +99,35 @@ class _JourneyPageState extends State<JourneyPage>
                   ),
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
-              ),
               Container(
                 width: double.infinity,
-                height: 155,
+                height: MediaQuery.of(context).size.height * 0.25,
                 margin: const EdgeInsets.symmetric(horizontal: 35),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 decoration: BoxDecoration(
                   color: tertiaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      journeyList[currentIndex]['title']!,
-                      style: kalmOfflineTheme.textTheme.button!
-                          .apply(color: primaryText),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          journeyList[currentIndex]['title']!,
+                          style: kalmOfflineTheme.textTheme.button!
+                              .apply(color: primaryText, fontSizeFactor: 1.1),
+                        ),
+                        Text(
+                          'Progress 1/3',
+                          style: kalmOfflineTheme.textTheme.button!
+                              .apply(color: primaryColor),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 4),
                     Text(
@@ -132,29 +141,25 @@ class _JourneyPageState extends State<JourneyPage>
                       child: Text(
                         journeyList[currentIndex]['description']!,
                         style: kalmOfflineTheme.textTheme.subtitle1!
-                            .apply(color: primaryText),
+                            .apply(color: primaryText, fontSizeFactor: 1.1),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        KalmButton(
-                          width: 93,
-                          height: 26,
-                          primaryColor: primaryColor,
-                          borderRadius: 40,
-                          child: Text(
-                            'Mulai Journey',
-                            style: kalmOfflineTheme.textTheme.bodyText1!
-                                .apply(color: tertiaryColor),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => JourneyDetailPage(),
-                            ));
-                          },
-                        ),
-                      ],
+                    SizedBox(height: 10),
+                    KalmButton(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.065,
+                      primaryColor: primaryColor,
+                      borderRadius: 10,
+                      child: Text(
+                        'Mulai Journey',
+                        style: kalmOfflineTheme.textTheme.bodyText1!
+                            .apply(color: tertiaryColor),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => JourneyDetailPage(),
+                        ));
+                      },
                     ),
                   ],
                 ),

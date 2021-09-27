@@ -69,12 +69,28 @@ class _ViewState extends State<View> {
       bottomNavigationBar: Container(
         child: Row(
           children: [
-            _buildNavigationItem(icon: Iconsax.home5, itemCount: 5, index: 0),
-            _buildNavigationItem(icon: Iconsax.graph5, itemCount: 5, index: 1),
             _buildNavigationItem(
-                icon: Iconsax.message5, itemCount: 5, index: 2),
-            _buildNavigationItem(icon: Iconsax.music5, itemCount: 5, index: 3),
-            _buildNavigationItem(icon: Iconsax.flag5, itemCount: 5, index: 4),
+                icon: Iconsax.home5, label: 'Beranda', itemCount: 5, index: 0),
+            _buildNavigationItem(
+                icon: Iconsax.graph5,
+                label: 'Mood Tracker',
+                itemCount: 5,
+                index: 1),
+            _buildNavigationItem(
+                icon: Iconsax.message5,
+                label: 'Curhat',
+                itemCount: 5,
+                index: 2),
+            _buildNavigationItem(
+                icon: Iconsax.music5,
+                label: 'Meditasi',
+                itemCount: 5,
+                index: 3),
+            _buildNavigationItem(
+                icon: Iconsax.flag5,
+                label: 'My Journey',
+                itemCount: 5,
+                index: 4),
           ],
         ),
       ),
@@ -85,37 +101,43 @@ class _ViewState extends State<View> {
     required IconData icon,
     required int itemCount,
     required int index,
+    required String label,
     Color color = primaryColor,
   }) {
-    return InkWell(
-      onTap: () {
-        _pageController.jumpToPage(index);
-      },
-      child: Container(
-        height: 60,
-        width: MediaQuery.of(context).size.width / itemCount,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(
-                child: Icon(
-                  icon,
-                  size: 28,
-                  color: index == _selectedIndex ? primaryColor : secondaryText,
+    return Tooltip(
+      message: label,
+      child: InkWell(
+        onTap: () {
+          _pageController.jumpToPage(index);
+        },
+        child: Container(
+          height: 60,
+          width: MediaQuery.of(context).size.width / itemCount,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                  child: Icon(
+                    icon,
+                    size: 28,
+                    color: index == _selectedIndex
+                        ? primaryColor
+                        : secondaryText.withOpacity(0.75),
+                  ),
                 ),
               ),
-            ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 350),
-              width: 28,
-              height: index == _selectedIndex ? 6 : 0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                color: color,
+              AnimatedContainer(
+                duration: Duration(milliseconds: 350),
+                width: 28,
+                height: index == _selectedIndex ? 6 : 0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                  color: color,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

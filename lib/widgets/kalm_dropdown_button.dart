@@ -38,6 +38,7 @@ class _KalmDropdownButtonState extends State<KalmDropdownButton> {
     return DropdownButtonHideUnderline(
       child: DropdownButtonFormField(
         isExpanded: true,
+        icon: Icon(Icons.keyboard_arrow_down_rounded),
         items: widget.dropdownData
             .map(
               (dropdownData) => DropdownMenuItem(
@@ -68,6 +69,11 @@ class _KalmDropdownButtonState extends State<KalmDropdownButton> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: widget.accentColor),
+          ),
+          errorMaxLines: 1,
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.red),
           ),
         ),
         style: kalmOfflineTheme.textTheme.subtitle1!

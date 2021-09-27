@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_button.dart';
+import 'package:kalm/widgets/kalm_dialog.dart';
 import 'package:kalm/widgets/kalm_journey_field.dart';
 import 'package:kalm/widgets/kalm_step_indicator.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -38,7 +39,7 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
     if (!_isListening) {
       bool available = await _speechToText.initialize(
         onStatus: (status) {
-          print(status);
+          print('status: $status');
         },
         onError: (error) => print(error),
       );
@@ -52,6 +53,7 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
               journeyTextController.text = result.recognizedWords;
               if (result.hasConfidenceRating && result.confidence > 0) {
                 print(result.confidence);
+                _isListening = false;
               }
             });
           },
@@ -174,9 +176,22 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
                       curve: Curves.easeOut,
                     );
                   else
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => JourneyCompletePage(),
+                    showDialog(
+                      context: context,
+                      builder: (context) => KalmDialog(
+                        title:
+                            'Apakah kamu yakin sudah mengisi jurnal dengan baik?',
+                        successButtonTitle: 'Selesai',
+                        cancelButtonTitle: 'Kembali',
+                        onSuccess: () {
+                          Navigator.of(context).pop(true);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => JourneyCompletePage(),
+                            ),
+                          );
+                        },
+                        onCancel: () => Navigator.of(context).pop(false),
                       ),
                     );
                 }

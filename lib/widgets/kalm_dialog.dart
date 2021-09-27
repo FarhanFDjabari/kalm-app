@@ -27,7 +27,7 @@ class KalmDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: tertiaryColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
         height: height,

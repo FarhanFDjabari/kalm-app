@@ -26,117 +26,101 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: primaryText,
+          ),
+        ),
+        title: Text(
+          'TOPIK MUSIK',
+          style:
+              kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
+        ),
+      ),
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
-              Stack(
+              Column(
                 children: [
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
+                  Container(
+                    margin: const EdgeInsets.only(top: 26),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: primaryColor),
+                    ),
                     child: Image.asset(
-                      'assets/picture/picture-background_top_middle.png',
+                      'assets/picture/picture-topik_meditasi_4.png',
+                      scale: 1.8,
                     ),
                   ),
-                  Column(
-                    children: [
-                      Hero(
-                        tag: Key('appbar-meditasi'),
-                        child: AppBar(
-                          backgroundColor: Colors.transparent,
-                          centerTitle: true,
-                          elevation: 0,
-                          leading: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: primaryText,
-                            ),
-                          ),
-                          title: Text(
-                            'MEDITASI',
-                            style: kalmOfflineTheme.textTheme.headline1!
+                  Container(
+                    margin: const EdgeInsets.only(top: 37),
+                    color: backgroundColor,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          color: backgroundColor,
+                          width: double.infinity,
+                          child: Text(
+                            'Kecemasan',
+                            textAlign: TextAlign.center,
+                            style: kalmOfflineTheme.textTheme.headline3!
                                 .apply(color: primaryText),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 26),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: primaryColor),
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          color: backgroundColor,
+                          width: double.infinity,
+                          child: Text(
+                            '10 Menit',
+                            textAlign: TextAlign.center,
+                            style: kalmOfflineTheme.textTheme.subtitle1!
+                                .apply(color: primaryText.withOpacity(0.5)),
+                          ),
                         ),
-                        child: Image.asset(
-                          'assets/picture/picture-topik_meditasi_4.png',
-                          scale: 1.8,
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 37),
-                        color: backgroundColor,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              color: backgroundColor,
-                              width: double.infinity,
-                              child: Text(
-                                'Kecemasan',
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          height: 54,
+                          color: backgroundColor,
+                          width: double.infinity,
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: Image.asset(
+                                  'assets/picture/picture-quotation.png',
+                                  scale: 2,
+                                ),
+                              ),
+                              Text(
+                                'Ketenangan yang terlatih akan membungkus rasa gelisah, cemas, dan takutnya dengan baik.',
+                                style:
+                                    kalmOfflineTheme.textTheme.subtitle1!.apply(
+                                  fontStyle: FontStyle.italic,
+                                  color: primaryText,
+                                ),
                                 textAlign: TextAlign.center,
-                                style: kalmOfflineTheme.textTheme.headline3!
-                                    .apply(color: primaryText),
                               ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 4),
-                              color: backgroundColor,
-                              width: double.infinity,
-                              child: Text(
-                                '10 Menit',
-                                textAlign: TextAlign.center,
-                                style: kalmOfflineTheme.textTheme.subtitle1!
-                                    .apply(color: primaryText.withOpacity(0.5)),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 4),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 50),
-                              height: 54,
-                              color: backgroundColor,
-                              width: double.infinity,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: 0,
-                                    right: 0,
-                                    child: Image.asset(
-                                      'assets/picture/picture-quotation.png',
-                                      scale: 2,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Ketenangan yang terlatih akan membungkus rasa gelisah, cemas, dan takutnya dengan baik.',
-                                    style: kalmOfflineTheme.textTheme.subtitle1!
-                                        .apply(
-                                      fontStyle: FontStyle.italic,
-                                      color: primaryText,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

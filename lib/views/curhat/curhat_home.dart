@@ -89,7 +89,7 @@ class _CurhatHomeState extends State<CurhatHome>
                           child: Text(
                             'Keuangan',
                             style: kalmOfflineTheme.textTheme.bodyText2!
-                                .apply(color: primaryText),
+                                .apply(color: primaryText, fontSizeFactor: 1.1),
                           ),
                         ),
                         KalmTextButton(
@@ -102,8 +102,11 @@ class _CurhatHomeState extends State<CurhatHome>
                               Text(
                                 'Lihat Semua',
                                 style: kalmOfflineTheme.textTheme.bodyText2!
-                                    .apply(color: primaryText),
+                                    .apply(
+                                        color: primaryText,
+                                        fontSizeFactor: 1.1),
                               ),
+                              SizedBox(width: 5),
                               Icon(
                                 Icons.arrow_forward_ios_rounded,
                                 color: primaryText,
@@ -144,7 +147,7 @@ class _CurhatHomeState extends State<CurhatHome>
                           child: Text(
                             'Self-care',
                             style: kalmOfflineTheme.textTheme.bodyText2!
-                                .apply(color: primaryText),
+                                .apply(color: primaryText, fontSizeFactor: 1.1),
                           ),
                         ),
                         KalmTextButton(
@@ -157,8 +160,11 @@ class _CurhatHomeState extends State<CurhatHome>
                               Text(
                                 'Lihat Semua',
                                 style: kalmOfflineTheme.textTheme.bodyText2!
-                                    .apply(color: primaryText),
+                                    .apply(
+                                        color: primaryText,
+                                        fontSizeFactor: 1.1),
                               ),
+                              SizedBox(width: 5),
                               Icon(
                                 Icons.arrow_forward_ios_rounded,
                                 color: primaryText,

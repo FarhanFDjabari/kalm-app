@@ -5,7 +5,6 @@ import 'package:kalm/widgets/kalm_button.dart';
 import 'package:kalm/widgets/kalm_dropdown_button.dart';
 import 'package:kalm/widgets/kalm_switch_button.dart';
 import 'package:kalm/widgets/kalm_text_field.dart';
-import 'package:kalm/widgets/kalm_text_field_tag.dart';
 
 class PostCurhatPage extends StatefulWidget {
   @override
@@ -126,15 +125,6 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                       return null;
                     },
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 8, top: 10),
-                  child: Text('Tag'),
-                ),
-                KalmTextFieldTag(
-                  hintText: 'Tag curhatan...',
-                  onTag: (tag) {},
-                  onDelete: (tag) {},
                 ),
                 Container(
                   margin: const EdgeInsets.only(bottom: 8),

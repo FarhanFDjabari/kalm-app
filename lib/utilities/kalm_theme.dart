@@ -90,6 +90,7 @@ ThemeData kalmOfflineTheme = ThemeData(
     caption: TextStyle(
       fontFamily: 'Montserrat',
       fontSize: 13,
+      fontWeight: FontWeight.normal,
     ),
   ),
 );
