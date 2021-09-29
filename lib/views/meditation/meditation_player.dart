@@ -4,6 +4,11 @@ import 'package:kalm/widgets/kalm_audio_player.dart';
 import 'package:kalm/widgets/kalm_dialog.dart';
 
 class MeditationPlayer extends StatefulWidget {
+  final int audioIndex;
+  final List<Map<String, dynamic>> audioMetas;
+
+  MeditationPlayer({this.audioIndex = 0, required this.audioMetas});
+
   @override
   _MeditationPlayerState createState() => _MeditationPlayerState();
 }
@@ -46,77 +51,33 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
               kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
         ),
       ),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 26),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: primaryColor),
-                ),
-                child: Image.asset(
-                  'assets/picture/picture-topik_meditasi_4.png',
-                  scale: 1.8,
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 26),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: primaryColor),
+              ),
+              child: Image.asset(
+                'assets/picture/picture-topik_meditasi_4.png',
+                scale: 1.8,
+              ),
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: KalmAudioPlayer(
+                  onWillPop: onWillPop,
+                  audioMetas: widget.audioMetas,
+                  audioIndex: widget.audioIndex,
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 37),
-                child: Text(
-                  'Peaceful Mind',
-                  style: kalmOfflineTheme.textTheme.headline3!
-                      .apply(color: primaryText),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                child: Text(
-                  '10 Menit',
-                  style: kalmOfflineTheme.textTheme.subtitle1!
-                      .apply(color: primaryText.withOpacity(0.5)),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 4),
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                height: 54,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Image.asset(
-                        'assets/picture/picture-quotation.png',
-                        scale: 2,
-                      ),
-                    ),
-                    Text(
-                      'Penyesalan tidak pernah mengubah masa lalu. kecemasan tidak pernah mengubah masa depan.',
-                      style: kalmOfflineTheme.textTheme.subtitle1!.apply(
-                        fontStyle: FontStyle.italic,
-                        color: primaryText,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 14),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: KalmAudioPlayer(
-                    onWillPop: onWillPop,
-                    mediaUrl:
-                        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3',
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

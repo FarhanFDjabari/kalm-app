@@ -2,17 +2,19 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
-
-import 'kalm_playlist_tile.dart';
-import 'kalm_slider.dart';
+import 'package:kalm/widgets/kalm_playlist_tile.dart';
+import 'package:kalm/widgets/kalm_slider.dart';
+import 'package:kalm/widgets/meditation_meta_info.dart';
 
 class KalmAudioPlayer extends StatefulWidget {
-  final String mediaUrl;
+  final int audioIndex;
+  final List<Map<String, dynamic>> audioMetas;
   final Future<bool> Function() onWillPop;
 
   KalmAudioPlayer({
-    required this.mediaUrl,
     required this.onWillPop,
+    this.audioIndex = 0,
+    required this.audioMetas,
   });
 
   @override
@@ -24,11 +26,13 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
   PlayerState _playerState = PlayerState.PAUSED;
   Duration _progress = Duration();
   Duration _audioDuration = Duration();
+  int playIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _audioPlayer.setUrl(widget.mediaUrl);
+    playIndex = widget.audioIndex;
+    _audioPlayer.setUrl(widget.audioMetas[playIndex]['mediaUrl']);
 
     _audioPlayer.onPlayerStateChanged.listen((audioState) {
       if (audioState == PlayerState.STOPPED) {
@@ -53,11 +57,18 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
     });
 
     _audioPlayer.onPlayerCompletion.listen((event) {
-      setState(() {
-        _progress = Duration(seconds: 0);
-        _audioPlayer.stop();
-      });
-      Navigator.pop(context);
+      if (playIndex < widget.audioMetas.length - 1) {
+        setState(() {
+          _progress = Duration(seconds: 0);
+          next();
+        });
+      } else {
+        setState(() {
+          _progress = Duration(seconds: 0);
+          _audioPlayer.stop();
+        });
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -67,8 +78,24 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
     disposeAudio();
   }
 
-  play() async {
-    await _audioPlayer.play(widget.mediaUrl);
+  next() async {
+    await _audioPlayer.stop();
+    if (playIndex < widget.audioMetas.length - 1) {
+      await _audioPlayer.setUrl(widget.audioMetas[++playIndex]['mediaUrl']);
+      play(playIndex);
+    }
+  }
+
+  previous() async {
+    await _audioPlayer.stop();
+    if (playIndex > 0) {
+      await _audioPlayer.setUrl(widget.audioMetas[--playIndex]['mediaUrl']);
+      play(playIndex);
+    }
+  }
+
+  play(int index) async {
+    await _audioPlayer.play(widget.audioMetas[index]['mediaUrl']);
   }
 
   pause() async {
@@ -95,6 +122,11 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
       onWillPop: widget.onWillPop,
       child: Column(
         children: [
+          MeditationMetaInfo(
+            title: widget.audioMetas[playIndex]['title'],
+            duration: '${widget.audioMetas[playIndex]['duration']} menit',
+          ),
+          SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -176,15 +208,29 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                           Expanded(
                             child: Container(
                               child: ListView.builder(
-                                itemCount: 5,
+                                itemCount: widget.audioMetas.length,
                                 shrinkWrap: true,
                                 primary: true,
                                 padding: const EdgeInsets.only(top: 10),
                                 itemBuilder: (context, index) => Container(
                                   margin: const EdgeInsets.only(bottom: 10),
                                   child: KalmPlaylistTile(
-                                    onTap: () {},
-                                    icon: Iconsax.play,
+                                    onTap: () async {
+                                      playIndex = index;
+                                      await _audioPlayer.stop();
+                                      _progress = Duration();
+                                      if (playIndex <
+                                          widget.audioMetas.length - 1) {
+                                        await _audioPlayer.setUrl(widget
+                                            .audioMetas[playIndex]['mediaUrl']);
+                                      }
+                                      setState(() {
+                                        Navigator.of(context).pop(false);
+                                      });
+                                    },
+                                    icon: index == playIndex
+                                        ? Iconsax.pause
+                                        : Iconsax.play,
                                     tileColor: tertiaryColor,
                                     iconColor: primaryColor,
                                     iconBackgroundColor: accentColor,
@@ -226,7 +272,9 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                     ),
                     child: IconButton(
                       onPressed: () {
-                        _playerState == PlayerState.PLAYING ? pause() : play();
+                        _playerState == PlayerState.PLAYING
+                            ? pause()
+                            : play(playIndex);
                       },
                       color: _playerState == PlayerState.PLAYING
                           ? primaryColor

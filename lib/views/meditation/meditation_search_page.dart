@@ -16,7 +16,7 @@ class _MeditationSearchPageState extends State<MeditationSearchPage> {
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5),
           child: Column(
             children: [
               Row(
@@ -30,8 +30,11 @@ class _MeditationSearchPageState extends State<MeditationSearchPage> {
                   Expanded(
                     child: KalmSearchField(
                       searchController: searchController,
-                      suffixOnPressed: () {},
+                      suffixOnPressed: () {
+                        searchController.clear();
+                      },
                       isAutofocus: true,
+                      icon: Icons.clear,
                       onChanged: (value) {},
                       onSubmitted: (value) {
                         print(value);

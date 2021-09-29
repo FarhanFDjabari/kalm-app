@@ -12,11 +12,13 @@ class KalmSearchField extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.readOnly = false,
+    this.icon,
   }) : super(key: key);
 
   final TextEditingController? searchController;
   final bool isAutofocus;
   final bool readOnly;
+  final IconData? icon;
   final Function()? suffixOnPressed;
   final Function(String)? onChanged;
   final Function()? onTap;
@@ -28,7 +30,7 @@ class KalmSearchField extends StatelessWidget {
       controller: searchController,
       maxLines: 1,
       cursorColor: primaryColor,
-      keyboardType: TextInputType.url,
+      textInputAction: TextInputAction.go,
       onSubmitted: onSubmitted,
       onTap: onTap,
       onChanged: onChanged,
@@ -55,7 +57,7 @@ class KalmSearchField extends StatelessWidget {
         suffixIcon: IconButton(
           onPressed: suffixOnPressed,
           icon: Icon(
-            Iconsax.search_normal,
+            icon ?? Iconsax.search_normal,
             color: primaryText,
           ),
         ),
