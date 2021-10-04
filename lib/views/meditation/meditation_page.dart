@@ -19,6 +19,7 @@ class _MeditationPageState extends State<MeditationPage>
   bool get wantKeepAlive => true;
 
   bool isSearching = false;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +127,8 @@ class _MeditationPageState extends State<MeditationPage>
               itemExtent: 100,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => KalmIconButton(
+                itemIndex: index,
+                selectedIndex: selectedIndex,
                 width: 100,
                 height: 100,
                 iconRadius: 65,
@@ -135,6 +138,11 @@ class _MeditationPageState extends State<MeditationPage>
                 icon: Icons.book_outlined,
                 iconSelected: Icons.book,
                 primaryColor: primaryColor,
+                onTap: () {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
               ),
             ),
           ),

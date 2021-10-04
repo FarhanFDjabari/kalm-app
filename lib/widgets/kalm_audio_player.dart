@@ -234,8 +234,9 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                                     tileColor: tertiaryColor,
                                     iconColor: primaryColor,
                                     iconBackgroundColor: accentColor,
-                                    title: 'Peaceful Mind',
-                                    subtitle: '10 Menit',
+                                    title: widget.audioMetas[index]['title'],
+                                    subtitle:
+                                        '${widget.audioMetas[index]['duration']} menit',
                                   ),
                                 ),
                               ),

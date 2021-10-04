@@ -127,11 +127,14 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(bottom: 8, top: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Sembunyikan namaku'),
+                      Text(
+                        'Sembunyikan namaku',
+                        style: kalmOfflineTheme.textTheme.bodyText2,
+                      ),
                       KalmSwitchButton(
                         primaryColor: primaryColor,
                         accentColor: accentColor,
@@ -147,7 +150,11 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                     onPressed: () {},
                     borderRadius: 10,
                     primaryColor: primaryColor,
-                    child: Text('Kirim Curhat'),
+                    child: Text(
+                      'Kirim Curhat',
+                      style: kalmOfflineTheme.textTheme.button!
+                          .apply(color: tertiaryColor),
+                    ),
                   ),
                 ),
               ],

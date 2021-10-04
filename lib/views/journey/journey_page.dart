@@ -13,7 +13,7 @@ class JourneyPage extends StatefulWidget {
 
 class _JourneyPageState extends State<JourneyPage>
     with AutomaticKeepAliveClientMixin {
-  int currentIndex = 1;
+  int currentIndex = 0;
 
   @override
   bool get wantKeepAlive => true;

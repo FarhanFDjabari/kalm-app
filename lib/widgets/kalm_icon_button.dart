@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 class KalmIconButton extends StatefulWidget {
+  final int itemIndex;
+  final int selectedIndex;
   final double width;
   final double height;
   final double? iconSize;
@@ -11,6 +13,7 @@ class KalmIconButton extends StatefulWidget {
   final IconData iconSelected;
   final String label;
   final Color? primaryColor;
+  final Function? onTap;
 
   KalmIconButton({
     required this.width,
@@ -22,6 +25,9 @@ class KalmIconButton extends StatefulWidget {
     this.iconSize,
     this.fontSize,
     this.iconRadius,
+    this.onTap,
+    this.itemIndex = 0,
+    this.selectedIndex = 0,
   });
 
   @override
@@ -29,13 +35,10 @@ class KalmIconButton extends StatefulWidget {
 }
 
 class _KalmIconButtonState extends State<KalmIconButton> {
-  bool isSelected = false;
-
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        isSelected = !isSelected;
-        setState(() {});
+        if (widget.onTap != null) widget.onTap!();
       },
       borderRadius: BorderRadius.circular(10),
       child: AnimatedContainer(
@@ -55,11 +58,17 @@ class _KalmIconButtonState extends State<KalmIconButton> {
               child: CircleAvatar(
                 maxRadius: widget.iconRadius ?? 50,
                 minRadius: widget.iconRadius ?? 50,
-                backgroundColor: isSelected ? widget.primaryColor : accentColor,
+                backgroundColor: widget.itemIndex == widget.selectedIndex
+                    ? widget.primaryColor
+                    : accentColor,
                 child: Icon(
-                  isSelected ? widget.iconSelected : widget.icon,
+                  widget.itemIndex == widget.selectedIndex
+                      ? widget.iconSelected
+                      : widget.icon,
                   size: widget.iconSize ?? 24,
-                  color: isSelected ? accentColor : widget.primaryColor,
+                  color: widget.itemIndex == widget.selectedIndex
+                      ? accentColor
+                      : widget.primaryColor,
                 ),
               ),
             ),
@@ -67,9 +76,13 @@ class _KalmIconButtonState extends State<KalmIconButton> {
             Text(
               widget.label,
               style: TextStyle(
-                color: isSelected ? Colors.black : Colors.grey[700],
+                color: widget.itemIndex == widget.selectedIndex
+                    ? Colors.black
+                    : Colors.grey[700],
                 fontSize: widget.fontSize,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: widget.itemIndex == widget.selectedIndex
+                    ? FontWeight.bold
+                    : FontWeight.normal,
               ),
             )
           ],

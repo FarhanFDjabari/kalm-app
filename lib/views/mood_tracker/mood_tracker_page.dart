@@ -89,6 +89,7 @@ class _MoodTrackerPageState extends State<MoodTrackerPage> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10),
+                height: MediaQuery.of(context).size.height * 0.35,
                 child: Image.asset(
                   getMoodImage(moodValue).toString(),
                   scale: 1.7,

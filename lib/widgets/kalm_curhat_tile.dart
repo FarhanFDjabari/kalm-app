@@ -33,6 +33,7 @@ class KalmCurhatTile extends StatelessWidget {
           ),
           InkWell(
             onTap: onTap,
+            borderRadius: BorderRadius.circular(14),
             child: Container(
               width: double.infinity,
               height: MediaQuery.of(context).size.height / 3.2,

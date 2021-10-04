@@ -10,11 +10,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _HomePageState extends State<HomePage> {
   final List<Map<String, String>> moodData = [
     {
       'imagePath': 'assets/picture/picture-facerecognition_buruk.png',
@@ -32,7 +28,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
