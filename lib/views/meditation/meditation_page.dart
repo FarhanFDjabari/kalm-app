@@ -154,7 +154,9 @@ class _MeditationPageState extends State<MeditationPage>
               child: ListView.builder(
                 itemCount: 3,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemBuilder: (_, index) => KalmMeditationTile(),
+                itemBuilder: (_, index) => KalmMeditationTile(
+                  imagePath: 'assets/picture/picture-topik_meditasi_1.png',
+                ),
               ),
             ),
           ),

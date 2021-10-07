@@ -6,10 +6,11 @@ import 'kalm_text_button.dart';
 
 class KalmDialog extends StatelessWidget {
   final String? title;
+  final String? subtitle;
   final String? successButtonTitle;
   final String? cancelButtonTitle;
   final dynamic Function() onSuccess;
-  final dynamic Function() onCancel;
+  final dynamic Function()? onCancel;
   final double height;
 
   const KalmDialog({
@@ -19,7 +20,8 @@ class KalmDialog extends StatelessWidget {
     this.successButtonTitle,
     this.cancelButtonTitle,
     required this.onSuccess,
-    required this.onCancel,
+    this.onCancel,
+    this.subtitle,
   }) : super(key: key);
 
   @override
@@ -41,26 +43,37 @@ class KalmDialog extends StatelessWidget {
                   kalmOfflineTheme.textTheme.button!.apply(color: primaryText),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 25),
+            if (subtitle != null)
+              Container(
+                margin: const EdgeInsets.only(top: 8),
+                child: Text(
+                  subtitle ?? '',
+                  style: kalmOfflineTheme.textTheme.subtitle1!
+                      .apply(color: primaryText),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: KalmTextButton(
-                    width: 100,
-                    height: 54,
-                    borderRadius: 10,
-                    primaryColor: tertiaryColor,
-                    child: Center(
-                      child: Text(
-                        cancelButtonTitle ?? '',
-                        style: kalmOfflineTheme.textTheme.button!
-                            .apply(color: Colors.red),
+                if (cancelButtonTitle != null)
+                  Expanded(
+                    child: KalmTextButton(
+                      width: 100,
+                      height: 54,
+                      borderRadius: 10,
+                      primaryColor: tertiaryColor,
+                      child: Center(
+                        child: Text(
+                          cancelButtonTitle ?? '',
+                          style: kalmOfflineTheme.textTheme.button!
+                              .apply(color: Colors.red),
+                        ),
                       ),
+                      onPressed: onCancel ?? () {},
                     ),
-                    onPressed: onCancel,
                   ),
-                ),
                 SizedBox(width: 10),
                 Expanded(
                   child: KalmButton(

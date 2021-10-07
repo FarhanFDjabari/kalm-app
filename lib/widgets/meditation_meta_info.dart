@@ -16,7 +16,7 @@ class MeditationMetaInfo extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 37),
+          margin: const EdgeInsets.only(top: 10),
           child: Text(
             title,
             style:

@@ -58,10 +58,6 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
           children: [
             Container(
               margin: const EdgeInsets.only(top: 26),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: primaryColor),
-              ),
               child: Image.asset(
                 'assets/picture/picture-topik_meditasi_4.png',
                 scale: 1.8,

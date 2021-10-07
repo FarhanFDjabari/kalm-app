@@ -87,17 +87,12 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 26),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: primaryColor),
-                  ),
                   child: Image.asset(
                     'assets/picture/picture-topik_meditasi_4.png',
                     scale: 1.8,
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.only(top: 37),
                   color: backgroundColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -173,7 +168,8 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
                       ),
                     ),
                     Expanded(
-                      child: Container(
+                      child: Material(
+                        color: backgroundColor,
                         child: ListView.builder(
                           itemCount: audioMetas.length,
                           shrinkWrap: true,

@@ -5,7 +5,10 @@ import 'package:kalm/utilities/kalm_theme.dart';
 class KalmMeditationTile extends StatelessWidget {
   const KalmMeditationTile({
     Key? key,
+    required this.imagePath,
   }) : super(key: key);
+
+  final String imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class KalmMeditationTile extends StatelessWidget {
               right: 0,
               bottom: 0,
               child: Image.asset(
-                'assets/picture/picture-topik_meditasi_1.png',
+                imagePath,
                 scale: 1.7,
               )),
           Padding(

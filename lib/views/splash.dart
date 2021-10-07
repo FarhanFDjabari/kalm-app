@@ -1,8 +1,10 @@
-import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_animation_container.dart';
+import 'package:kalm/widgets/kalm_dialog.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -22,13 +24,41 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
       ),
     );
 
-    _animationController.forward().then(
-          (value) => Timer(
-            Duration(seconds: 3),
-            () => Navigator.pushNamedAndRemoveUntil(
-                context, '/onboarding', (route) => false),
-          ),
+    _animationController.forward();
+    checkInternetConnection();
+  }
+
+  checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup(
+        'google.com',
+        type: InternetAddressType.IPv4,
+      );
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/onboarding',
+          (route) => false,
         );
+      }
+    } on SocketException catch (_) {
+      showDialog(
+        context: context,
+        builder: (context) => KalmDialog(
+          title: 'Perangkat kamu tidak terkoneksi dengan internet',
+          subtitle:
+              'Kamu membutuhkan koneksi internet agar dapat menggunakan fitur aplikasi',
+          successButtonTitle: 'Oke',
+          onSuccess: () {
+            if (Platform.isAndroid) {
+              SystemNavigator.pop();
+            } else if (Platform.isIOS) {
+              exit(0);
+            }
+          },
+        ),
+      );
+    }
   }
 
   @override

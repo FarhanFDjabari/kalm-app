@@ -115,7 +115,10 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 child: ListView.builder(
                   itemCount: 3,
-                  itemBuilder: (_, index) => KalmMeditationTile(),
+                  itemBuilder: (_, index) => KalmMeditationTile(
+                    imagePath:
+                        'assets/picture/picture-rekomendasi_meditasi_1.png',
+                  ),
                 ),
               ),
             ),

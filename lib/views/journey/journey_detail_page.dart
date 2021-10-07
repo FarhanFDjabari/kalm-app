@@ -49,13 +49,8 @@ class JourneyDetailPage extends StatelessWidget {
                     scale: 2.3,
                   ),
                 ),
-                SizedBox(height: 25),
-                SizedBox(
-                  height: 17,
-                  child: Container(color: backgroundColor),
-                ),
+                SizedBox(height: 62),
                 Container(
-                  color: backgroundColor,
                   width: double.infinity,
                   child: Text(
                     'Mengenali Diriku',
@@ -118,31 +113,34 @@ class JourneyDetailPage extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: ListView.builder(
-                      itemCount: 5,
-                      padding: const EdgeInsets.only(top: 10),
-                      itemBuilder: (_, index) => Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        child: KalmPlaylistTile(
-                          icon: Icons.flag,
-                          iconBackgroundColor: accentColor,
-                          iconColor: primaryColor,
-                          title: 'Mood Tracker',
-                          subtitle: 'Bagaimana perasaanmu hari ini?',
-                          trailing: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => JourneyChapterPage(),
-                                ),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: primaryText,
+                  child: Material(
+                    color: backgroundColor,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: ListView.builder(
+                        itemCount: 5,
+                        padding: const EdgeInsets.only(top: 10),
+                        itemBuilder: (_, index) => Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: KalmPlaylistTile(
+                            icon: Icons.flag,
+                            iconBackgroundColor: accentColor,
+                            iconColor: primaryColor,
+                            title: 'Mood Tracker',
+                            subtitle: 'Bagaimana perasaanmu hari ini?',
+                            trailing: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => JourneyChapterPage(),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: primaryText,
+                              ),
                             ),
                           ),
                         ),
