@@ -51,12 +51,20 @@ class KalmDetailCurhatTile extends StatelessWidget {
               ),
               Column(
                 children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.favorite_border_rounded,
-                      color: primaryColor,
-                      size: 28,
+                  InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () {},
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.favorite_border_rounded,
+                        color: primaryColor,
+                        size: 28,
+                      ),
                     ),
                   ),
                   Text(

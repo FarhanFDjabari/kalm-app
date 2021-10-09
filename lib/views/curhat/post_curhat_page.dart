@@ -142,6 +142,9 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                ),
                 Container(
                   margin: const EdgeInsets.only(top: 10),
                   child: KalmButton(

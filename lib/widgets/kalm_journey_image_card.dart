@@ -16,6 +16,7 @@ class KalmJourneyImageCard extends StatelessWidget {
       margin: const EdgeInsets.only(top: 25),
       child: Image.asset(
         journeyList[index]['imagePath']!,
+        scale: 1.5,
       ),
     );
   }

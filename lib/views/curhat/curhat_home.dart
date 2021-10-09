@@ -41,7 +41,6 @@ class _CurhatHomeState extends State<CurhatHome>
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               Positioned(
@@ -145,7 +144,7 @@ class _CurhatHomeState extends State<CurhatHome>
                       children: [
                         Container(
                           child: Text(
-                            'Self-care',
+                            'Self-love',
                             style: kalmOfflineTheme.textTheme.bodyText2!
                                 .apply(color: primaryText, fontSizeFactor: 1.1),
                           ),

@@ -45,128 +45,139 @@ class _JourneyPageState extends State<JourneyPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      color: backgroundColor,
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Image.asset(
-              'assets/picture/picture-background_bottom_middle.png',
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: backgroundColor,
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                'assets/picture/picture-background_bottom_middle.png',
+              ),
             ),
-          ),
-          Column(
-            children: [
-              AppBar(
-                backgroundColor: Colors.transparent,
-                centerTitle: true,
-                elevation: 0,
-                leading: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Iconsax.menu,
-                    color: primaryText,
+            Column(
+              children: [
+                AppBar(
+                  backgroundColor: Colors.transparent,
+                  centerTitle: true,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Iconsax.menu,
+                      color: primaryText,
+                    ),
+                  ),
+                  title: Text(
+                    'JOURNEY',
+                    style: kalmOfflineTheme.textTheme.headline1!.apply(
+                      color: primaryText,
+                    ),
                   ),
                 ),
-                title: Text(
-                  'JOURNEY',
-                  style: kalmOfflineTheme.textTheme.headline1!.apply(
-                    color: primaryText,
-                  ),
-                ),
-              ),
-              Container(
-                height: 400,
-                child: Swiper(
-                  scrollDirection: Axis.horizontal,
-                  itemHeight: 273,
-                  itemCount: journeyList.length,
-                  onIndexChanged: (index) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
-                  viewportFraction: 0.65,
-                  scale: 0.65,
-                  loop: false,
-                  itemBuilder: (_, index) => KalmJourneyImageCard(
-                    journeyList: journeyList,
-                    index: index,
-                  ),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.25,
-                margin: const EdgeInsets.symmetric(horizontal: 35),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                decoration: BoxDecoration(
-                  color: tertiaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.85,
+                  child: Swiper(
+                    scrollDirection: Axis.horizontal,
+                    itemHeight: MediaQuery.of(context).size.height * 0.85,
+                    itemCount: journeyList.length,
+                    onIndexChanged: (index) {
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                    viewportFraction: 0.85,
+                    scale: 0.65,
+                    loop: false,
+                    itemBuilder: (_, index) => Column(
                       children: [
-                        Text(
-                          journeyList[currentIndex]['title']!,
-                          style: kalmOfflineTheme.textTheme.button!
-                              .apply(color: primaryText, fontSizeFactor: 1.1),
+                        KalmJourneyImageCard(
+                          journeyList: journeyList,
+                          index: index,
                         ),
-                        Text(
-                          'Progress 1/3',
-                          style: kalmOfflineTheme.textTheme.button!
-                              .apply(color: primaryColor),
+                        Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(vertical: 30),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: tertiaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    journeyList[index]['title']!,
+                                    style: kalmOfflineTheme.textTheme.button!
+                                        .apply(
+                                            color: primaryText,
+                                            fontSizeFactor: 1.1),
+                                  ),
+                                  Text(
+                                    'Progress 1/3',
+                                    style: kalmOfflineTheme.textTheme.button!
+                                        .apply(color: primaryColor),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                journeyList[index]['author']!,
+                                style: kalmOfflineTheme.textTheme.bodyText1!
+                                    .apply(color: secondaryText),
+                              ),
+                              SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Text(
+                                  journeyList[index]['description']!,
+                                  style: kalmOfflineTheme.textTheme.subtitle1!
+                                      .apply(
+                                          color: primaryText,
+                                          fontSizeFactor: 1.1),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+                              KalmButton(
+                                width: double.infinity,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.065,
+                                primaryColor: primaryColor,
+                                borderRadius: 10,
+                                child: Text(
+                                  'Mulai Journey',
+                                  style: kalmOfflineTheme.textTheme.bodyText1!
+                                      .apply(color: tertiaryColor),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => JourneyDetailPage(),
+                                  ));
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      journeyList[currentIndex]['author']!,
-                      style: kalmOfflineTheme.textTheme.bodyText1!
-                          .apply(color: secondaryText),
-                    ),
-                    SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Text(
-                        journeyList[currentIndex]['description']!,
-                        style: kalmOfflineTheme.textTheme.subtitle1!
-                            .apply(color: primaryText, fontSizeFactor: 1.1),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    KalmButton(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.065,
-                      primaryColor: primaryColor,
-                      borderRadius: 10,
-                      child: Text(
-                        'Mulai Journey',
-                        style: kalmOfflineTheme.textTheme.bodyText1!
-                            .apply(color: tertiaryColor),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => JourneyDetailPage(),
-                        ));
-                      },
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

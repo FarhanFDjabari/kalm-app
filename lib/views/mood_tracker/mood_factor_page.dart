@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
+import 'package:kalm/views/mood_tracker/mood_graph_page.dart';
 import 'package:kalm/widgets/kalm_button.dart';
 import 'package:kalm/widgets/mood_factor_tile.dart';
 
@@ -82,7 +84,14 @@ class _MoodFactorPageState extends State<MoodFactorPage> {
                     ),
                     primaryColor: primaryColor,
                     borderRadius: 10,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MoodGraphPage(),
+                        ),
+                      );
+                    },
                   )
                 ],
               ),

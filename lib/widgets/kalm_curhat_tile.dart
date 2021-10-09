@@ -41,7 +41,7 @@ class KalmCurhatTile extends StatelessWidget {
                 color: tertiaryColor,
                 borderRadius: BorderRadius.circular(14),
               ),
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -51,30 +51,40 @@ class KalmCurhatTile extends StatelessWidget {
                         backgroundColor: primaryColor,
                       ),
                       SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Maria',
-                            style: kalmOfflineTheme.textTheme.button!
-                                .apply(color: primaryText),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            '1 hari yang lalu',
-                            style: kalmOfflineTheme.textTheme.subtitle2!
-                                .apply(color: secondaryText),
-                          ),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Maria',
+                              style: kalmOfflineTheme.textTheme.button!
+                                  .apply(color: primaryText),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '1 hari yang lalu',
+                              style: kalmOfflineTheme.textTheme.subtitle2!
+                                  .apply(color: secondaryText),
+                            ),
+                          ],
+                        ),
                       ),
                       Column(
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.favorite_border_rounded,
-                              color: primaryColor,
-                              size: 28,
+                          InkWell(
+                            borderRadius: BorderRadius.circular(50),
+                            onTap: () {},
+                            child: Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.favorite_border_rounded,
+                                color: primaryColor,
+                                size: 28,
+                              ),
                             ),
                           ),
                           Text(

@@ -25,14 +25,13 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.3,
-      padding: const EdgeInsets.all(10),
+      height: MediaQuery.of(context).size.height * 0.28,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: tertiaryColor,
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
@@ -110,7 +109,7 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
         height: MediaQuery.of(context).size.height * 0.15,
         padding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 8,
+          vertical: 5,
         ),
         decoration: BoxDecoration(
           color: widget.moodData.indexOf(mood) == selectedIndex
@@ -123,6 +122,7 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
           children: [
             Image.asset(
               mood['imagePath']!,
+              scale: 1.5,
             ),
             SizedBox(height: 10),
             Text(

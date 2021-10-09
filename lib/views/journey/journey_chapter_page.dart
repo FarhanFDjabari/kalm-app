@@ -98,22 +98,11 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
           style:
               kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              listenSpeech();
-            },
-            icon: Icon(
-              Icons.mic,
-              color: primaryText,
-            ),
-          ),
-        ],
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Container(
               margin: const EdgeInsets.symmetric(vertical: 5),
@@ -156,46 +145,64 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
               ),
             ),
             SizedBox(height: 15),
-            KalmButton(
-              width: double.infinity,
-              height: 56,
-              borderRadius: 10,
-              primaryColor: primaryColor,
-              child: Text(
-                'Selanjutnya',
-                style: kalmOfflineTheme.textTheme.button!
-                    .apply(color: tertiaryColor),
-              ),
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  journeyData[currentIndex]['isCompleted'] = true;
-                  journeyTextController.clear();
-                  if (currentIndex < 3)
-                    journeyPageController.nextPage(
-                      duration: Duration(milliseconds: 250),
-                      curve: Curves.easeOut,
-                    );
-                  else
-                    showDialog(
-                      context: context,
-                      builder: (context) => KalmDialog(
-                        title:
-                            'Apakah kamu yakin sudah mengisi jurnal dengan baik?',
-                        successButtonTitle: 'Selesai',
-                        cancelButtonTitle: 'Kembali',
-                        onSuccess: () {
-                          Navigator.of(context).pop(true);
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => JourneyCompletePage(),
-                            ),
-                          );
-                        },
-                        onCancel: () => Navigator.of(context).pop(false),
-                      ),
-                    );
-                }
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    listenSpeech();
+                  },
+                  splashColor: accentColor,
+                  elevation: 0.5,
+                  tooltip: 'Speech to text',
+                  backgroundColor: accentColor,
+                  child: Icon(
+                    Icons.mic,
+                    color: primaryColor,
+                  ),
+                ),
+                KalmButton(
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  height: 56,
+                  borderRadius: 10,
+                  primaryColor: primaryColor,
+                  child: Text(
+                    'Selanjutnya',
+                    style: kalmOfflineTheme.textTheme.button!
+                        .apply(color: tertiaryColor),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      journeyData[currentIndex]['isCompleted'] = true;
+                      journeyTextController.clear();
+                      if (currentIndex < 3)
+                        journeyPageController.nextPage(
+                          duration: Duration(milliseconds: 250),
+                          curve: Curves.easeOut,
+                        );
+                      else
+                        showDialog(
+                          context: context,
+                          builder: (context) => KalmDialog(
+                            title:
+                                'Apakah kamu yakin sudah mengisi jurnal dengan baik?',
+                            successButtonTitle: 'Selesai',
+                            cancelButtonTitle: 'Kembali',
+                            onSuccess: () {
+                              Navigator.of(context).pop(true);
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => JourneyCompletePage(),
+                                ),
+                              );
+                            },
+                            onCancel: () => Navigator.of(context).pop(false),
+                          ),
+                        );
+                    }
+                  },
+                ),
+              ],
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           ],

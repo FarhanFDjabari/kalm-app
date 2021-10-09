@@ -13,15 +13,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Map<String, String>> moodData = [
     {
-      'imagePath': 'assets/picture/picture-facerecognition_buruk.png',
+      'imagePath': 'assets/picture/picture-mood_buruk.png',
       'label': 'Buruk',
     },
     {
-      'imagePath': 'assets/picture/picture-facerecognition_biasa.png',
+      'imagePath': 'assets/picture/picture-mood_biasa.png',
       'label': 'Biasa',
     },
     {
-      'imagePath': 'assets/picture/picture-facerecognition_baik.png',
+      'imagePath': 'assets/picture/picture-mood_baik.png',
       'label': 'Baik',
     },
   ];

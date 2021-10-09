@@ -28,12 +28,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
       'imagePath': 'assets/picture/picture-onboarding_2.png'
     },
     {
-      'title': 'Mood Tracker',
+      'title': 'Curhat',
       'subtitle': 'Kenali perasanmu menggunakan AI face recognition',
       'imagePath': 'assets/picture/picture-onboarding_1.png'
     },
     {
-      'title': 'Meditasi',
+      'title': 'Journey',
       'subtitle': 'Dengarkan musik-musik yang memberikan ketenangan untukmu',
       'imagePath': 'assets/picture/picture-onboarding_2.png'
     },
