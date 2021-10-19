@@ -1,49 +1,23 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:kalm/model/mood_tracker/mood_tracker_weekly_response.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 class KalmMoodGraph extends StatefulWidget {
+  final List<MoodTracker> graphData;
+
+  KalmMoodGraph({required this.graphData});
+
   @override
   _KalmMoodGraphState createState() => _KalmMoodGraphState();
 }
 
 class _KalmMoodGraphState extends State<KalmMoodGraph> {
-  final List<Map<String, double>> graphData = [
-    {
-      'index': 0,
-      'value': 2,
-    },
-    {
-      'index': 1,
-      'value': 1,
-    },
-    {
-      'index': 2,
-      'value': 2,
-    },
-    {
-      'index': 3,
-      'value': 1,
-    },
-    {
-      'index': 4,
-      'value': 2,
-    },
-    {
-      'index': 5,
-      'value': 1,
-    },
-    {
-      'index': 6,
-      'value': 1,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.2,
+      height: MediaQuery.of(context).size.height * 0.25,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
         color: tertiaryColor,
@@ -145,17 +119,17 @@ class _KalmMoodGraphState extends State<KalmMoodGraph> {
               border: Border(
                 left: BorderSide(
                   color: primaryColor,
-                  width: 4,
+                  width: 3,
                 ),
               ),
             ),
             lineBarsData: [
               LineChartBarData(
-                spots: graphData
+                spots: widget.graphData
                     .map(
                       (data) => FlSpot(
-                        data['index']!,
-                        data['value']!,
+                        data.index.toDouble(),
+                        data.mood.toDouble(),
                       ),
                     )
                     .toList(),
@@ -163,9 +137,9 @@ class _KalmMoodGraphState extends State<KalmMoodGraph> {
                 colors: [
                   primaryColor,
                 ],
-                barWidth: 3,
+                barWidth: 2,
                 dotData: FlDotData(
-                  show: true,
+                  show: false,
                   getDotPainter: (spot, value, chartData, int) {
                     return FlDotCirclePainter(
                       color: primaryColor,

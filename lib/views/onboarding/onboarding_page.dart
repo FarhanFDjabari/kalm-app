@@ -19,22 +19,22 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final List<Map<String, String>> onBoardingData = [
     {
       'title': 'Mood Tracker',
-      'subtitle': 'Kenali perasanmu menggunakan AI face recognition',
+      'subtitle': 'Kenali emosi diri untuk diri yang lebih baik',
       'imagePath': 'assets/picture/picture-onboarding_1.png'
     },
     {
       'title': 'Meditasi',
-      'subtitle': 'Dengarkan musik-musik yang memberikan ketenangan untukmu',
-      'imagePath': 'assets/picture/picture-onboarding_2.png'
+      'subtitle': 'Tenangkan pikiran dengan panduan mudah untuk atasi masalah',
+      'imagePath': 'assets/picture/picture-onboarding_4.png'
     },
     {
-      'title': 'Curhat',
-      'subtitle': 'Kenali perasanmu menggunakan AI face recognition',
-      'imagePath': 'assets/picture/picture-onboarding_1.png'
+      'title': 'Forum Curhat',
+      'subtitle': 'Berbagi cerita dengan sesama agar lebih lega',
+      'imagePath': 'assets/picture/picture-onboarding_3.png'
     },
     {
       'title': 'Journey',
-      'subtitle': 'Dengarkan musik-musik yang memberikan ketenangan untukmu',
+      'subtitle': 'Rangkaian aktivitas untuk memulai kebiasaan baik',
       'imagePath': 'assets/picture/picture-onboarding_2.png'
     },
   ];

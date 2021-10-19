@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 class MoodFactorTile extends StatefulWidget {
   const MoodFactorTile({
     Key? key,
+    required this.icon,
+    required this.selectedIcon,
+    required this.label,
+    this.onTap,
   }) : super(key: key);
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+  final Function()? onTap;
 
   @override
   _MoodFactorTileState createState() => _MoodFactorTileState();
@@ -24,6 +32,7 @@ class _MoodFactorTileState extends State<MoodFactorTile> {
           setState(() {
             isSelected = !isSelected;
           });
+          if (widget.onTap != null) widget.onTap!();
         },
         borderRadius: BorderRadius.circular(10),
         splashColor: accentColor,
@@ -31,13 +40,13 @@ class _MoodFactorTileState extends State<MoodFactorTile> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              isSelected ? Iconsax.teacher5 : Iconsax.teacher,
+              isSelected ? widget.selectedIcon : widget.icon,
               color: isSelected ? primaryColor : secondaryText,
               size: 28,
             ),
             SizedBox(height: 5),
             Text(
-              'Sekolah',
+              widget.label,
               textAlign: TextAlign.center,
               style: isSelected
                   ? kalmOfflineTheme.textTheme.bodyText2!

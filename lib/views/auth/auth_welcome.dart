@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_button.dart';
 import 'package:kalm/widgets/kalm_outlined_button.dart';
@@ -63,9 +64,8 @@ class AuthWelcome extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.email,
-                  color: primaryColor,
+                SvgPicture.asset(
+                  'assets/icon/Google.svg',
                 ),
                 SizedBox(width: 8),
                 Text(

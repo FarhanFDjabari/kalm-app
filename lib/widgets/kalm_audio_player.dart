@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:kalm/model/meditation/playlist_model.dart';
+import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_playlist_tile.dart';
 import 'package:kalm/widgets/kalm_slider.dart';
@@ -8,13 +9,13 @@ import 'package:kalm/widgets/meditation_meta_info.dart';
 
 class KalmAudioPlayer extends StatefulWidget {
   final int audioIndex;
-  final List<Map<String, dynamic>> audioMetas;
+  final List<PlaylistMusicItem> musicList;
   final Future<bool> Function() onWillPop;
 
   KalmAudioPlayer({
     required this.onWillPop,
     this.audioIndex = 0,
-    required this.audioMetas,
+    required this.musicList,
   });
 
   @override
@@ -32,7 +33,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
   void initState() {
     super.initState();
     playIndex = widget.audioIndex;
-    _audioPlayer.setUrl(widget.audioMetas[playIndex]['mediaUrl']);
+    _audioPlayer.setUrl(widget.musicList[playIndex].musicUrl!);
 
     _audioPlayer.onPlayerStateChanged.listen((audioState) {
       if (audioState == PlayerState.STOPPED) {
@@ -57,7 +58,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
     });
 
     _audioPlayer.onPlayerCompletion.listen((event) {
-      if (playIndex < widget.audioMetas.length - 1) {
+      if (playIndex < widget.musicList.length - 1) {
         setState(() {
           _progress = Duration(seconds: 0);
           next();
@@ -80,22 +81,14 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
 
   next() async {
     await _audioPlayer.stop();
-    if (playIndex < widget.audioMetas.length - 1) {
-      await _audioPlayer.setUrl(widget.audioMetas[++playIndex]['mediaUrl']);
-      play(playIndex);
-    }
-  }
-
-  previous() async {
-    await _audioPlayer.stop();
-    if (playIndex > 0) {
-      await _audioPlayer.setUrl(widget.audioMetas[--playIndex]['mediaUrl']);
+    if (playIndex < widget.musicList.length - 1) {
+      await _audioPlayer.setUrl(widget.musicList[++playIndex].musicUrl!);
       play(playIndex);
     }
   }
 
   play(int index) async {
-    await _audioPlayer.play(widget.audioMetas[index]['mediaUrl']);
+    await _audioPlayer.play(widget.musicList[index].musicUrl!);
   }
 
   pause() async {
@@ -123,10 +116,10 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
       child: Column(
         children: [
           MeditationMetaInfo(
-            title: widget.audioMetas[playIndex]['title'],
-            duration: '${widget.audioMetas[playIndex]['duration']} menit',
+            title: widget.musicList[playIndex].name!,
+            duration: '${widget.musicList[playIndex].duration}',
           ),
-          SizedBox(height: 14),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -208,7 +201,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                           Expanded(
                             child: Container(
                               child: ListView.builder(
-                                itemCount: widget.audioMetas.length,
+                                itemCount: widget.musicList.length,
                                 shrinkWrap: true,
                                 primary: true,
                                 padding: const EdgeInsets.only(top: 10),
@@ -220,23 +213,23 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                                       await _audioPlayer.stop();
                                       _progress = Duration();
                                       if (playIndex <
-                                          widget.audioMetas.length - 1) {
+                                          widget.musicList.length - 1) {
                                         await _audioPlayer.setUrl(widget
-                                            .audioMetas[playIndex]['mediaUrl']);
+                                            .musicList[playIndex].musicUrl!);
                                       }
                                       setState(() {
-                                        Navigator.of(context).pop(false);
-                                      });
-                                    },
-                                    icon: index == playIndex
-                                        ? Iconsax.pause
-                                        : Iconsax.play,
-                                    tileColor: tertiaryColor,
-                                    iconColor: primaryColor,
-                                    iconBackgroundColor: accentColor,
-                                    title: widget.audioMetas[index]['title'],
-                                    subtitle:
-                                        '${widget.audioMetas[index]['duration']} menit',
+                                            Navigator.of(context).pop(false);
+                                          });
+                                        },
+                                        icon: index == playIndex
+                                            ? Iconsax.pause
+                                            : Iconsax.play,
+                                        tileColor: tertiaryColor,
+                                        iconColor: primaryColor,
+                                        iconBackgroundColor: accentColor,
+                                        title: widget.musicList[index].name!,
+                                        subtitle:
+                                        '${widget.musicList[index].duration}',
                                   ),
                                 ),
                               ),
@@ -248,7 +241,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                   ),
                 ),
                 icon: Icon(
-                  Iconsax.menu4,
+                  Iconsax.menu_14,
                   color: primaryText,
                 ),
               ),
@@ -259,7 +252,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                       seekTo(_progress.inSeconds - 10);
                     },
                     icon: Icon(
-                      Iconsax.backward4,
+                      Iconsax.backward5,
                       color: primaryText,
                     ),
                   ),
@@ -283,7 +276,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                       icon: Icon(
                         _playerState == PlayerState.PLAYING
                             ? Iconsax.pause5
-                            : Iconsax.play,
+                            : Iconsax.play5,
                       ),
                     ),
                   ),
@@ -302,7 +295,7 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
               IconButton(
                 onPressed: () {},
                 icon: Icon(
-                  Iconsax.archive,
+                  Iconsax.archive_1,
                   color: primaryText,
                 ),
               ),

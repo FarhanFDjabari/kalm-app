@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kalm/services/moodtracker/mood_classifier.dart';
 import 'package:kalm/services/moodtracker/mood_unquant_classifier.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
+import 'package:kalm/views/mood_tracker/mood_factor_page.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 class MoodCamera extends StatefulWidget {
@@ -58,9 +59,21 @@ class _MoodCameraState extends State<MoodCamera> {
     } else if (category == 'Biasa') {
       return 'assets/picture/picture-facerecognition_biasa.png';
     } else if (category == 'Baik') {
-      return 'assets/picture/picture-facerecognition_sangatbaik.png';
+      return 'assets/picture/picture-facerecognition_baik.png';
     } else {
-      return 'assets/picture/picture-facerecognition_sangatburuk.png';
+      return 'assets/picture/picture-facerecognition_buruk.png';
+    }
+  }
+
+  int getMoodPoint(String category) {
+    if (category == 'Buruk') {
+      return 0;
+    } else if (category == 'Biasa') {
+      return 1;
+    } else if (category == 'Baik') {
+      return 2;
+    } else {
+      return 0;
     }
   }
 
@@ -216,6 +229,15 @@ class _MoodCameraState extends State<MoodCamera> {
                         borderRadius: BorderRadius.circular(10),
                         onTap: () {
                           print(_category!.score);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => MoodFactorPage(
+                                moodPoint:
+                                    getMoodPoint(_category!.label).toDouble(),
+                              ),
+                            ),
+                          );
                         },
                         child: Container(
                           width: 60,

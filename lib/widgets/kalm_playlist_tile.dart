@@ -37,10 +37,9 @@ class _KalmPlaylistTileState extends State<KalmPlaylistTile> {
       contentPadding: const EdgeInsets.only(left: 8),
       leading: CircleAvatar(
         radius: 25,
-        child: IconButton(
-          onPressed: () {},
+        child: Icon(
+          widget.icon,
           color: widget.iconColor,
-          icon: Icon(widget.icon),
         ),
         backgroundColor: widget.iconBackgroundColor,
       ),

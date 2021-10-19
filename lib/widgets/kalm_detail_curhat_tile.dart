@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:kalm/model/auth/user_model.dart';
+import 'package:kalm/model/curhat/detail_curhat_model.dart';
+import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 import 'kalm_chip_button.dart';
@@ -7,7 +9,18 @@ import 'kalm_chip_button.dart';
 class KalmDetailCurhatTile extends StatelessWidget {
   const KalmDetailCurhatTile({
     Key? key,
+    required this.user,
+    this.postedAt,
+    required this.content,
+    required this.topic,
+    required this.likeCount,
   }) : super(key: key);
+
+  final User user;
+  final DateTime? postedAt;
+  final String content;
+  final String topic;
+  final List<CurhatLike> likeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +48,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Maria',
+                        user.name!,
                         style: kalmOfflineTheme.textTheme.button!
                             .apply(color: primaryText),
                       ),
@@ -68,7 +81,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '123',
+                    '${likeCount.length}',
                     style: kalmOfflineTheme.textTheme.subtitle1!
                         .apply(color: primaryColor),
                   ),
@@ -77,36 +90,27 @@ class KalmDetailCurhatTile extends StatelessWidget {
             ],
           ),
           SizedBox(height: 14),
-          Container(
-            child: Text(
-              'Halo, temen temen aku sekarang sering belanja online karena kebanyakan racun dari tiktok sama ig. Gimana ya cara ngatasin biar aku ngga sekonsumtif itu :( ??? sebenernya kebutuhanku yang lain masih banyak, tp sungguh tidak terbendung',
-              style: kalmOfflineTheme.textTheme.subtitle2!
-                  .apply(color: primaryText, fontSizeFactor: 1),
+          Expanded(
+            child: Container(
+              child: Text(
+                content,
+                style: kalmOfflineTheme.textTheme.subtitle2!
+                    .apply(color: primaryText, fontSizeFactor: 1),
+              ),
             ),
           ),
           SizedBox(height: 14),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
+              KalmChipButton(
+                borderRadius: 40,
+                width: 75,
                 height: 26,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 2,
-                  itemBuilder: (_, index) => Container(
-                    margin: const EdgeInsets.only(right: 5),
-                    child: KalmChipButton(
-                      borderRadius: 40,
-                      width: 55,
-                      height: 26,
-                      activeColor: accentColor,
-                      color: primaryColor,
-                      text: 'Uang',
-                      textSize: 12,
-                    ),
-                  ),
-                ),
+                activeColor: accentColor,
+                color: primaryColor,
+                text: '$topic',
+                textSize: 12,
               ),
               IconButton(
                 onPressed: () {},

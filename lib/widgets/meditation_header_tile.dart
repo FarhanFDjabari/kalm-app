@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:kalm/model/meditation/playlist_model.dart';
+import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
-import 'package:kalm/views/meditation/meditation_audio_list.dart';
+import 'package:kalm/views/meditation/meditation_player.dart';
 
 class MeditationHeaderTile extends StatelessWidget {
   const MeditationHeaderTile({
     Key? key,
+    this.musicList,
   }) : super(key: key);
+
+  final List<PlaylistMusicItem>? musicList;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       width: double.infinity,
       height: MediaQuery.of(context).size.height * 0.25,
       decoration: BoxDecoration(
@@ -53,12 +57,12 @@ class MeditationHeaderTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Peaceful Mind',
+                      musicList![0].name ?? '-',
                       style: kalmOfflineTheme.textTheme.subtitle1!
                           .apply(color: primaryText, fontSizeFactor: 1.2),
                     ),
                     Text(
-                      '10 menit',
+                      musicList![0].duration ?? '-',
                       style: kalmOfflineTheme.textTheme.subtitle1!
                           .apply(color: secondaryText, fontSizeFactor: 1.2),
                     )
@@ -72,7 +76,9 @@ class MeditationHeaderTile extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MeditationAudioList(),
+                          builder: (context) => MeditationPlayer(
+                            musicList: musicList!,
+                          ),
                         ),
                       );
                     },

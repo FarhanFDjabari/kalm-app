@@ -19,6 +19,7 @@ class KalmOnboardingContent extends StatelessWidget {
       children: [
         Spacer(flex: 1),
         Container(
+          margin: const EdgeInsets.only(bottom: 5),
           child: Image.asset(
             imagePath,
             scale: 1.8,

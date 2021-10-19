@@ -1,7 +1,8 @@
 import 'dart:io';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_animation_container.dart';
 import 'package:kalm/widgets/kalm_dialog.dart';
@@ -35,11 +36,18 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         type: InternetAddressType.IPv4,
       );
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          '/onboarding',
-          (route) => false,
-        );
+        if (await GetStorage().read('user_id') == null)
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/onboarding',
+            (route) => false,
+          );
+        else
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            (route) => false,
+          );
       }
     } on SocketException catch (_) {
       showDialog(
@@ -49,12 +57,10 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
           subtitle:
               'Kamu membutuhkan koneksi internet agar dapat menggunakan fitur aplikasi',
           successButtonTitle: 'Oke',
-          onSuccess: () {
-            if (Platform.isAndroid) {
-              SystemNavigator.pop();
-            } else if (Platform.isIOS) {
-              exit(0);
-            }
+          onSuccess: () async {
+            await AppSettings.openDeviceSettings(
+              asAnotherTask: true,
+            );
           },
         ),
       );
@@ -63,8 +69,8 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    super.dispose();
     _animationController.dispose();
+    super.dispose();
   }
 
   @override

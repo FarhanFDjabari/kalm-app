@@ -26,8 +26,8 @@ class JourneyCompletePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 Container(
                   child: Image.asset(
                     'assets/picture/picture-journey_1.png',

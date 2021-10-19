@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/views/curhat/curhat_home.dart';
 import 'package:kalm/views/home/home_page.dart';
@@ -72,7 +72,7 @@ class _ViewState extends State<View> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(
-              Iconsax.home5,
+              Iconsax.home_25,
             ),
             label: 'Beranda',
             tooltip: '',
@@ -80,13 +80,14 @@ class _ViewState extends State<View> {
           BottomNavigationBarItem(
             icon: Icon(
               Iconsax.graph5,
+              size: 28,
             ),
             label: 'Tracker',
             tooltip: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Iconsax.message5,
+              Iconsax.message_notif5,
             ),
             label: 'Curhat',
             tooltip: '',
@@ -107,11 +108,11 @@ class _ViewState extends State<View> {
           ),
         ],
         backgroundColor: tertiaryColor,
-        showUnselectedLabels: false,
+        showUnselectedLabels: true,
         selectedItemColor: primaryColor,
         unselectedItemColor: secondaryText.withOpacity(0.75),
         currentIndex: _selectedIndex,
-        elevation: 1,
+        elevation: 0,
       ),
     );
   }

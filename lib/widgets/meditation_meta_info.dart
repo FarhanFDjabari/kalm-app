@@ -31,31 +31,6 @@ class MeditationMetaInfo extends StatelessWidget {
                 .apply(color: primaryText.withOpacity(0.5)),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(top: 4),
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          height: 54,
-          child: Stack(
-            children: [
-              Positioned(
-                top: 0,
-                right: 0,
-                child: Image.asset(
-                  'assets/picture/picture-quotation.png',
-                  scale: 2,
-                ),
-              ),
-              Text(
-                'Penyesalan tidak pernah mengubah masa lalu. kecemasan tidak pernah mengubah masa depan.',
-                style: kalmOfflineTheme.textTheme.subtitle1!.apply(
-                  fontStyle: FontStyle.italic,
-                  color: primaryText,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

@@ -2,7 +2,7 @@ name: kalm
 description: One Stop Solution for Your Mental Health.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+2
+version: 1.2.0+1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -11,24 +11,36 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.3
-  textfield_tags: ^1.4.2
-  iconsax: ^0.0.8
   audioplayers: ^0.20.1
   google_fonts: ^2.1.0
-  flutter_bloc: ^7.3.0
+  flutter_bloc: ^7.3.1
   tflite_flutter: ^0.9.0
   image_picker: ^0.8.4+2
   tflite_flutter_helper: ^0.3.0
   card_swiper: ^1.0.4
   speech_to_text: ^5.1.1
   dotted_line: ^3.0.1
-  fl_chart: ^0.40.0
+  fl_chart: ^0.40.2
+  app_settings: ^4.1.1
+  get_storage: ^2.0.3
+  sqflite: ^2.0.0+4
+  dio: ^4.0.0
+  cached_network_image: ^3.1.0
+  flutter_svg: ^0.23.0+1
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_native_splash: ^1.2.4
+  flutter_launcher_icons: ^0.9.2
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/kalm_launcher.png"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/icon/kalm_launcher_icon.png"
 
 flutter:
   uses-material-design: true
@@ -39,6 +51,9 @@ flutter:
     - assets/ml_model/
 
   fonts:
+    - family: iconsax
+      fonts:
+        - asset: assets/font/iconsax.ttf
     - family: Montserrat
       fonts:
         - asset: assets/font/Montserrat-Regular.ttf

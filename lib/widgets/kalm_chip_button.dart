@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class KalmChipButton extends StatefulWidget {
+  final int? itemIndex;
+  final int? currentIndex;
   final double borderRadius;
   final double width;
   final double height;
@@ -9,7 +11,7 @@ class KalmChipButton extends StatefulWidget {
   final Color activeColor;
   final Color color;
   final String text;
-  final void Function()? callback;
+  final void Function()? onTap;
 
   KalmChipButton({
     required this.borderRadius,
@@ -20,7 +22,9 @@ class KalmChipButton extends StatefulWidget {
     required this.color,
     required this.text,
     this.textSize = 16,
-    this.callback,
+    this.onTap,
+    this.itemIndex = 0,
+    this.currentIndex = 0,
   });
 
   @override
@@ -28,18 +32,10 @@ class KalmChipButton extends StatefulWidget {
 }
 
 class _KalmChipButtonState extends State<KalmChipButton> {
-  bool isSelected = false;
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: !widget.staticMode
-          ? () {
-              isSelected = !isSelected;
-              setState(() {});
-              widget.callback!();
-            }
-          : () {},
+      onTap: !widget.staticMode ? widget.onTap : () {},
       borderRadius: BorderRadius.circular(widget.borderRadius),
       child: AnimatedContainer(
         width: widget.width,
@@ -48,7 +44,7 @@ class _KalmChipButtonState extends State<KalmChipButton> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(widget.borderRadius),
           color: !widget.staticMode
-              ? isSelected
+              ? widget.itemIndex == widget.currentIndex
                   ? widget.activeColor
                   : widget.color
               : widget.activeColor,
@@ -58,12 +54,12 @@ class _KalmChipButtonState extends State<KalmChipButton> {
             widget.text,
             style: TextStyle(
               color: !widget.staticMode
-                  ? isSelected
+                  ? widget.itemIndex == widget.currentIndex
                       ? widget.color
                       : widget.activeColor
                   : widget.color,
               fontWeight: !widget.staticMode
-                  ? isSelected
+                  ? widget.itemIndex == widget.currentIndex
                       ? FontWeight.w500
                       : FontWeight.normal
                   : FontWeight.normal,

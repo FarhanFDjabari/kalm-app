@@ -4,7 +4,14 @@ import 'package:kalm/utilities/kalm_theme.dart';
 class KalmCurhatReplyTile extends StatelessWidget {
   const KalmCurhatReplyTile({
     Key? key,
+    required this.userName,
+    this.postedAt,
+    required this.comment,
   }) : super(key: key);
+
+  final String userName;
+  final DateTime? postedAt;
+  final String comment;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,7 @@ class KalmCurhatReplyTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hwasa',
+                    userName,
                     style: kalmOfflineTheme.textTheme.button!
                         .apply(color: primaryText),
                   ),
@@ -47,7 +54,7 @@ class KalmCurhatReplyTile extends StatelessWidget {
           SizedBox(height: 14),
           Container(
             child: Text(
-              'Hai sis kamu udah hebat berani speak up disini, i think kamu bisa gunain voucher diskon kaya gratis ongkir buat memotong pengeluaranmu',
+              comment,
               style: kalmOfflineTheme.textTheme.subtitle2!
                   .apply(color: primaryText, fontSizeFactor: 1),
             ),

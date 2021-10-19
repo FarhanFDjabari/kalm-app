@@ -1,13 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kalm/model/meditation/playlist_model.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_audio_player.dart';
 import 'package:kalm/widgets/kalm_dialog.dart';
 
 class MeditationPlayer extends StatefulWidget {
   final int audioIndex;
-  final List<Map<String, dynamic>> audioMetas;
+  final List<PlaylistMusicItem> musicList;
 
-  MeditationPlayer({this.audioIndex = 0, required this.audioMetas});
+  MeditationPlayer({this.audioIndex = 0, required this.musicList});
 
   @override
   _MeditationPlayerState createState() => _MeditationPlayerState();
@@ -48,7 +50,7 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
         title: Text(
           'PEMUTAR MEDITASI',
           style:
-              kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
+          kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
         ),
       ),
       body: SizedBox(
@@ -58,9 +60,20 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
           children: [
             Container(
               margin: const EdgeInsets.only(top: 26),
-              child: Image.asset(
-                'assets/picture/picture-topik_meditasi_4.png',
-                scale: 1.8,
+              child: CachedNetworkImage(
+                imageUrl:
+                    widget.musicList[widget.audioIndex].roundedImage!.url!,
+                imageBuilder: (_, image) {
+                  return Image.network(
+                    widget.musicList[widget.audioIndex].roundedImage!.url!,
+                    scale: 1.8,
+                  );
+                },
+                placeholder: (_, __) {
+                  return CircularProgressIndicator(
+                    color: primaryColor,
+                  );
+                },
               ),
             ),
             Expanded(
@@ -68,7 +81,7 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: KalmAudioPlayer(
                   onWillPop: onWillPop,
-                  audioMetas: widget.audioMetas,
+                  musicList: widget.musicList,
                   audioIndex: widget.audioIndex,
                 ),
               ),

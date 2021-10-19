@@ -16,7 +16,7 @@ class KalmDialog extends StatelessWidget {
   const KalmDialog({
     Key? key,
     this.title,
-    this.height = 200,
+    this.height = 150,
     this.successButtonTitle,
     this.cancelButtonTitle,
     required this.onSuccess,

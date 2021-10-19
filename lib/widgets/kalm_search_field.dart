@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 class KalmSearchField extends StatelessWidget {

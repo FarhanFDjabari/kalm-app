@@ -28,17 +28,20 @@ class _MeditationSearchPageState extends State<MeditationSearchPage> {
                     ),
                   ),
                   Expanded(
-                    child: KalmSearchField(
-                      searchController: searchController,
-                      suffixOnPressed: () {
-                        searchController.clear();
-                      },
-                      isAutofocus: true,
-                      icon: Icons.clear,
-                      onChanged: (value) {},
-                      onSubmitted: (value) {
-                        print(value);
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: KalmSearchField(
+                        searchController: searchController,
+                        suffixOnPressed: () {
+                          searchController.clear();
+                        },
+                        isAutofocus: true,
+                        icon: Icons.clear,
+                        onChanged: (value) {},
+                        onSubmitted: (value) {
+                          print(value);
+                        },
+                      ),
                     ),
                   )
                 ],

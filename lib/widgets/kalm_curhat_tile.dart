@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:kalm/model/auth/user_model.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
 class KalmCurhatTile extends StatelessWidget {
   final Function()? onTap;
+  final User userData;
+  final String content;
+  final DateTime? createdAt;
 
   const KalmCurhatTile({
     Key? key,
     this.onTap,
+    required this.userData,
+    required this.content,
+    this.createdAt,
   }) : super(key: key);
 
   @override
@@ -56,7 +63,7 @@ class KalmCurhatTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Maria',
+                              userData.name!,
                               style: kalmOfflineTheme.textTheme.button!
                                   .apply(color: primaryText),
                             ),
@@ -98,10 +105,14 @@ class KalmCurhatTile extends StatelessWidget {
                   ),
                   SizedBox(height: 14),
                   Container(
-                    child: Text(
-                      'Halo, temen temen aku sekarang sering belanja online karena kebanyakan racun dari tiktok sama ig. Gimana ya cara ngatasin biar aku ngga sekon...',
-                      style: kalmOfflineTheme.textTheme.subtitle2!
-                          .apply(color: primaryText),
+                    child: Flexible(
+                      child: Text(
+                        content,
+                        maxLines: 8,
+                        overflow: TextOverflow.ellipsis,
+                        style: kalmOfflineTheme.textTheme.subtitle2!
+                            .apply(color: primaryText),
+                      ),
                     ),
                   ),
                 ],

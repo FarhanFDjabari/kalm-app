@@ -12,6 +12,7 @@ class KalmDropdownButton extends StatefulWidget {
   final EdgeInsets? padding;
   final String? Function(Object?)? validator;
   final List<Map<String, dynamic>> dropdownData;
+  final Function(Object?)? onChanged;
 
   KalmDropdownButton(
       {required this.hintText,
@@ -23,7 +24,8 @@ class KalmDropdownButton extends StatefulWidget {
       this.dropdownItemColor,
       this.borderColor,
       this.validator,
-      this.padding});
+      this.padding,
+      this.onChanged});
 
   @override
   _KalmDropdownButtonState createState() => _KalmDropdownButtonState();
@@ -47,7 +49,7 @@ class _KalmDropdownButtonState extends State<KalmDropdownButton> {
                   style: TextStyle(
                       color: widget.dropdownItemColor ?? widget.accentColor),
                 ),
-                value: dropdownData['value'],
+                value: dropdownData['value'].toString(),
                 onTap: () {
                   selectedValue = '${dropdownData['selectedValue']}';
                 },
@@ -78,10 +80,7 @@ class _KalmDropdownButtonState extends State<KalmDropdownButton> {
         ),
         style: kalmOfflineTheme.textTheme.subtitle1!
             .apply(color: widget.accentColor),
-        onChanged: (value) {
-          FocusScope.of(context).requestFocus(FocusNode());
-          print(value);
-        },
+        onChanged: widget.onChanged,
         hint: Text(
           widget.hintText,
           style: kalmOfflineTheme.textTheme.subtitle1!

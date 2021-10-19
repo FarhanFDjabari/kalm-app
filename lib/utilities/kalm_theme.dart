@@ -30,6 +30,7 @@ ThemeData kalmOfflineTheme = ThemeData(
   primaryColor: primaryColor,
   accentColor: accentColor,
   backgroundColor: backgroundColor,
+  highlightColor: primaryColor.withOpacity(0.25),
   fontFamily: 'Montserrat',
   textTheme: TextTheme(
     headline1: TextStyle(
