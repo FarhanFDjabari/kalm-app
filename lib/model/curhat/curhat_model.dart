@@ -80,8 +80,7 @@ class Curhatan {
         likeCount: json["like_count"],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "tittle": title,
         "content2": content,

@@ -73,8 +73,7 @@ class JournalItem {
             json["questions"].map((x) => Question.fromJson(x))),
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "created_at": createdAt.toIso8601String(),

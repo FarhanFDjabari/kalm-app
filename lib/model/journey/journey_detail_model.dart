@@ -80,8 +80,7 @@ class DetailJourney {
             : [],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
         "author": author,
@@ -122,8 +121,7 @@ class Component {
         isFinished: json["is_finished"],
       );
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "model_type": modelType,
         "urutan": urutan,
