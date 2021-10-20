@@ -7,6 +7,16 @@ class JourneyInitial extends JourneyState {}
 
 class JourneyLoading extends JourneyState {}
 
+class JourneyQuoteLoadSuccess extends JourneyState {
+  final Quote quoteData;
+
+  JourneyQuoteLoadSuccess(this.quoteData);
+}
+
+class JournalPosted extends JourneyState {}
+
+class MeditationTaskPosted extends JourneyState {}
+
 class JourneyLoaded extends JourneyState {
   final List<Journey> journeyList;
 
@@ -26,7 +36,13 @@ class JourneyDetailLoaded extends JourneyState {
 }
 
 class JourneyTaskLoaded extends JourneyState {
-  final Item journeyTask;
+  final JournalItem journeyTask;
 
   JourneyTaskLoaded(this.journeyTask);
+}
+
+class MeditationTaskLoaded extends JourneyState {
+  final MeditationItem meditationTask;
+
+  MeditationTaskLoaded(this.meditationTask);
 }

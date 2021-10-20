@@ -45,10 +45,12 @@ class _KalmPlaylistTileState extends State<KalmPlaylistTile> {
       ),
       title: Text(
         widget.title,
+        overflow: TextOverflow.ellipsis,
         style: kalmOfflineTheme.textTheme.subtitle1!.apply(color: primaryText),
       ),
       subtitle: Text(
         widget.subtitle,
+        overflow: TextOverflow.ellipsis,
         style:
             kalmOfflineTheme.textTheme.subtitle1!.apply(color: secondaryText),
       ),

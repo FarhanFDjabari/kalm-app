@@ -75,9 +75,10 @@ class Playlist {
         roundedImage: RoundedImage.fromJson(json["rounded_image"]),
         squaredImage: RoundedImage.fromJson(json["squared_image"]),
         topic: Topic.fromJson(json["topic"]),
-        playlistMusicItems: List<PlaylistMusicItem>.from(
-            json["playlist_music_items"]
-                .map((x) => PlaylistMusicItem.fromJson(x))),
+        playlistMusicItems: json["playlist_music_items"] != null
+            ? List<PlaylistMusicItem>.from(json["playlist_music_items"]
+                .map((x) => PlaylistMusicItem.fromJson(x)))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

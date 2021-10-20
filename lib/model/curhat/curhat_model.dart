@@ -55,9 +55,11 @@ class Curhatan {
     this.createdAt,
     this.userId,
     this.user,
+    this.likeCount,
   });
 
   int? id;
+  int? likeCount;
   String? title;
   String? content;
   bool? isAnonymous;
@@ -75,9 +77,11 @@ class Curhatan {
         createdAt: DateTime.parse(json["created_at"]),
         userId: json["user_id"],
         user: User.fromJson(json["user"]),
+        likeCount: json["like_count"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "id": id,
         "tittle": title,
         "content2": content,
@@ -86,5 +90,6 @@ class Curhatan {
         "created_at": createdAt!.toIso8601String(),
         "user_id": userId,
         "user": user!.toJson(),
+        "like_count": likeCount,
       };
 }

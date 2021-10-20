@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:kalm/model/auth/user_model.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 
+import '../utilities/iconsax_icons.dart';
+
 class KalmCurhatTile extends StatelessWidget {
   final Function()? onTap;
   final User userData;
   final String content;
   final DateTime? createdAt;
+  final int? likeCount;
+  final bool? isAnonymous;
 
   const KalmCurhatTile({
     Key? key,
@@ -14,6 +18,8 @@ class KalmCurhatTile extends StatelessWidget {
     required this.userData,
     required this.content,
     this.createdAt,
+    this.likeCount,
+    this.isAnonymous,
   }) : super(key: key);
 
   @override
@@ -56,6 +62,10 @@ class KalmCurhatTile extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         backgroundColor: primaryColor,
+                        child: Icon(
+                          Iconsax.user,
+                          color: tertiaryColor,
+                        ),
                       ),
                       SizedBox(width: 8),
                       Expanded(
@@ -63,7 +73,7 @@ class KalmCurhatTile extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              userData.name!,
+                              isAnonymous == false ? userData.name! : 'Anonim',
                               style: kalmOfflineTheme.textTheme.button!
                                   .apply(color: primaryText),
                             ),
@@ -95,7 +105,7 @@ class KalmCurhatTile extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '123',
+                            '$likeCount',
                             style: kalmOfflineTheme.textTheme.subtitle1!
                                 .apply(color: primaryColor),
                           ),

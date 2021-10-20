@@ -50,45 +50,44 @@ class DetailJourney {
     required this.id,
     required this.title,
     required this.author,
-    this.urutan,
-    this.name,
     required this.createdAt,
     required this.description2,
     required this.image,
     this.components,
+    required this.isFinished,
   });
 
   int id;
   String title;
   String author;
-  String? urutan;
-  String? name;
   DateTime createdAt;
   String description2;
   RoundedImage image;
+  bool isFinished;
   List<Component>? components;
 
   factory DetailJourney.fromJson(Map<String, dynamic> json) => DetailJourney(
         id: json["id"],
         title: json["title"],
         author: json["author"],
-        urutan: json["urutan"] != null ? json["urutan"] : '',
-        name: json["name"] != null ? json["name"] : '',
+        isFinished: json["is_finished"],
         createdAt: DateTime.parse(json["created_at"]),
         description2: json["description2"],
         image: RoundedImage.fromJson(json["image"]),
-        components: List<Component>.from(
-            json["components"].map((x) => Component.fromJson(x))),
+        components: json["components"] != null
+            ? List<Component>.from(
+                json["components"].map((x) => Component.fromJson(x)))
+            : [],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "id": id,
         "title": title,
         "author": author,
-        "urutan": urutan,
-        "name": name,
         "created_at": createdAt.toIso8601String(),
         "description2": description2,
+        "is_finished": isFinished,
         "image": image.toJson(),
         "components": List<Component>.from(components!.map((x) => x.toJson())),
       };
@@ -98,34 +97,39 @@ class Component {
   Component({
     required this.id,
     required this.modelType,
-    this.inModelId,
     this.urutan,
     required this.createdAt,
     required this.journeyId,
+    this.name,
+    required this.isFinished,
   });
 
   int id;
   String modelType;
-  String? inModelId;
   String? urutan;
   DateTime createdAt;
-  String journeyId;
+  int journeyId;
+  String? name;
+  bool isFinished;
 
   factory Component.fromJson(Map<String, dynamic> json) => Component(
         id: json["id"],
         modelType: json["model_type"],
-        inModelId: json["in_model_id"],
         urutan: json["urutan"],
         createdAt: DateTime.parse(json["created_at"]),
         journeyId: json["journey_id"],
+        name: json["name"] != null ? json["name"] : "name",
+        isFinished: json["is_finished"],
       );
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "id": id,
         "model_type": modelType,
-        "in_model_id": inModelId,
         "urutan": urutan,
         "created_at": createdAt.toIso8601String(),
         "journey_id": journeyId,
+        "name": name,
+        "is_finished": isFinished,
       };
 }

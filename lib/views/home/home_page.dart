@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage>
             centerTitle: true,
             elevation: 0,
             leading: Icon(
-              Icons.menu,
+              Iconsax.menu_1,
               color: primaryText,
             ),
             title: Text(
@@ -114,116 +114,132 @@ class _HomePageState extends State<HomePage>
               ),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder<AuthCubit, AuthState>(
-                  builder: (context, state) {
-                    return Text(
-                      state is AuthLoadSuccess
-                          ? getGreeting(state.user.name!)
-                          : getGreeting("User"),
-                      style: kalmOfflineTheme.textTheme.bodyText1!
-                          .apply(color: primaryText, fontSizeFactor: 1.2),
-                    );
-                  },
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Bagaimana perasaanmu hari ini?',
-                  style: kalmOfflineTheme.textTheme.headline1!
-                      .apply(color: primaryText, fontSizeFactor: 1.2),
-                ),
-                SizedBox(height: 8),
-                KalmMoodWidget(moodData: moodData),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Text(
-                        'Rekomendasi meditasi',
-                        style: kalmOfflineTheme.textTheme.bodyText1!
-                            .apply(color: primaryText, fontSizeFactor: 1.1),
-                      ),
-                    ),
-                    KalmTextButton(
-                      width: 120,
-                      height: 20,
-                      primaryColor: primaryColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+          body: BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
+            builder: (builderContext, state) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  builderContext
+                      .read<MoodTrackerCubit>()
+                      .fetchMoodTrackerHome(GetStorage().read('user_id'));
+                },
+                color: primaryColor,
+                child: SingleChildScrollView(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'Lihat Semua',
-                            style: kalmOfflineTheme.textTheme.bodyText1!
-                                .apply(color: primaryText, fontSizeFactor: 1),
+                          BlocBuilder<AuthCubit, AuthState>(
+                            builder: (context, state) {
+                              return Text(
+                                state is AuthLoadSuccess
+                                    ? getGreeting(state.user.name!)
+                                    : getGreeting("User"),
+                                style: kalmOfflineTheme.textTheme.bodyText1!
+                                    .apply(
+                                        color: primaryText,
+                                        fontSizeFactor: 1.2),
+                              );
+                            },
                           ),
-                          SizedBox(width: 5),
-                          Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: primaryText,
-                            size: 16,
+                          SizedBox(height: 8),
+                          Text(
+                            'Bagaimana perasaanmu hari ini?',
+                            style: kalmOfflineTheme.textTheme.headline1!
+                                .apply(color: primaryText, fontSizeFactor: 1.2),
+                          ),
+                          SizedBox(height: 8),
+                          KalmMoodWidget(moodData: moodData),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Text(
+                                  'Rekomendasi meditasi',
+                                  style: kalmOfflineTheme.textTheme.bodyText1!
+                                      .apply(
+                                          color: primaryText,
+                                          fontSizeFactor: 1.1),
+                                ),
+                              ),
+                              KalmTextButton(
+                                width: 120,
+                                height: 20,
+                                primaryColor: primaryColor,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Lihat Semua',
+                                      style: kalmOfflineTheme
+                                          .textTheme.bodyText1!
+                                          .apply(
+                                              color: primaryText,
+                                              fontSizeFactor: 1),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      color: primaryText,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () {},
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Expanded(
+                            child:
+                                BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
+                              builder: (builderContext, state) {
+                                if (state is MoodTrackerLoadSuccess)
+                                  return Container(
+                                    child: ListView.builder(
+                                        itemCount: 4,
+                                        itemBuilder: (_, index) {
+                                          List playlistList = state
+                                              .moodTrackerData
+                                              .reccomendedPlaylists!;
+                                          return KalmMeditationTile(
+                                            imagePath: playlistList[index]
+                                                .squaredImage!
+                                                .url!,
+                                            title: playlistList[index].name!,
+                                            description: playlistList[index]
+                                                .description2!,
+                                            series:
+                                                playlistList[index].quantity!,
+                                            playlistId: playlistList[index].id!,
+                                          );
+                                        }),
+                                  );
+                                else
+                                  return Container(
+                                    child: Center(
+                                      child: Container(
+                                        width: 25,
+                                        height: 25,
+                                        child: CircularProgressIndicator(
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                              },
+                            ),
                           ),
                         ],
                       ),
-                      onPressed: () {},
                     ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Expanded(
-                  child: BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
-                    builder: (builderContext, state) {
-                      if (state is MoodTrackerLoadSuccess)
-                        return Container(
-                          child: ListView.builder(
-                              itemCount: 4,
-                              itemBuilder: (_, index) {
-                                List playlistList =
-                                    state.moodTrackerData.reccomendedPlaylists!;
-                                return KalmMeditationTile(
-                                  imagePath:
-                                      playlistList[index].squaredImage!.url!,
-                                  title: playlistList[index].name!,
-                                  description:
-                                      playlistList[index].description2!,
-                                  series: playlistList[index].quantity!,
-                                  playlistId: playlistList[index].id!,
-                                );
-                              }),
-                        );
-                      else
-                        return Container(
-                          child: Center(
-                            child: RefreshIndicator(
-                              onRefresh: () async {
-                                builderContext
-                                    .read<MoodTrackerCubit>()
-                                    .fetchMoodTrackerHome(
-                                        GetStorage().read('user_id'));
-                              },
-                              child: ListView(
-                                children: [
-                                  Container(
-                                    width: 25,
-                                    height: 25,
-                                    child: CircularProgressIndicator(
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                    },
                   ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

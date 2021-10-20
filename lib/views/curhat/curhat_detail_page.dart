@@ -110,6 +110,7 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                             topic: state.detailCurhatan.category!,
                             postedAt: state.detailCurhatan.createdAt,
                             likeCount: state.detailCurhatan.curhatLike!,
+                            isAnonymous: state.detailCurhatan.isAnonymous,
                           ),
                         ),
                         Padding(
@@ -156,6 +157,8 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                                   return KalmCurhatReplyTile(
                                     comment: komentar.content ?? '-',
                                     userName: komentar.username ?? '-',
+                                    postedAt: komentar.createdAt,
+                                    isAnonymous: komentar.isAnonymous,
                                   );
                                 },
                               ),
@@ -189,6 +192,13 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                                     KalmSwitchButton(
                                       primaryColor: primaryColor,
                                       accentColor: accentColor,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _isAnonymous = value;
+                                        });
+                                        print('is anonymous: $value');
+                                      },
+                                      value: _isAnonymous,
                                     ),
                                   ],
                                 ),

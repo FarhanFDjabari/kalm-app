@@ -218,17 +218,17 @@ class _KalmAudioPlayerState extends State<KalmAudioPlayer> {
                                             .musicList[playIndex].musicUrl!);
                                       }
                                       setState(() {
-                                            Navigator.of(context).pop(false);
-                                          });
-                                        },
-                                        icon: index == playIndex
-                                            ? Iconsax.pause
-                                            : Iconsax.play,
-                                        tileColor: tertiaryColor,
-                                        iconColor: primaryColor,
-                                        iconBackgroundColor: accentColor,
-                                        title: widget.musicList[index].name!,
-                                        subtitle:
+                                        Navigator.of(context).pop(false);
+                                      });
+                                    },
+                                    icon: index == playIndex
+                                        ? Iconsax.pause
+                                        : Iconsax.play,
+                                    tileColor: tertiaryColor,
+                                    iconColor: primaryColor,
+                                    iconBackgroundColor: accentColor,
+                                    title: widget.musicList[index].name!,
+                                    subtitle:
                                         '${widget.musicList[index].duration}',
                                   ),
                                 ),

@@ -25,31 +25,31 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
   List<Map<String, dynamic>> audioMetas = [
     {
       'mediaUrl':
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3',
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3',
       'title': 'Peaceful Mind',
       'duration': 8
     },
     {
       'mediaUrl':
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3',
       'title': 'Peaceful Mind 2',
       'duration': 5
     },
     {
       'mediaUrl':
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3',
       'title': 'Peaceful Mind 3',
       'duration': 6
     },
     {
       'mediaUrl':
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
       'title': 'Peaceful Mind 4',
       'duration': 7
     },
     {
       'mediaUrl':
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
       'title': 'Peaceful Mind 5',
       'duration': 5
     },

@@ -140,173 +140,222 @@ class _MoodTrackerPageState extends State<MoodTrackerPage>
                       ),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    child: BlocBuilder<AuthCubit, AuthState>(
-                      builder: (context, state) {
-                        return Text(
-                          state is AuthLoadSuccess
-                              ? 'Hai ${state.user.name}'
-                              : 'Hai ...',
-                          style: kalmOfflineTheme.textTheme.bodyText1!
-                              .apply(color: primaryText, fontSizeFactor: 1.2),
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    child: Text(
-                      'Bagaimana perasaanmu hari ini?',
-                      style: kalmOfflineTheme.textTheme.headline1!
-                          .apply(color: primaryText, fontSizeFactor: 1.1),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    height: MediaQuery.of(context).size.height * 0.35,
-                    child: Image.asset(
-                      getMoodImage(moodValue).toString(),
-                      scale: 1.7,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 22),
-                    child: Text(
-                      getMoodValue(moodValue),
-                      style: kalmOfflineTheme.textTheme.headline1!
-                          .apply(color: primaryText, fontSizeFactor: 1.1),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Buruk'),
-                            Text('Baik'),
-                          ],
-                        ),
-                        KalmSlider(
-                          onChanged: (value) {
-                            setState(() {
-                              moodValue = value.toInt();
-                            });
-                          },
-                          trackHeight: 8,
-                          inactiveColor: tertiaryColor,
-                          value: moodValue.toDouble(),
-                          max: 2,
-                          min: 0,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 32),
-                  if (todayFinished)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                      child: KalmButton(
-                        width: double.infinity,
-                        height: 56,
-                        child: Text(
-                          'Lihat grafik',
-                          style: kalmOfflineTheme.textTheme.button!
-                              .apply(color: tertiaryColor, fontSizeFactor: 1.2),
-                        ),
-                        primaryColor: primaryColor,
-                        borderRadius: 10,
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => MoodGraphPage(),
-                              ));
-                        },
-                      ),
-                    ),
-                  if (!todayFinished)
-                    BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
+                  Expanded(
+                    child: BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
                       builder: (builderContext, state) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Row(
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            builderContext
+                                .read<MoodTrackerCubit>()
+                                .fetchMoodTrackerHome(
+                                    GetStorage().read('user_id'));
+                          },
+                          color: primaryColor,
+                          child: ListView(
                             children: [
-                              Expanded(
-                                child: KalmButton(
-                                  onPressed: () {
-                                    Navigator.of(context)
-                                        .push(
-                                      MaterialPageRoute(
-                                          builder: (context) => MoodCamera()),
-                                    )
-                                        .then((value) {
-                                      builderContext
-                                          .read<MoodTrackerCubit>()
-                                          .fetchMoodTrackerHome(
-                                              GetStorage().read('user_id'));
-                                    });
+                              Container(
+                                child: BlocBuilder<AuthCubit, AuthState>(
+                                  builder: (context, state) {
+                                    return Text(
+                                      state is AuthLoadSuccess
+                                          ? 'Hai ${state.user.name}'
+                                          : 'Hai ...',
+                                      textAlign: TextAlign.center,
+                                      style: kalmOfflineTheme
+                                          .textTheme.bodyText1!
+                                          .apply(
+                                              color: primaryText,
+                                              fontSizeFactor: 1.2),
+                                    );
                                   },
-                                  primaryColor: tertiaryColor,
-                                  height: MediaQuery.of(context).size.height *
-                                      0.085,
-                                  width: double.infinity,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Iconsax.scan,
-                                        color: primaryColor,
-                                        size: 28,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Kenali Perasaanmu',
-                                        style: kalmOfflineTheme
-                                            .textTheme.button!
-                                            .apply(
-                                                color: primaryColor,
-                                                fontSizeFactor: 1.1),
-                                      ),
-                                    ],
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  'Bagaimana perasaanmu hari ini?',
+                                  textAlign: TextAlign.center,
+                                  style: kalmOfflineTheme.textTheme.headline1!
+                                      .apply(
+                                          color: primaryText,
+                                          fontSizeFactor: 1.1),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.35,
+                                child: Image.asset(
+                                  getMoodImage(moodValue).toString(),
+                                  scale: 1.7,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 22),
+                                child: Text(
+                                  getMoodValue(moodValue),
+                                  textAlign: TextAlign.center,
+                                  style: kalmOfflineTheme.textTheme.headline1!
+                                      .apply(
+                                          color: primaryText,
+                                          fontSizeFactor: 1.1),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(top: 20),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text('Buruk'),
+                                        Text('Baik'),
+                                      ],
+                                    ),
+                                    KalmSlider(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          moodValue = value.toInt();
+                                        });
+                                      },
+                                      trackHeight: 8,
+                                      inactiveColor: tertiaryColor,
+                                      value: moodValue.toDouble(),
+                                      max: 2,
+                                      min: 0,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 32),
+                              if (todayFinished)
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 40.0),
+                                  child: KalmButton(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: Text(
+                                      'Lihat grafik',
+                                      style: kalmOfflineTheme.textTheme.button!
+                                          .apply(
+                                              color: tertiaryColor,
+                                              fontSizeFactor: 1.2),
+                                    ),
+                                    primaryColor: primaryColor,
+                                    borderRadius: 10,
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => MoodGraphPage(),
+                                          ));
+                                    },
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              KalmButton(
-                                width: MediaQuery.of(context).size.width * 0.1,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.085,
-                                primaryColor: primaryColor,
-                                child: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  color: tertiaryColor,
+                              if (!todayFinished)
+                                BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
+                                  builder: (builderContext, state) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 40.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: KalmButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          MoodCamera()),
+                                                )
+                                                    .then((value) {
+                                                  builderContext
+                                                      .read<MoodTrackerCubit>()
+                                                      .fetchMoodTrackerHome(
+                                                          GetStorage()
+                                                              .read('user_id'));
+                                                });
+                                              },
+                                              primaryColor: tertiaryColor,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.085,
+                                              width: double.infinity,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Iconsax.scan,
+                                                    color: primaryColor,
+                                                    size: 28,
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Text(
+                                                    'Kenali Perasaanmu',
+                                                    style: kalmOfflineTheme
+                                                        .textTheme.button!
+                                                        .apply(
+                                                            color: primaryColor,
+                                                            fontSizeFactor:
+                                                                1.1),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          KalmButton(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.085,
+                                            primaryColor: primaryColor,
+                                            child: Icon(
+                                              Icons.arrow_forward_ios_rounded,
+                                              color: tertiaryColor,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MoodFactorPage(
+                                                  moodPoint:
+                                                      moodValue.toDouble(),
+                                                ),
+                                              ))
+                                                  .then((value) {
+                                                builderContext
+                                                    .read<MoodTrackerCubit>()
+                                                    .fetchMoodTrackerHome(
+                                                        GetStorage()
+                                                            .read('user_id'));
+                                              });
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute(
-                                    builder: (context) => MoodFactorPage(
-                                      moodPoint: moodValue.toDouble(),
-                                    ),
-                                  ))
-                                      .then((value) {
-                                    builderContext
-                                        .read<MoodTrackerCubit>()
-                                        .fetchMoodTrackerHome(
-                                            GetStorage().read('user_id'));
-                                  });
-                                },
-                              )
                             ],
                           ),
                         );
                       },
                     ),
+                  ),
                 ],
               ),
             ],

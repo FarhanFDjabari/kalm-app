@@ -14,6 +14,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
     required this.content,
     required this.topic,
     required this.likeCount,
+    this.isAnonymous,
   }) : super(key: key);
 
   final User user;
@@ -21,6 +22,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
   final String content;
   final String topic;
   final List<CurhatLike> likeCount;
+  final bool? isAnonymous;
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +44,17 @@ class KalmDetailCurhatTile extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     backgroundColor: primaryColor,
+                    child: Icon(
+                      Iconsax.user,
+                      color: tertiaryColor,
+                    ),
                   ),
                   SizedBox(width: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        user.name!,
+                        isAnonymous == false ? user.name! : 'Anonim',
                         style: kalmOfflineTheme.textTheme.button!
                             .apply(color: primaryText),
                       ),
@@ -99,7 +105,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 14),
+          SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

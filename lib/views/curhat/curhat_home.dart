@@ -10,6 +10,8 @@ import 'package:kalm/widgets/kalm_curhat_tile.dart';
 import 'package:kalm/widgets/kalm_snackbar.dart';
 import 'package:kalm/widgets/kalm_text_button.dart';
 
+import '../../utilities/iconsax_icons.dart';
+
 class CurhatHome extends StatefulWidget {
   @override
   _CurhatHomeState createState() => _CurhatHomeState();
@@ -76,7 +78,7 @@ class _CurhatHomeState extends State<CurhatHome>
             centerTitle: true,
             elevation: 0,
             leading: Icon(
-              Icons.menu,
+              Iconsax.menu_1,
               color: primaryText,
             ),
             title: Text(
@@ -222,6 +224,10 @@ class _CurhatHomeState extends State<CurhatHome>
                                     createdAt:
                                         state.curhatanList[index].createdAt!,
                                     userData: state.curhatanList[index].user!,
+                                    likeCount:
+                                        state.curhatanList[index].likeCount!,
+                                    isAnonymous:
+                                        state.curhatanList[index].isAnonymous,
                                   );
                                 },
                               ),
@@ -295,6 +301,10 @@ class _CurhatHomeState extends State<CurhatHome>
                                     createdAt:
                                         state.curhatanList[index].createdAt!,
                                     userData: state.curhatanList[index].user!,
+                                    likeCount:
+                                        state.curhatanList[index].likeCount!,
+                                    isAnonymous:
+                                        state.curhatanList[index].isAnonymous,
                                   );
                                 },
                               ),

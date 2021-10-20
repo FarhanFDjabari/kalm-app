@@ -50,7 +50,7 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
         title: Text(
           'PEMUTAR MEDITASI',
           style:
-          kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
+              kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
         ),
       ),
       body: SizedBox(

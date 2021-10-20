@@ -50,7 +50,7 @@ class DailyMoodTile extends StatelessWidget {
       case 'Finansial':
         return Iconsax.empty_wallet;
       default:
-        return Iconsax.briefcase;
+        return Iconsax.bubble;
     }
   }
 
@@ -133,21 +133,21 @@ class DailyMoodTile extends StatelessWidget {
                       children: [
                         Container(
                           child: Icon(
-                                getMoodFactorIcon(reasons[index].reason),
+                            getMoodFactorIcon(reasons[index].reason),
                             color: primaryColor,
                             size: 20,
                           ),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              reasons[index].reason ?? 'Pekerjaan',
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          reasons[index].reason ?? 'Pekerjaan',
                           style: kalmOfflineTheme.textTheme.bodyText1!.apply(
                             color: primaryText,
                           ),
                         ),
-                          ],
-                        ),
-                      ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],

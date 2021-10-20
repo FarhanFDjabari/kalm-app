@@ -23,6 +23,21 @@ class MeditationCubit extends Cubit<MeditationState> {
     }
   }
 
+  void fetchPlaylistByCategory(int userId, String category) async {
+    emit(MeditationLoading());
+    try {
+      final result = await meditationService.fetchPlaylistByCategory(
+          userId: userId, category: category);
+      if (result.success) {
+        emit(MeditationPlaylistLoaded(result.data!.playlists!));
+      } else {
+        emit(MeditationLoadError('Error: ${result.message}'));
+      }
+    } catch (error) {
+      emit(MeditationLoadError('Error: $error'));
+    }
+  }
+
   void fetchPlaylistById(int userId, int playlistId) async {
     emit(MeditationLoading());
     try {

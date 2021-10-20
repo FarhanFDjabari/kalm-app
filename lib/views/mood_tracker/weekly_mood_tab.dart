@@ -36,7 +36,7 @@ class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
       case 'Finansial':
         return Iconsax.empty_wallet;
       default:
-        return Iconsax.briefcase;
+        return Iconsax.bubble;
     }
   }
 

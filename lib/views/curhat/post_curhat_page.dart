@@ -208,6 +208,13 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                           KalmSwitchButton(
                             primaryColor: primaryColor,
                             accentColor: accentColor,
+                            onChanged: (value) {
+                              setState(() {
+                                _isAnonymous = value;
+                              });
+                              print('is anonymous: $value');
+                            },
+                            value: _isAnonymous,
                           ),
                         ],
                       ),

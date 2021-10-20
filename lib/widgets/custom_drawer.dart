@@ -41,23 +41,31 @@ class _CustomDrawerState extends State<CustomDrawer>
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          state is AuthLoadSuccess
-                              ? state.user.name!
-                              : 'Andini Paramita',
-                          style: kalmOfflineTheme.textTheme.bodyText1!.apply(
-                            color: tertiaryColor,
-                            fontSizeFactor: 1.4,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Text(
+                            state is AuthLoadSuccess
+                                ? state.user.name!
+                                : 'Andini Paramita',
+                            overflow: TextOverflow.fade,
+                            style: kalmOfflineTheme.textTheme.bodyText1!.apply(
+                              color: tertiaryColor,
+                              fontSizeFactor: 1.4,
+                            ),
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          state is AuthLoadSuccess
-                              ? state.user.email!
-                              : 'andini@gmail.com',
-                          style: kalmOfflineTheme.textTheme.bodyText1!.apply(
-                            color: tertiaryColor,
-                            fontSizeFactor: 1.1,
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Text(
+                            state is AuthLoadSuccess
+                                ? state.user.email!
+                                : 'andini@gmail.com',
+                            overflow: TextOverflow.fade,
+                            style: kalmOfflineTheme.textTheme.bodyText1!.apply(
+                              color: tertiaryColor,
+                              fontSizeFactor: 1.1,
+                            ),
                           ),
                         ),
                       ],

@@ -49,7 +49,7 @@ class DominasiMoodTile extends StatelessWidget {
       case 'Finansial':
         return Iconsax.empty_wallet;
       default:
-        return Iconsax.briefcase;
+        return Iconsax.bubble;
     }
   }
 

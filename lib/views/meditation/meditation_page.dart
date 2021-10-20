@@ -83,6 +83,12 @@ class _MeditationPageState extends State<MeditationPage>
                 duration: Duration(seconds: 2),
               ),
             );
+          } else if (state is MeditationPlaylistLoaded) {
+            if (state.playlistList.isEmpty) {
+              context
+                  .read<MeditationCubit>()
+                  .fetchAllPlaylist(GetStorage().read('user_id'));
+            }
           }
         },
         child: Scaffold(
@@ -184,28 +190,43 @@ class _MeditationPageState extends State<MeditationPage>
               ),
               SizedBox(
                 height: 90,
-                child: ListView.builder(
-                  itemCount: topicData.length,
-                  itemExtent: 100,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => KalmIconButton(
-                    itemIndex: index,
-                    selectedIndex: selectedIndex,
-                    width: 100,
-                    height: 100,
-                    iconRadius: 65,
-                    iconSize: 24,
-                    fontSize: 14,
-                    label: topicData[index]['topic'],
-                    icon: topicData[index]['icon'],
-                    iconSelected: topicData[index]['icon_selected'],
-                    primaryColor: primaryColor,
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                  ),
+                child: BlocBuilder<MeditationCubit, MeditationState>(
+                  builder: (builderContext, state) {
+                    return ListView.builder(
+                      itemCount: topicData.length,
+                      itemExtent: 100,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => KalmIconButton(
+                        itemIndex: index,
+                        selectedIndex: selectedIndex,
+                        width: 100,
+                        height: 100,
+                        iconRadius: 65,
+                        iconSize: 24,
+                        fontSize: 14,
+                        label: topicData[index]['topic'],
+                        icon: topicData[index]['icon'],
+                        iconSelected: topicData[index]['icon_selected'],
+                        primaryColor: primaryColor,
+                        onTap: () {
+                          if (selectedIndex != index && index > 0)
+                            builderContext
+                                .read<MeditationCubit>()
+                                .fetchPlaylistByCategory(
+                                  GetStorage().read('user_id'),
+                                  topicData[index]['topic'],
+                                );
+                          else if (selectedIndex != index && index == 0)
+                            builderContext
+                                .read<MeditationCubit>()
+                                .fetchAllPlaylist(GetStorage().read('user_id'));
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
               SizedBox(height: 10),

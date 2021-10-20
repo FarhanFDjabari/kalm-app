@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:kalm/model/journey/journal_quote_response.dart';
+import 'package:kalm/model/journey/journal_task_model.dart';
 import 'package:kalm/model/journey/journey_detail_model.dart';
 import 'package:kalm/model/journey/journey_model.dart';
-import 'package:kalm/model/journey/journey_task_model.dart';
+import 'package:kalm/model/journey/journey_post_response.dart';
+import 'package:kalm/model/journey/meditation_task_model.dart';
 
 class JourneyService {
   static JourneyService? _service;
@@ -34,14 +37,67 @@ class JourneyService {
     }
   }
 
-  Future<JourneyTaskModel> getJourneyTask(int userId, int taskId) async {
+  Future<JournalTaskModel> getJournalTask(int userId, int taskId) async {
     try {
       Response _response = await _dio.get(
           BASE_URL + 'api/v1/journeys/component/$taskId',
           queryParameters: {"user_id": userId});
-      return JourneyTaskModel.fromJson(_response.data);
+      return JournalTaskModel.fromJson(_response.data);
     } on DioError catch (error) {
-      return JourneyTaskModel.fromJson(error.response?.data);
+      return JournalTaskModel.fromJson(error.response?.data);
+    }
+  }
+
+  Future<JourneyPostResponse> postJournalTask(
+      int userId, int componentId, int journeyId, List answers) async {
+    try {
+      Response _response = await _dio
+          .post(BASE_URL + 'api/v1/journeys/journal-submission', data: {
+        "user_id": userId,
+        "journey_component_id": componentId,
+        "journey_id": journeyId,
+        "answers": answers
+      });
+      return JourneyPostResponse.fromJson(_response.data);
+    } on DioError catch (error) {
+      return JourneyPostResponse.fromJson(error.response?.data);
+    }
+  }
+
+  Future<JourneyQuoteResponse> getJourneyQuote(
+      int userId, int journeyId) async {
+    try {
+      Response _response = await _dio.get(BASE_URL + 'api/v1/quotes/$journeyId',
+          queryParameters: {"user_id": userId});
+      return JourneyQuoteResponse.fromJson(_response.data);
+    } on DioError catch (error) {
+      return JourneyQuoteResponse.fromJson(error.response?.data);
+    }
+  }
+
+  Future<MeditationTaskModel> getMeditationTask(int userId, int taskId) async {
+    try {
+      Response _response = await _dio.get(
+          BASE_URL + 'api/v1/journeys/component/$taskId',
+          queryParameters: {"user_id": userId});
+      return MeditationTaskModel.fromJson(_response.data);
+    } on DioError catch (error) {
+      return MeditationTaskModel.fromJson(error.response?.data);
+    }
+  }
+
+  Future<JourneyPostResponse> postMeditationTask(
+      int userId, int componentId, int journeyId) async {
+    try {
+      Response _response = await _dio
+          .post(BASE_URL + 'api/v1/journeys/music-submission', data: {
+        "user_id": userId,
+        "journey_component_id": componentId,
+        "journey_id": journeyId
+      });
+      return JourneyPostResponse.fromJson(_response.data);
+    } on DioError catch (error) {
+      return JourneyPostResponse.fromJson(error.response?.data);
     }
   }
 }

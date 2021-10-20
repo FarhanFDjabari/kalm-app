@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kalm/cubit/journey/journey_cubit.dart';
+import 'package:kalm/model/journey/journal_task_model.dart';
 import 'package:kalm/utilities/kalm_theme.dart';
 import 'package:kalm/widgets/kalm_button.dart';
 import 'package:kalm/widgets/kalm_dialog.dart';
 import 'package:kalm/widgets/kalm_journey_field.dart';
+import 'package:kalm/widgets/kalm_snackbar.dart';
 import 'package:kalm/widgets/kalm_step_indicator.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-import 'journey_complete_page.dart';
-
 class JourneyChapterPage extends StatefulWidget {
+  final int taskId;
+  final int journeyId;
+
+  JourneyChapterPage({required this.journeyId, required this.taskId});
+
   @override
   _JourneyChapterPageState createState() => _JourneyChapterPageState();
 }
@@ -75,144 +83,213 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
     {'itemIndex': 3, 'title': '4', 'isCompleted': false},
   ];
 
+  List<Map<String, dynamic>> answerList = [];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        centerTitle: true,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
+    return Material(
+      child: BlocProvider<JourneyCubit>(
+        create: (context) => JourneyCubit()
+          ..getJourneyTask(GetStorage().read('user_id'), widget.taskId),
+        child: BlocListener<JourneyCubit, JourneyState>(
+          listener: (context, state) {
+            if (state is JourneyError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                KalmSnackbar(
+                  message: state.errorMessage,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            } else if (state is JournalPosted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                KalmSnackbar(
+                  message: 'Journal berhasil disimpan',
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              Navigator.of(context).pop(true);
+              Navigator.of(context).pop(true);
+            }
           },
-          icon: Icon(
-            Icons.arrow_back_ios_rounded,
-            color: primaryText,
-          ),
-        ),
-        title: Text(
-          'MENGENAL DIRI',
-          style:
-              kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
-        ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: journeyData
-                    .map(
-                      (data) => KalmStepIndicator(
-                        title: data['title'],
-                        selectedIndex: currentIndex,
-                        indicatorIndex: data['itemIndex'],
-                        isLast: data['itemIndex'] == 3,
-                        isComplete: data['isCompleted'],
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: PageView.builder(
-                  itemCount: journeyData.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: journeyPageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                    print(currentIndex);
-                  },
-                  pageSnapping: true,
-                  itemBuilder: (_, index) => KalmJourneyField(
-                    journeyTextController: journeyTextController,
-                    title: 'Tuliskan hal-hal yang kamu sukai dari dirimu.',
-                    journeyPageController: journeyPageController,
-                    currentIndex: currentIndex,
-                  ),
+          child: Scaffold(
+            backgroundColor: backgroundColor,
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              centerTitle: true,
+              elevation: 0,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: primaryText,
                 ),
               ),
+              title: BlocBuilder<JourneyCubit, JourneyState>(
+                builder: (context, state) {
+                  return Text(
+                    state is JourneyTaskLoaded
+                        ? state.journeyTask.name
+                        : 'MENGENAL DIRI',
+                    style: kalmOfflineTheme.textTheme.headline1!
+                        .apply(color: primaryText),
+                  );
+                },
+              ),
             ),
-            SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    listenSpeech();
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(7),
-                  ),
-                  splashColor: primaryColor.withOpacity(0.5),
-                  elevation: 0,
-                  tooltip: 'Speech to text',
-                  backgroundColor: primaryColor,
-                  child: Icon(
-                    Icons.mic,
-                    color: tertiaryColor,
-                  ),
-                ),
-                Tooltip(
-                  message: 'Selanjutnya',
-                  child: KalmButton(
-                    width: MediaQuery.of(context).size.width * 0.08,
-                    height: 56,
-                    borderRadius: 7,
-                    primaryColor: primaryColor,
-                    child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: tertiaryColor,
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        if (currentIndex < 3) {
-                          journeyData[currentIndex]['isCompleted'] = true;
-                          journeyTextController.clear();
-                          journeyPageController.nextPage(
-                            duration: Duration(milliseconds: 250),
-                            curve: Curves.easeOut,
-                          );
-                        } else
-                          showDialog(
-                            context: context,
-                            builder: (context) => KalmDialog(
-                              title:
-                                  'Apakah kamu yakin sudah mengisi jurnal dengan baik?',
-                              successButtonTitle: 'Selesai',
-                              cancelButtonTitle: 'Kembali',
-                              onSuccess: () {
-                                journeyData[currentIndex]['isCompleted'] = true;
-                                journeyTextController.clear();
-                                Navigator.of(context).pop(true);
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                    builder: (context) => JourneyCompletePage(),
+            body: BlocBuilder<JourneyCubit, JourneyState>(
+              builder: (builderContext, state) {
+                if (state is JourneyTaskLoaded)
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: journeyData
+                                .map(
+                                  (data) => KalmStepIndicator(
+                                    title: data['title'],
+                                    selectedIndex: currentIndex,
+                                    indicatorIndex: data['itemIndex'],
+                                    isLast: data['itemIndex'] == 3,
+                                    isComplete: data['isCompleted'],
                                   ),
-                                );
+                                )
+                                .toList(),
+                          ),
+                        ),
+                        Expanded(
+                          child: Form(
+                            key: _formKey,
+                            child: PageView.builder(
+                                itemCount: state.journeyTask.questions.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                controller: journeyPageController,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    currentIndex = index;
+                                  });
+                                  print(currentIndex);
+                                },
+                                pageSnapping: true,
+                                itemBuilder: (_, index) {
+                                  Question question =
+                                      state.journeyTask.questions[index];
+                                  return KalmJourneyField(
+                                    journeyTextController:
+                                        journeyTextController,
+                                    title: '${question.question}',
+                                    journeyPageController:
+                                        journeyPageController,
+                                    currentIndex: currentIndex,
+                                  );
+                                }),
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FloatingActionButton(
+                              onPressed: () {
+                                listenSpeech();
                               },
-                              onCancel: () => Navigator.of(context).pop(false),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              splashColor: primaryColor.withOpacity(0.5),
+                              elevation: 0,
+                              tooltip: 'Speech to text',
+                              backgroundColor: primaryColor,
+                              child: Icon(
+                                Icons.mic,
+                                color: tertiaryColor,
+                              ),
                             ),
-                          );
-                      }
-                    },
-                  ),
-                ),
-              ],
+                            Tooltip(
+                              message: 'Selanjutnya',
+                              child: KalmButton(
+                                width: MediaQuery.of(context).size.width * 0.08,
+                                height: 56,
+                                borderRadius: 7,
+                                primaryColor: primaryColor,
+                                child: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: tertiaryColor,
+                                ),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (currentIndex < 3) {
+                                      answerList.add({
+                                        "id": currentIndex + 1,
+                                        "answer": journeyTextController.text
+                                      });
+                                      journeyData[currentIndex]['isCompleted'] =
+                                          true;
+                                      journeyTextController.clear();
+                                      journeyPageController.nextPage(
+                                        duration: Duration(milliseconds: 250),
+                                        curve: Curves.easeOut,
+                                      );
+                                    } else
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => KalmDialog(
+                                          title:
+                                              'Apakah kamu yakin sudah mengisi jurnal dengan baik?',
+                                          successButtonTitle: 'Selesai',
+                                          cancelButtonTitle: 'Kembali',
+                                          onSuccess: () {
+                                            answerList.add({
+                                              "id": state.journeyTask
+                                                  .questions[currentIndex].id,
+                                              "answer":
+                                                  journeyTextController.text
+                                            });
+                                            journeyData[currentIndex]
+                                                ['isCompleted'] = true;
+                                            journeyTextController.clear();
+                                            builderContext
+                                                .read<JourneyCubit>()
+                                                .postJournalTask(
+                                                    GetStorage()
+                                                        .read('user_id'),
+                                                    widget.journeyId,
+                                                    state.journeyTask.id,
+                                                    answerList);
+                                          },
+                                          onCancel: () =>
+                                              Navigator.of(context).pop(false),
+                                        ),
+                                      );
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05),
+                      ],
+                    ),
+                  );
+                else
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    ),
+                  );
+              },
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          ],
+          ),
         ),
       ),
     );

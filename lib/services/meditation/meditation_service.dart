@@ -25,6 +25,21 @@ class MeditationService {
     }
   }
 
+  Future<PlaylistModel> fetchPlaylistByCategory(
+      {required int userId, required String category}) async {
+    try {
+      Response _response = await _dio.get(
+        BASE_URL + 'api/v1/playlists/category/$category',
+        queryParameters: {"user_id": userId},
+      );
+      PlaylistModel _playlist = PlaylistModel.fromJson(_response.data);
+      return _playlist;
+    } on DioError catch (error) {
+      PlaylistModel _errorData = PlaylistModel.fromJson(error.response?.data);
+      return _errorData;
+    }
+  }
+
   Future<DetailPlaylistResponse> fetchPlaylistById(
       {required int userId, required int playlistId}) async {
     try {
