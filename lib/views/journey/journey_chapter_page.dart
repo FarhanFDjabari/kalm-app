@@ -260,8 +260,9 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
                                                 .postJournalTask(
                                                     GetStorage()
                                                         .read('user_id'),
-                                                    widget.journeyId,
-                                                    state.journeyTask.id,
+                                                    state.journeyTask.journeyId,
+                                                    state.journeyTask
+                                                        .journeyComponentId,
                                                     answerList);
                                           },
                                           onCancel: () =>

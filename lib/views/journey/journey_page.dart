@@ -187,7 +187,15 @@ class _JourneyPageState extends State<JourneyPage>
                                                     0.065,
                                                 borderRadius: 10,
                                                 primaryColor: primaryColor,
-                                                child: Text('Lanjutkan Journey',
+                                                child: Text(
+                                                    state.journeyList[index]
+                                                                .finishedProgress ==
+                                                            state
+                                                                .journeyList[
+                                                                    index]
+                                                                .totalProgress
+                                                        ? 'Lihat Journey'
+                                                        : 'Lanjutkan Journey',
                                                     style: kalmOfflineTheme
                                                         .textTheme.bodyText1!
                                                         .apply(
