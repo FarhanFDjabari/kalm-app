@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:kalm/utilities/kalm_theme.dart';
-import 'package:kalm/views/curhat/curhat_home.dart';
-import 'package:kalm/views/journey/journey_page.dart';
-import 'package:kalm/views/meditation/meditation_audio_list.dart';
-import 'package:kalm/views/mood_tracker/mood_tracker_page.dart';
-import 'package:kalm/views/onboarding/onboarding_page.dart';
-import 'package:kalm/views/splash.dart';
-import 'package:kalm/views/view.dart';
-import 'package:kalm/widgets/custom_drawer.dart';
+import 'package:kalm/presentation/views/curhat/curhat_home.dart';
+import 'package:kalm/presentation/views/journey/journey_page.dart';
+import 'package:kalm/presentation/views/meditation/meditation_audio_list.dart';
+import 'package:kalm/presentation/views/mood_tracker/mood_tracker_page.dart';
+import 'package:kalm/presentation/views/onboarding/onboarding_page.dart';
+import 'package:kalm/presentation/views/splash.dart';
+import 'package:kalm/presentation/views/view.dart';
+import 'package:kalm/presentation/widgets/custom_drawer.dart';
+import 'package:kalm/styles/kalm_theme.dart';
+
+import 'injection.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
+  di.init();
   runApp(MyApp());
 }
 
