@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
 
@@ -6,7 +7,7 @@ class GetUser {
 
   GetUser({required this.repository});
 
-  Future<UserEntity> execute({required int userId}) {
+  Future<Either<String, UserEntity>> execute({required int userId}) {
     return repository.getUser(userId: userId);
   }
 }

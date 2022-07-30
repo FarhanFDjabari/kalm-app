@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
 
@@ -6,7 +7,7 @@ class CreateUser {
 
   CreateUser({required this.repository});
 
-  Future<UserEntity> execute({
+  Future<Either<String, UserEntity>> execute({
     required String name,
     required String email,
     required String username,

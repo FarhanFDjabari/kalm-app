@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/journey/quote_entity.dart';
 
 class JournalQuoteModel extends Equatable implements ModelFactory {
   const JournalQuoteModel({
@@ -55,6 +56,17 @@ class Quote extends Equatable implements ModelFactory {
         "created_at": createdAt.toIso8601String(),
         "journey_id": journeyId,
       };
+
+  QuoteEntity toEntity() {
+    return QuoteEntity(
+      id: id,
+      title: title,
+      content: content,
+      author: author,
+      createdAt: createdAt,
+      journeyId: journeyId,
+    );
+  }
 
   @override
   List<Object?> get props => [

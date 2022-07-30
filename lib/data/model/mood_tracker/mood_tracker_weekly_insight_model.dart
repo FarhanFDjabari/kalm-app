@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/mood_tracker/mood_reason_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/mood_tracker/list_acc_reason_entity.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_entity.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_weekly_insight_entity.dart';
 
 class MoodTrackerWeeklyInsightModel extends Equatable implements ModelFactory {
   const MoodTrackerWeeklyInsightModel({
@@ -29,6 +32,14 @@ class MoodTrackerWeeklyInsightModel extends Equatable implements ModelFactory {
         "sortedMood": sortedMood,
         "listAccReason": List<ListAccReason>.from(listAccReason!.map((x) => x)),
       };
+
+  MoodTrackerWeeklyInsightEntity toEntity() {
+    return MoodTrackerWeeklyInsightEntity(
+      moodTrackers: moodTrackers.map((e) => e.toEntity()).toList(),
+      sortedMood: sortedMood,
+      listAccReason: listAccReason?.map((e) => e.toEntity()).toList(),
+    );
+  }
 
   @override
   List<Object?> get props => [moodTrackers, sortedMood, listAccReason];
@@ -68,6 +79,16 @@ class MoodTracker extends Equatable implements ModelFactory {
         "reasons": List<MoodReason>.from(reasons!.map((x) => x)),
       };
 
+  MoodTrackerEntity toEntity() {
+    return MoodTrackerEntity(
+      index: index,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      mood: mood,
+      reasons: reasons?.map((e) => e.toEntity()).toList(),
+    );
+  }
+
   @override
   List<Object?> get props => [index, createdAt, updatedAt, mood, reasons];
 }
@@ -90,6 +111,13 @@ class ListAccReason extends Equatable implements ModelFactory {
         "factor": factor,
         "total": total,
       };
+
+  ListAccReasonEntity toEntity() {
+    return ListAccReasonEntity(
+      factor: factor,
+      total: total,
+    );
+  }
 
   @override
   List<Object?> get props => [factor, total];

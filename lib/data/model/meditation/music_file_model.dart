@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/meditation/music_file_entity.dart';
 
 class MusicFile extends Equatable implements ModelFactory {
   const MusicFile({
@@ -39,6 +40,18 @@ class MusicFile extends Equatable implements ModelFactory {
         "size": size,
         "order_column": orderColumn,
       };
+
+  MusicFileEntity toEntity() {
+    return MusicFileEntity(
+      id: id,
+      modelId: modelId,
+      uuid: uuid,
+      name: name,
+      fileName: fileName,
+      size: size,
+      orderColumn: orderColumn,
+    );
+  }
 
   @override
   List<Object?> get props => [

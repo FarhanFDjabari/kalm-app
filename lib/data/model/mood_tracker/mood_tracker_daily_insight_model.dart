@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/mood_tracker/mood_reason_model.dart';
 import 'package:kalm/data/model/mood_tracker/recomended_playlist_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_daily_insight_entity.dart';
 
 class MoodTrackerDailyInsightModel extends Equatable implements ModelFactory {
   const MoodTrackerDailyInsightModel({
@@ -34,6 +35,16 @@ class MoodTrackerDailyInsightModel extends Equatable implements ModelFactory {
         "reccomended_playlists":
             List<dynamic>.from(reccomendedPlaylists!.map((x) => x.toJson())),
       };
+
+  MoodTrackerDailyInsightEntity toEntity() {
+    return MoodTrackerDailyInsightEntity(
+      mood: mood,
+      reasons: reasons?.map((e) => e.toEntity()).toList(),
+      reccomendedPlaylists:
+          reccomendedPlaylists?.map((e) => e.toEntity()).toList(),
+      isTodayFinished: isTodayFinished,
+    );
+  }
 
   @override
   List<Object?> get props => [

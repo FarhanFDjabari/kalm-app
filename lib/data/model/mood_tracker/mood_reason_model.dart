@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_reason_entity.dart';
 
 class MoodReason extends Equatable implements ModelFactory {
   const MoodReason({
@@ -31,6 +32,16 @@ class MoodReason extends Equatable implements ModelFactory {
         "updated_at": updatedAt!.toIso8601String(),
         "mood_tracker_id": moodTrackerId,
       };
+
+  MoodReasonEntity toEntity() {
+    return MoodReasonEntity(
+      id: id,
+      moodTrackerId: moodTrackerId,
+      createdAt: createdAt,
+      reason: reason,
+      updatedAt: updatedAt,
+    );
+  }
 
   @override
   List<Object?> get props => [

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/auth/user_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/curhat/curhat_entity.dart';
 
 class CurhatModel extends Equatable implements ModelFactory {
   const CurhatModel({
@@ -68,6 +69,18 @@ class Curhatan extends Equatable implements ModelFactory {
         "user": user!.toJson(),
         "like_count": likeCount,
       };
+
+  CurhatanEntity toEntity() {
+    return CurhatanEntity(
+      id: id,
+      userId: userId,
+      title: title,
+      user: user?.toEntity(),
+      category: category,
+      content: content,
+      createdAt: createdAt,
+    );
+  }
 
   @override
   List<Object?> get props => [

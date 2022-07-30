@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/curhat/detail_comment_entity.dart';
 
 class DetailComment extends Equatable implements ModelFactory {
   const DetailComment(
@@ -38,6 +39,18 @@ class DetailComment extends Equatable implements ModelFactory {
         "username": username,
         "is_anonymous": isAnonymous
       };
+
+  DetailCommentEntity toEntity() {
+    return DetailCommentEntity(
+      id: id,
+      userId: userId,
+      isAnonymous: isAnonymous,
+      curhatanId: curhatanId,
+      username: username,
+      content: content,
+      createdAt: createdAt,
+    );
+  }
 
   @override
   List<Object?> get props => [

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
 
 class User extends Equatable implements ModelFactory {
   const User({
@@ -31,6 +32,16 @@ class User extends Equatable implements ModelFactory {
         "username": username,
         "jenis_kelamin": jenisKelamin,
       };
+
+  UserEntity toEntity() {
+    return UserEntity(
+      id: id,
+      email: email,
+      name: name,
+      username: username,
+      jenisKelamin: jenisKelamin,
+    );
+  }
 
   @override
   List<Object?> get props => [id, name, email, username, jenisKelamin];

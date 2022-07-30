@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:kalm/data/sources/remote/error/error_handler.dart';
 import 'package:kalm/data/sources/remote/services/journey/journey_service.dart';
 import 'package:kalm/domain/entity/journey/quote_entity.dart';
 import 'package:kalm/domain/entity/journey/meditation_item_entity.dart';
@@ -12,52 +14,114 @@ class JourneyRepositoryImpl extends JourneyRepository {
   JourneyRepositoryImpl({required this.service});
 
   @override
-  Future<List<JourneyEntity>> getAllJourney({required int userId}) {
-    // TODO: implement getAllJourney
-    throw UnimplementedError();
+  Future<Either<String, List<JourneyEntity>>> getAllJourney(
+      {required int userId}) async {
+    await service
+        .fetchAllJourney(userId: userId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.journeys!.map((e) => e.toEntity()).toList());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<JournalItemEntity> getJournalTask(
-      {required int userId, required int taskId}) {
-    // TODO: implement getJournalTask
-    throw UnimplementedError();
+  Future<Either<String, JournalItemEntity>> getJournalTask(
+      {required int userId, required int taskId}) async {
+    await service
+        .getJournalTask(userId: userId, taskId: taskId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.item.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<List<DetailJourneyEntity>> getJourneyDetail(
-      {required int userId, required int journeyId}) {
-    // TODO: implement getJourneyDetail
-    throw UnimplementedError();
+  Future<Either<String, DetailJourneyEntity>> getJourneyDetail(
+      {required int userId, required int journeyId}) async {
+    await service
+        .getJourneyById(journeyId: journeyId, userId: userId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.journey.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<MeditationItemEntity> getMeditationTask(
-      {required int userId, required int taskId}) {
-    // TODO: implement getMeditationTask
-    throw UnimplementedError();
+  Future<Either<String, MeditationItemEntity>> getMeditationTask(
+      {required int userId, required int taskId}) async {
+    await service
+        .getMeditationTask(userId: userId, taskId: taskId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.item.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<QuoteEntity> getQuote({required int userId, required int journeyId}) {
-    // TODO: implement getQuote
-    throw UnimplementedError();
+  Future<Either<String, QuoteEntity>> getQuote(
+      {required int userId, required int journeyId}) async {
+    await service
+        .getJourneyQuote(userId: userId, journeyId: journeyId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.quote.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<String> postJournalTask(
+  Future<Either<String, String>> postJournalTask(
       {required int userId,
       required int componentId,
-      required int journeyid,
-      required List<Map<String, dynamic>> answers}) {
-    // TODO: implement postJournalTask
-    throw UnimplementedError();
+      required int journeyId,
+      required List<Map<String, dynamic>> answers}) async {
+    await service
+        .postJournalTask(
+          userId: userId,
+          componentId: componentId,
+          journeyId: journeyId,
+          answers: answers,
+        )
+        .validateStatus()
+        .then((response) {
+      return Right(response.message);
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<String> postMeditationTask(
-      {required int userId, required int componentId, required int journeyid}) {
-    // TODO: implement postMeditationTask
-    throw UnimplementedError();
+  Future<Either<String, String>> postMeditationTask(
+      {required int userId,
+      required int componentId,
+      required int journeyId}) async {
+    await service
+        .postMeditationTask(
+          userId: userId,
+          componentId: componentId,
+          journeyId: journeyId,
+        )
+        .validateStatus()
+        .then((response) {
+      return Right(response.message);
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 }

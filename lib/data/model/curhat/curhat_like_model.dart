@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/curhat/curhat_like_entity.dart';
 
 class CurhatLike extends Equatable implements ModelFactory {
   const CurhatLike({
@@ -31,6 +32,16 @@ class CurhatLike extends Equatable implements ModelFactory {
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
       };
+
+  CurhatLikeEntity toEntity() {
+    return CurhatLikeEntity(
+      id: id,
+      userId: userId,
+      curhatanId: curhatanId,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 
   @override
   List<Object?> get props => [

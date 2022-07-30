@@ -3,6 +3,7 @@ import 'package:kalm/data/model/auth/user_model.dart';
 import 'package:kalm/data/model/curhat/curhat_like_model.dart';
 import 'package:kalm/data/model/curhat/detail_comment_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/curhat/detail_curhat_entity.dart';
 
 class DetailCurhatModel extends Equatable implements ModelFactory {
   const DetailCurhatModel({
@@ -75,6 +76,21 @@ class DetailCurhatan extends Equatable implements ModelFactory {
         "user": user!.toJson(),
         "comments": List<dynamic>.from(comments!.map((x) => x.toJson())),
       };
+
+  DetailCurhatanEntity toEntity() {
+    return DetailCurhatanEntity(
+      id: id,
+      userId: userId,
+      user: user?.toEntity(),
+      title: title,
+      isAnonymous: isAnonymous,
+      category: category,
+      comments: comments?.map((e) => e.toEntity()).toList(),
+      content: content,
+      createdAt: createdAt,
+      curhatLike: curhatLike?.map((e) => e.toEntity()).toList(),
+    );
+  }
 
   @override
   List<Object?> get props => [

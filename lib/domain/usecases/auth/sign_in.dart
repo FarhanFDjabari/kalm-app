@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/auth/login_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
 
@@ -6,7 +7,7 @@ class SignIn {
 
   SignIn({required this.repository});
 
-  Future<LoginEntity> execute(
+  Future<Either<String, LoginEntity>> execute(
       {required String email, required String password}) {
     return repository.signIn(email: email, password: password);
   }

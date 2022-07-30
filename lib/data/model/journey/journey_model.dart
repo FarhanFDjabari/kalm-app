@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/meditation/rounded_image_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/journey/journey_entity.dart';
 
 class JourneyModel extends Equatable implements ModelFactory {
   const JourneyModel({
@@ -76,6 +77,22 @@ class Journey extends Equatable implements ModelFactory {
         "description2": description2,
         "image": image.toJson(),
       };
+
+  JourneyEntity toEntity() {
+    return JourneyEntity(
+      id: id,
+      title: title,
+      author: author,
+      name: name,
+      urutan: urutan,
+      finishedProgress: finishedProgress,
+      totalProgress: totalProgress,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      description2: description2,
+      image: image.toEntity(),
+    );
+  }
 
   @override
   List<Object?> get props => [

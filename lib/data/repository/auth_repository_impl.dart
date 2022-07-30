@@ -1,4 +1,6 @@
+import 'package:dartz/dartz.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kalm/data/sources/remote/error/error_handler.dart';
 import 'package:kalm/data/sources/remote/services/auth/auth_service.dart';
 import 'package:kalm/domain/entity/auth/login_entity.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
@@ -10,26 +12,51 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl({required this.service});
 
   @override
-  Future<LoginEntity> signIn(
-      {required String email, required String password}) {
-    throw UnimplementedError();
+  Future<Either<String, LoginEntity>> signIn(
+      {required String email, required String password}) async {
+    await service
+        .signInUserWithEmailAndPassword(email: email, password: password)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<UserEntity> createUser(
+  Future<Either<String, UserEntity>> createUser(
       {required String name,
       required String email,
       required String username,
       required String password,
-      required String gender}) {
-    // TODO: implement createUser
-    throw UnimplementedError();
+      required String gender}) async {
+    await service
+        .createNewUser(
+          name: name,
+          email: email,
+          username: username,
+          password: password,
+          jenisKelamin: gender,
+        )
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.user!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<UserEntity> getUser({required int userId}) {
-    // TODO: implement getUser
-    throw UnimplementedError();
+  Future<Either<String, UserEntity>> getUser({required int userId}) async {
+    await service.getUserById(userId: userId).validateStatus().then((response) {
+      return Right(response.data!.user!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override

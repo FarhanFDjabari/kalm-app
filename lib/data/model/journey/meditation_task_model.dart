@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/meditation/rounded_image_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/journey/meditation_item_entity.dart';
 
 class MeditationTaskModel extends Equatable implements ModelFactory {
   const MeditationTaskModel({
@@ -72,6 +73,21 @@ class MeditationItem extends Equatable implements ModelFactory {
         "music_url": musicUrl,
         "rounded_image": roundedImage.toJson(),
       };
+
+  MeditationItemEntity toEntity() {
+    return MeditationItemEntity(
+      id: id,
+      name: name,
+      duration: duration,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      playlistId: playlistId,
+      journeyComponentId: journeyComponentId,
+      journeyId: journeyId,
+      musicUrl: musicUrl,
+      roundedImage: roundedImage.toEntity(),
+    );
+  }
 
   @override
   List<Object?> get props => [

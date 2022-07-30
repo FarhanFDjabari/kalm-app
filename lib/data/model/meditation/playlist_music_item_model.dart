@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/meditation/music_file_model.dart';
 import 'package:kalm/data/model/meditation/rounded_image_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 
 class PlaylistMusicItem extends Equatable implements ModelFactory {
   const PlaylistMusicItem({
@@ -46,6 +47,19 @@ class PlaylistMusicItem extends Equatable implements ModelFactory {
         "rounded_image": roundedImage!.toJson(),
         "squared_image": squaredImage,
       };
+
+  PlaylistMusicItemEntity toEntity() {
+    return PlaylistMusicItemEntity(
+      id: id,
+      name: name,
+      duration: duration,
+      playlistId: playlistId,
+      musicUrl: musicUrl,
+      musicFile: musicFile?.toEntity(),
+      roundedImage: roundedImage?.toEntity(),
+      squaredImage: squaredImage?.toEntity(),
+    );
+  }
 
   @override
   List<Object?> get props => [

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/curhat/curhat_like_model.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/curhat/create_curhat_entity.dart';
 
 class CreateCurhatanModel extends Equatable implements ModelFactory {
   const CreateCurhatanModel({
@@ -66,6 +67,19 @@ class CreateCurhatan extends Equatable implements ModelFactory {
         "like_count": likeCount,
         "curhat_like": List<dynamic>.from(curhatLike!.map((x) => x)),
       };
+
+  CreateCurhatanEntity toEntity() {
+    return CreateCurhatanEntity(
+      id: id,
+      userId: userId,
+      isAnonymous: isAnonymous,
+      createdAt: createdAt,
+      content: content,
+      content2: content2,
+      curhatLike: curhatLike?.map((e) => e.toEntity()).toList(),
+      likeCount: likeCount,
+    );
+  }
 
   @override
   List<Object?> get props => [

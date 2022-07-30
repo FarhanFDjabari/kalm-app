@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_post_entity.dart';
 
 class MoodTrackerPostResponse extends Equatable implements ModelFactory {
   MoodTrackerPostResponse({
@@ -23,6 +24,10 @@ class MoodTrackerPostResponse extends Equatable implements ModelFactory {
       map['data'] = data?.map((v) => v.toJson()).toList();
     }
     return map;
+  }
+
+  MoodTrackerPostEntity toEntity() {
+    return MoodTrackerPostEntity(data: data);
   }
 
   @override

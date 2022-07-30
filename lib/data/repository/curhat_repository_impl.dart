@@ -1,3 +1,5 @@
+import 'package:dartz/dartz.dart';
+import 'package:kalm/data/sources/remote/error/error_handler.dart';
 import 'package:kalm/data/sources/remote/services/curhat/curhat_service.dart';
 import 'package:kalm/domain/entity/curhat/detail_curhat_entity.dart';
 import 'package:kalm/domain/entity/curhat/curhat_entity.dart';
@@ -11,42 +13,88 @@ class CurhatRepositoryImpl extends CurhatRepository {
   CurhatRepositoryImpl({required this.service});
 
   @override
-  Future<CommentEntity> createComment(
+  Future<Either<String, CommentEntity>> createComment(
       {required int userId,
       required int curhatId,
       required String content,
-      required bool isAnonymous}) {
-    // TODO: implement createComment
-    throw UnimplementedError();
+      required bool isAnonymous}) async {
+    await service
+        .createNewComment(
+          userId: userId,
+          curhatId: curhatId,
+          content: content,
+          isAnonymous: isAnonymous,
+        )
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.comment!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<CreateCurhatanEntity> createCurhat(
+  Future<Either<String, CreateCurhatanEntity>> createCurhat(
       {required int userId,
       required bool isAnonymous,
       required String content,
-      required String topic}) {
-    // TODO: implement createCurhat
-    throw UnimplementedError();
+      required String topic}) async {
+    await service
+        .createNewCurhat(
+          userId: userId,
+          isAnonymous: isAnonymous,
+          content: content,
+          topic: topic,
+        )
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.curhatan!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<List<CurhatanEntity>> getAllCurhat({required int userId}) {
-    // TODO: implement getAllCurhat
-    throw UnimplementedError();
+  Future<Either<String, List<CurhatanEntity>>> getAllCurhat(
+      {required int userId}) async {
+    await service
+        .fetchAllCurhat(userId: userId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.curhatans!.map((e) => e.toEntity()).toList());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<List<CurhatanEntity>> getAllCurhatByCategory(
-      {required int userId, required String category}) {
-    // TODO: implement getAllCurhatByCategory
-    throw UnimplementedError();
+  Future<Either<String, List<CurhatanEntity>>> getAllCurhatByCategory(
+      {required int userId, required String category}) async {
+    await service
+        .fetchCurhatByCategory(category: category, userId: userId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.curhatans!.map((e) => e.toEntity()).toList());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 
   @override
-  Future<DetailCurhatanEntity> getCurhatDetail(
-      {required int userId, required int curhatId}) {
-    // TODO: implement getCurhatDetail
-    throw UnimplementedError();
+  Future<Either<String, DetailCurhatanEntity>> getCurhatDetail(
+      {required int userId, required int curhatId}) async {
+    await service
+        .fetchCurhatById(userId: userId, curhatId: curhatId)
+        .validateStatus()
+        .then((response) {
+      return Right(response.data!.curhatan!.toEntity());
+    }).handleError((onError) {
+      return Left(onError.toString());
+    });
+    return Left("Unknown Error");
   }
 }
