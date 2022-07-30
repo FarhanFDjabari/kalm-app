@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_response.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
 import 'package:kalm/presentation/widgets/dominasi_mood_tile.dart';
 import 'package:kalm/presentation/widgets/kalm_mood_graph.dart';

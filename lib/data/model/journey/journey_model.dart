@@ -1,41 +1,15 @@
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/model/meditation/rounded_image_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class JourneyModel {
-  JourneyModel({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.data,
-  });
-
-  bool success;
-  int statusCode;
-  String message;
-  Data? data;
-
-  factory JourneyModel.fromJson(Map<String, dynamic> json) => JourneyModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class JourneyModel extends Equatable implements ModelFactory {
+  const JourneyModel({
     this.journeys,
   });
 
-  List<Journey>? journeys;
+  final List<Journey>? journeys;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory JourneyModel.fromJson(Map<String, dynamic> json) => JourneyModel(
         journeys: List<Journey>.from(
             json["journeys"].map((x) => Journey.fromJson(x))),
       );
@@ -43,10 +17,13 @@ class Data {
   Map<String, dynamic> toJson() => {
         "journeys": List<dynamic>.from(journeys!.map((x) => x.toJson())),
       };
+
+  @override
+  List<Object?> get props => [journeys];
 }
 
-class Journey {
-  Journey({
+class Journey extends Equatable implements ModelFactory {
+  const Journey({
     required this.id,
     required this.title,
     required this.author,
@@ -60,17 +37,17 @@ class Journey {
     required this.image,
   });
 
-  int id;
-  int finishedProgress;
-  int totalProgress;
-  String title;
-  String author;
-  String? urutan;
-  String? name;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String description2;
-  RoundedImage image;
+  final int id;
+  final int finishedProgress;
+  final int totalProgress;
+  final String title;
+  final String author;
+  final String? urutan;
+  final String? name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String description2;
+  final RoundedImage image;
 
   factory Journey.fromJson(Map<String, dynamic> json) => Journey(
         id: json["id"],
@@ -99,4 +76,19 @@ class Journey {
         "description2": description2,
         "image": image.toJson(),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        author,
+        urutan,
+        finishedProgress,
+        totalProgress,
+        name,
+        createdAt,
+        updatedAt,
+        description2,
+        image,
+      ];
 }

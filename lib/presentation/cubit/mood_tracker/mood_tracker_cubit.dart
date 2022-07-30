@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_response.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_home_response.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_response.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_home_model.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
 import 'package:kalm/data/sources/remote/services/moodtracker/mood_tracker_service.dart';
 import 'package:meta/meta.dart';
 

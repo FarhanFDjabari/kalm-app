@@ -1,52 +1,29 @@
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/model/meditation/rounded_image_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class MeditationTaskModel {
-  MeditationTaskModel({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.data,
-  });
-
-  bool success;
-  int statusCode;
-  String message;
-  Data? data;
-
-  factory MeditationTaskModel.fromJson(Map<String, dynamic> json) =>
-      MeditationTaskModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class MeditationTaskModel extends Equatable implements ModelFactory {
+  const MeditationTaskModel({
     required this.item,
   });
 
-  MeditationItem item;
+  final MeditationItem item;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory MeditationTaskModel.fromJson(Map<String, dynamic> json) =>
+      MeditationTaskModel(
         item: MeditationItem.fromJson(json["item"]),
       );
 
   Map<String, dynamic> toJson() => {
         "item": item.toJson(),
       };
+
+  @override
+  List<Object?> get props => [item];
 }
 
-class MeditationItem {
-  MeditationItem({
+class MeditationItem extends Equatable implements ModelFactory {
+  const MeditationItem({
     required this.id,
     required this.name,
     required this.duration,
@@ -59,16 +36,16 @@ class MeditationItem {
     required this.roundedImage,
   });
 
-  int id;
-  String name;
-  String duration;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String playlistId;
-  int journeyComponentId;
-  int journeyId;
-  String musicUrl;
-  RoundedImage roundedImage;
+  final int id;
+  final String name;
+  final String duration;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String playlistId;
+  final int journeyComponentId;
+  final int journeyId;
+  final String musicUrl;
+  final RoundedImage roundedImage;
 
   factory MeditationItem.fromJson(Map<String, dynamic> json) => MeditationItem(
         id: json["id"],
@@ -95,4 +72,18 @@ class MeditationItem {
         "music_url": musicUrl,
         "rounded_image": roundedImage.toJson(),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        duration,
+        createdAt,
+        updatedAt,
+        playlistId,
+        journeyComponentId,
+        journeyId,
+        musicUrl,
+        roundedImage,
+      ];
 }

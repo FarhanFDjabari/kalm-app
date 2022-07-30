@@ -1,108 +1,67 @@
 import 'package:dio/dio.dart';
 import 'package:kalm/data/model/curhat/comment_model.dart';
-import 'package:kalm/data/model/curhat/create_curhat_response.dart';
+import 'package:kalm/data/model/curhat/create_curhat_model.dart';
 import 'package:kalm/data/model/curhat/curhat_model.dart';
 import 'package:kalm/data/model/curhat/detail_curhat_model.dart';
+import 'package:kalm/data/sources/remote/interceptor/dio.dart';
+import 'package:kalm/data/sources/remote/services/environtment.dart';
+import 'package:kalm/data/sources/remote/wrapper/api_response.dart';
+import 'package:retrofit/retrofit.dart';
 
-class CurhatService {
-  static CurhatService? _service;
+part 'curhat_service.g.dart';
 
-  CurhatService._createObject();
+@RestApi()
+abstract class CurhatService {
+  factory CurhatService(Dio dio, {String baseUrl}) = _CurhatService;
 
-  factory CurhatService() => _service ?? CurhatService._createObject();
+  static Future<CurhatService> create({
+    Map<String, dynamic> headers = const {},
+    int connectTimeout = 30000,
+    int receiveTimeout = 30000,
+  }) async {
+    final defHeader = Map<String, dynamic>.from(headers);
+    // defHeader["Accept"] = "application/json";
 
-  Dio _dio = Dio();
-  final BASE_URL = 'http://calma.com-indo.com/';
-
-  Future<CurhatModel> fetchAllCurhat({required int userId}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/curhatans',
-        queryParameters: {"user_id": userId},
-      );
-      CurhatModel _curhatModel = CurhatModel.fromJson(_response.data);
-      return _curhatModel;
-    } on DioError catch (error) {
-      CurhatModel _error = CurhatModel.fromJson(error.response?.data);
-      return _error;
-    }
+    return CurhatService(
+      await AppDio().getDIO(
+          headers: defHeader,
+          connectTimeout: connectTimeout,
+          receiveTimeout: receiveTimeout),
+      baseUrl: ConfigEnvironments.getEnvironments().toString(),
+    );
   }
 
-  Future<CurhatModel> fetchCurhatByCategory(
-      {required int userId, required String category}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/curhatans/category/$category',
-        queryParameters: {"user_id": userId},
-      );
-      CurhatModel _curhatModel = CurhatModel.fromJson(_response.data);
-      return _curhatModel;
-    } on DioError catch (error) {
-      CurhatModel _error = CurhatModel.fromJson(error.response?.data);
-      return _error;
-    }
-  }
+  @GET('api/v1/curhatans')
+  Future<ApiResponse<CurhatModel>> fetchAllCurhat(
+      {@Query("user_id") required int userId});
 
-  Future<DetailCurhatModel> fetchCurhatById(
-      {required int userId, required int curhatId}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/curhatans/$curhatId',
-        queryParameters: {"user_id": userId},
-      );
-      DetailCurhatModel _detailCurhat =
-          DetailCurhatModel.fromJson(_response.data);
-      return _detailCurhat;
-    } on DioError catch (error) {
-      DetailCurhatModel _error =
-          DetailCurhatModel.fromJson(error.response?.data);
-      return _error;
-    }
-  }
+  @GET('api/v1/curhatans/category/{category}')
+  Future<ApiResponse<CurhatModel>> fetchCurhatByCategory({
+    @Path("category") required String category,
+    @Query("user_id") required int userId,
+  });
 
-  Future<CreateCurhatResponse> createNewCurhat(
-      {required int userId,
-      required bool isAnonymous,
-      required String content,
-      required String topic}) async {
-    try {
-      Response _response = await _dio.post(
-        BASE_URL + 'api/v1/curhatans',
-        data: {
-          "user_id": userId,
-          "is_anonymous": isAnonymous,
-          "content": content,
-          "topic": topic
-        },
-      );
-      final result = CreateCurhatResponse.fromJson(_response.data);
-      return result;
-    } on DioError catch (error) {
-      final errorData = CreateCurhatResponse.fromJson(error.response?.data);
-      return errorData;
-    }
-  }
+  @GET('api/v1/curhatans/{curhatId}')
+  Future<ApiResponse<DetailCurhatModel>> fetchCurhatById({
+    @Query("user_id") required int userId,
+    @Path("curhatId") required int curhatId,
+  });
 
-  Future<CommentModel> createNewComment(
-      {required int userId,
-      required int curhatId,
-      required String content,
-      required isAnonymous}) async {
-    try {
-      Response _response = await _dio.post(
-        BASE_URL + 'api/v1/comments',
-        data: {
-          "user_id": userId,
-          "curhatan_id": curhatId,
-          "content": content,
-          "is_anonymous": isAnonymous
-        },
-      );
-      final result = CommentModel.fromJson(_response.data);
-      return result;
-    } on DioError catch (error) {
-      final errorData = CommentModel.fromJson(error.response?.data);
-      return errorData;
-    }
-  }
+  @POST('api/v1/curhatans')
+  Future<ApiResponse<CreateCurhatanModel>> createNewCurhat({
+    @Part(name: "user_id") required int userId,
+    @Part(name: "is_anonymous") required bool isAnonymous,
+    @Part(name: "content") required String content,
+    @Part(name: "topic") required String topic,
+  });
+
+  @POST('api/v1/comments')
+  Future<ApiResponse<CommentModel>> createNewComment({
+    @Part(name: "user_id") required int userId,
+    @Part(name: "curhat_id") required int curhatId,
+    @Part(name: "content") required String content,
+    @Part(name: "is_anonymous") required bool isAnonymous,
+  });
 }
+
+final curhatClient = CurhatService.create;

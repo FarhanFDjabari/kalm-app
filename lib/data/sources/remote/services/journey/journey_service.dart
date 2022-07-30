@@ -1,103 +1,81 @@
 import 'package:dio/dio.dart';
-import 'package:kalm/data/model/journey/journal_quote_response.dart';
+import 'package:kalm/data/model/journey/journal_quote_model.dart';
 import 'package:kalm/data/model/journey/journal_task_model.dart';
 import 'package:kalm/data/model/journey/journey_detail_model.dart';
 import 'package:kalm/data/model/journey/journey_model.dart';
-import 'package:kalm/data/model/journey/journey_post_response.dart';
 import 'package:kalm/data/model/journey/meditation_task_model.dart';
+import 'package:kalm/data/sources/remote/interceptor/dio.dart';
+import 'package:kalm/data/sources/remote/services/environtment.dart';
+import 'package:kalm/data/sources/remote/wrapper/api_response.dart';
+import 'package:retrofit/retrofit.dart';
 
-class JourneyService {
-  static JourneyService? _service;
+part 'journey_service.g.dart';
 
-  JourneyService._createObject();
+@RestApi()
+abstract class JourneyService {
+  factory JourneyService(Dio dio, {String baseUrl}) = _JourneyService;
 
-  factory JourneyService() => _service ?? JourneyService._createObject();
-  Dio _dio = Dio();
-  final String BASE_URL = "http://calma.com-indo.com/";
+  static Future<JourneyService> create({
+    Map<String, dynamic> headers = const {},
+    int connectTimeout = 30000,
+    int receiveTimeout = 30000,
+  }) async {
+    final defHeader = Map<String, dynamic>.from(headers);
+    // defHeader["Accept"] = "application/json";
 
-  Future<JourneyModel> fetchAllJourney(int userId) async {
-    try {
-      Response _response = await _dio.get(BASE_URL + 'api/v1/journeys',
-          queryParameters: {'user_id': userId});
-      JourneyModel journeyData = JourneyModel.fromJson(_response.data);
-      return journeyData;
-    } on DioError catch (error) {
-      return JourneyModel.fromJson(error.response!.data);
-    }
+    return JourneyService(
+      await AppDio().getDIO(
+          headers: defHeader,
+          connectTimeout: connectTimeout,
+          receiveTimeout: receiveTimeout),
+      baseUrl: ConfigEnvironments.getEnvironments().toString(),
+    );
   }
 
-  Future<JourneyDetailModel> getJourneyById(int journeyId, int userId) async {
-    try {
-      Response _response = await _dio.get(
-          BASE_URL + 'api/v1/journeys/$journeyId',
-          queryParameters: {"user_id": userId});
-      return JourneyDetailModel.fromJson(_response.data);
-    } on DioError catch (error) {
-      return JourneyDetailModel.fromJson(error.response?.data);
-    }
-  }
+  @GET('api/v1/journeys')
+  Future<ApiResponse<JourneyModel>> fetchAllJourney({
+    @Query("user_id") required int userId,
+  });
 
-  Future<JournalTaskModel> getJournalTask(int userId, int taskId) async {
-    try {
-      Response _response = await _dio.get(
-          BASE_URL + 'api/v1/journeys/component/$taskId',
-          queryParameters: {"user_id": userId});
-      return JournalTaskModel.fromJson(_response.data);
-    } on DioError catch (error) {
-      return JournalTaskModel.fromJson(error.response?.data);
-    }
-  }
+  @GET('api/v1/journeys/{journeyId}')
+  Future<ApiResponse<JourneyDetailModel>> getJourneyById({
+    @Path("journeyId") required int journeyId,
+    @Query("user_id") required int userId,
+  });
 
-  Future<JourneyPostResponse> postJournalTask(
-      int userId, int componentId, int journeyId, List answers) async {
-    try {
-      Response _response = await _dio
-          .post(BASE_URL + 'api/v1/journeys/journal-submission', data: {
-        "user_id": userId,
-        "journey_component_id": componentId,
-        "journey_id": journeyId,
-        "answers": answers
-      });
-      return JourneyPostResponse.fromJson(_response.data);
-    } on DioError catch (error) {
-      return JourneyPostResponse.fromJson(error.response?.data);
-    }
-  }
+  @GET('api/v1/journeys/component/{taskId}')
+  Future<ApiResponse<JournalTaskModel>> getJournalTask({
+    @Query("user_id") required int userId,
+    @Path("taskId") required int taskId,
+  });
 
-  Future<JourneyQuoteResponse> getJourneyQuote(
-      int userId, int journeyId) async {
-    try {
-      Response _response = await _dio.get(BASE_URL + 'api/v1/quotes/$journeyId',
-          queryParameters: {"user_id": userId});
-      return JourneyQuoteResponse.fromJson(_response.data);
-    } on DioError catch (error) {
-      return JourneyQuoteResponse.fromJson(error.response?.data);
-    }
-  }
+  @FormUrlEncoded()
+  @POST('api/v1/journeys/journal-submission')
+  Future<ApiResponse> postJournalTask({
+    @Field("user_id") required int userId,
+    @Field("journey_component_id") required int componentId,
+    @Field("journey_id") required int journeyId,
+    @Field("answers[]") required List<Map<String, dynamic>> answers,
+  });
 
-  Future<MeditationTaskModel> getMeditationTask(int userId, int taskId) async {
-    try {
-      Response _response = await _dio.get(
-          BASE_URL + 'api/v1/journeys/component/$taskId',
-          queryParameters: {"user_id": userId});
-      return MeditationTaskModel.fromJson(_response.data);
-    } on DioError catch (error) {
-      return MeditationTaskModel.fromJson(error.response?.data);
-    }
-  }
+  @GET('api/v1/quotes/{journeyId}')
+  Future<ApiResponse<JournalQuoteModel>> getJourneyQuote({
+    @Query("user_id") required int userId,
+    @Path("journeyId") required int journeyId,
+  });
 
-  Future<JourneyPostResponse> postMeditationTask(
-      int userId, int componentId, int journeyId) async {
-    try {
-      Response _response = await _dio
-          .post(BASE_URL + 'api/v1/journeys/music-submission', data: {
-        "user_id": userId,
-        "journey_component_id": componentId,
-        "journey_id": journeyId
-      });
-      return JourneyPostResponse.fromJson(_response.data);
-    } on DioError catch (error) {
-      return JourneyPostResponse.fromJson(error.response?.data);
-    }
-  }
+  @GET('api/v1/journeys/component/{taskId}')
+  Future<ApiResponse<MeditationTaskModel>> getMeditationTask({
+    @Query("user_id") required int userId,
+    @Path("taskId") required int taskId,
+  });
+
+  @POST('api/v1/journeys/music-submission')
+  Future<ApiResponse> postMeditationTask({
+    @Part(name: "user_id") required int userId,
+    @Part(name: "journey_component_id") required int componentId,
+    @Part(name: "journey_id") required int journeyId,
+  });
 }
+
+final journeyClient = JourneyService.create;

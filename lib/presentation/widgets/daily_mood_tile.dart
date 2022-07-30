@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_response.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 

@@ -1,59 +1,50 @@
 import 'package:dio/dio.dart';
-import 'package:kalm/data/model/meditation/detail_playlist_response.dart';
+import 'package:kalm/data/model/meditation/detail_playlist_model.dart';
 import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:kalm/data/sources/remote/interceptor/dio.dart';
+import 'package:kalm/data/sources/remote/services/environtment.dart';
+import 'package:kalm/data/sources/remote/wrapper/api_response.dart';
+import 'package:retrofit/retrofit.dart';
 
-class MeditationService {
-  static MeditationService? _service;
+part 'meditation_service.g.dart';
 
-  MeditationService._createObject();
+@RestApi()
+abstract class MeditationService {
+  factory MeditationService(Dio dio, {String baseUrl}) = _MeditationService;
 
-  factory MeditationService() => _service ?? MeditationService._createObject();
-  Dio _dio = Dio();
-  final String BASE_URL = "http://calma.com-indo.com/";
+  static Future<MeditationService> create({
+    Map<String, dynamic> headers = const {},
+    int connectTimeout = 30000,
+    int receiveTimeout = 30000,
+  }) async {
+    final defHeader = Map<String, dynamic>.from(headers);
+    // defHeader["Accept"] = "application/json";
 
-  Future<PlaylistModel> fetchAllPlaylist({required int userId}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/playlists',
-        queryParameters: {"user_id": userId},
-      );
-      PlaylistModel _playlist = PlaylistModel.fromJson(_response.data);
-      return _playlist;
-    } on DioError catch (error) {
-      PlaylistModel _errorData = PlaylistModel.fromJson(error.response?.data);
-      return _errorData;
-    }
+    return MeditationService(
+      await AppDio().getDIO(
+          headers: defHeader,
+          connectTimeout: connectTimeout,
+          receiveTimeout: receiveTimeout),
+      baseUrl: ConfigEnvironments.getEnvironments().toString(),
+    );
   }
 
-  Future<PlaylistModel> fetchPlaylistByCategory(
-      {required int userId, required String category}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/playlists/category/$category',
-        queryParameters: {"user_id": userId},
-      );
-      PlaylistModel _playlist = PlaylistModel.fromJson(_response.data);
-      return _playlist;
-    } on DioError catch (error) {
-      PlaylistModel _errorData = PlaylistModel.fromJson(error.response?.data);
-      return _errorData;
-    }
-  }
+  @GET('api/v1/playlists')
+  Future<ApiResponse<PlaylistModel>> fetchAllPlaylist({
+    @Query("user_id") required int userId,
+  });
 
-  Future<DetailPlaylistResponse> fetchPlaylistById(
-      {required int userId, required int playlistId}) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/playlists/$playlistId',
-        queryParameters: {"user_id": userId},
-      );
-      DetailPlaylistResponse _detailPlaylist =
-          DetailPlaylistResponse.fromJson(_response.data);
-      return _detailPlaylist;
-    } on DioError catch (error) {
-      DetailPlaylistResponse _errorData =
-          DetailPlaylistResponse.fromJson(error.response?.data);
-      return _errorData;
-    }
-  }
+  @GET('api/v1/playlists/category/{category}')
+  Future<ApiResponse<PlaylistModel>> fetchPlaylistByCategory({
+    @Query("user_id") required int userId,
+    @Path("category") required String category,
+  });
+
+  @GET('api/v1/playlists/{playlistId}')
+  Future<ApiResponse<DetailPlaylistModel>> fetchPlaylistById({
+    @Query("user_id") required int userId,
+    @Path("playlistId") required int playlistId,
+  });
 }
+
+final meditationClient = MeditationService.create;

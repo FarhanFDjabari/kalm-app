@@ -1,5 +1,8 @@
-class User {
-  User({
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
+
+class User extends Equatable implements ModelFactory {
+  const User({
     this.id,
     this.name,
     this.email,
@@ -7,11 +10,11 @@ class User {
     this.jenisKelamin,
   });
 
-  int? id;
-  String? name;
-  String? email;
-  String? username;
-  String? jenisKelamin;
+  final int? id;
+  final String? name;
+  final String? email;
+  final String? username;
+  final String? jenisKelamin;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
@@ -28,4 +31,7 @@ class User {
         "username": username,
         "jenis_kelamin": jenisKelamin,
       };
+
+  @override
+  List<Object?> get props => [id, name, email, username, jenisKelamin];
 }

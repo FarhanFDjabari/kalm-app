@@ -1,49 +1,27 @@
-class CommentModel {
-  CommentModel({
-    required this.success,
-    this.statusCode,
-    this.message,
-    this.data,
-  });
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-  bool success;
-  int? statusCode;
-  String? message;
-  Data? data;
-
-  factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class CommentModel extends Equatable implements ModelFactory {
+  const CommentModel({
     this.comment,
   });
 
-  Comment? comment;
+  final Comment? comment;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel(
         comment: Comment.fromJson(json["comment"]),
       );
 
   Map<String, dynamic> toJson() => {
         "comment": comment!.toJson(),
       };
+
+  @override
+  List<Object?> get props => [comment];
 }
 
-class Comment {
-  Comment({
+class Comment extends Equatable implements ModelFactory {
+  const Comment({
     this.userId,
     this.curhatanId,
     this.content,
@@ -53,13 +31,13 @@ class Comment {
     this.isAnonymous,
   });
 
-  int? userId;
-  int? curhatanId;
-  String? content;
-  DateTime? createdAt;
-  bool? isAnonymous;
-  int? id;
-  String? username;
+  final int? userId;
+  final int? curhatanId;
+  final String? content;
+  final DateTime? createdAt;
+  final bool? isAnonymous;
+  final int? id;
+  final String? username;
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
       userId: json["user_id"],
@@ -79,4 +57,15 @@ class Comment {
         "username": username,
         "is_anonymous": isAnonymous
       };
+
+  @override
+  List<Object?> get props => [
+        userId,
+        curhatanId,
+        content,
+        createdAt,
+        id,
+        username,
+        isAnonymous,
+      ];
 }

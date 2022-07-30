@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:kalm/data/model/journey/journal_quote_response.dart';
+import 'package:kalm/data/model/journey/journal_quote_model.dart';
 import 'package:kalm/data/model/journey/journal_task_model.dart';
 import 'package:kalm/data/model/journey/journey_detail_model.dart';
 import 'package:kalm/data/model/journey/journey_model.dart';

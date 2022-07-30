@@ -1,52 +1,29 @@
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/model/meditation/rounded_image_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class JourneyDetailModel {
-  JourneyDetailModel({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.data,
-  });
-
-  bool success;
-  int statusCode;
-  String message;
-  Data? data;
-
-  factory JourneyDetailModel.fromJson(Map<String, dynamic> json) =>
-      JourneyDetailModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class JourneyDetailModel extends Equatable implements ModelFactory {
+  const JourneyDetailModel({
     required this.journey,
   });
 
-  DetailJourney journey;
+  final DetailJourney journey;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory JourneyDetailModel.fromJson(Map<String, dynamic> json) =>
+      JourneyDetailModel(
         journey: DetailJourney.fromJson(json["journey"]),
       );
 
   Map<String, dynamic> toJson() => {
         "journey": journey.toJson(),
       };
+
+  @override
+  List<Object?> get props => [journey];
 }
 
-class DetailJourney {
-  DetailJourney({
+class DetailJourney extends Equatable implements ModelFactory {
+  const DetailJourney({
     required this.id,
     required this.title,
     required this.author,
@@ -57,14 +34,14 @@ class DetailJourney {
     required this.isFinished,
   });
 
-  int id;
-  String title;
-  String author;
-  DateTime createdAt;
-  String description2;
-  RoundedImage image;
-  bool isFinished;
-  List<Component>? components;
+  final int id;
+  final String title;
+  final String author;
+  final DateTime createdAt;
+  final String description2;
+  final RoundedImage image;
+  final bool isFinished;
+  final List<Component>? components;
 
   factory DetailJourney.fromJson(Map<String, dynamic> json) => DetailJourney(
         id: json["id"],
@@ -90,10 +67,22 @@ class DetailJourney {
         "image": image.toJson(),
         "components": List<Component>.from(components!.map((x) => x.toJson())),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        author,
+        createdAt,
+        description2,
+        isFinished,
+        image,
+        components,
+      ];
 }
 
-class Component {
-  Component({
+class Component extends Equatable implements ModelFactory {
+  const Component({
     required this.id,
     required this.modelType,
     this.urutan,
@@ -103,13 +92,13 @@ class Component {
     required this.isFinished,
   });
 
-  int id;
-  String modelType;
-  String? urutan;
-  DateTime createdAt;
-  int journeyId;
-  String? name;
-  bool isFinished;
+  final int id;
+  final String modelType;
+  final String? urutan;
+  final DateTime createdAt;
+  final int journeyId;
+  final String? name;
+  final bool isFinished;
 
   factory Component.fromJson(Map<String, dynamic> json) => Component(
         id: json["id"],
@@ -130,4 +119,15 @@ class Component {
         "name": name,
         "is_finished": isFinished,
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        modelType,
+        urutan,
+        createdAt,
+        journeyId,
+        name,
+        isFinished,
+      ];
 }

@@ -1,41 +1,15 @@
+import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/auth/user_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class CurhatModel {
-  CurhatModel({
-    required this.success,
-    this.statusCode,
-    this.message,
-    this.data,
-  });
-
-  bool success;
-  int? statusCode;
-  String? message;
-  Data? data;
-
-  factory CurhatModel.fromJson(Map<String, dynamic> json) => CurhatModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class CurhatModel extends Equatable implements ModelFactory {
+  const CurhatModel({
     this.curhatans,
   });
 
-  List<Curhatan>? curhatans;
+  final List<Curhatan>? curhatans;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory CurhatModel.fromJson(Map<String, dynamic> json) => CurhatModel(
         curhatans: List<Curhatan>.from(
             json["curhatans"].map((x) => Curhatan.fromJson(x))),
       );
@@ -43,10 +17,13 @@ class Data {
   Map<String, dynamic> toJson() => {
         "curhatans": List<dynamic>.from(curhatans!.map((x) => x.toJson())),
       };
+
+  @override
+  List<Object?> get props => [curhatans];
 }
 
-class Curhatan {
-  Curhatan({
+class Curhatan extends Equatable implements ModelFactory {
+  const Curhatan({
     this.id,
     this.title,
     this.content,
@@ -58,15 +35,15 @@ class Curhatan {
     this.likeCount,
   });
 
-  int? id;
-  int? likeCount;
-  String? title;
-  String? content;
-  bool? isAnonymous;
-  String? category;
-  DateTime? createdAt;
-  String? userId;
-  User? user;
+  final int? id;
+  final int? likeCount;
+  final String? title;
+  final String? content;
+  final bool? isAnonymous;
+  final String? category;
+  final DateTime? createdAt;
+  final String? userId;
+  final User? user;
 
   factory Curhatan.fromJson(Map<String, dynamic> json) => Curhatan(
         id: json["id"],
@@ -91,4 +68,17 @@ class Curhatan {
         "user": user!.toJson(),
         "like_count": likeCount,
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        content,
+        isAnonymous,
+        category,
+        createdAt,
+        userId,
+        user,
+        likeCount,
+      ];
 }

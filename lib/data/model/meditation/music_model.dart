@@ -1,51 +1,29 @@
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:equatable/equatable.dart';
+import 'package:kalm/data/model/meditation/music_file_model.dart';
+import 'package:kalm/data/model/meditation/rounded_image_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class MusicModel {
-  MusicModel({
-    this.success,
-    this.statusCode,
-    this.message,
-    this.data,
-  });
-
-  bool? success;
-  int? statusCode;
-  String? message;
-  Data? data;
-
-  factory MusicModel.fromJson(Map<String, dynamic> json) => MusicModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class MusicModel extends Equatable implements ModelFactory {
+  const MusicModel({
     this.music,
   });
 
-  List<Music>? music;
+  final List<Music>? music;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory MusicModel.fromJson(Map<String, dynamic> json) => MusicModel(
         music: List<Music>.from(json["music"].map((x) => Music.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         "music": List<dynamic>.from(music!.map((x) => x.toJson())),
       };
+
+  @override
+  List<Object?> get props => [music];
 }
 
-class Music {
-  Music({
+class Music extends Equatable implements ModelFactory {
+  const Music({
     this.id,
     this.name,
     this.duration,
@@ -56,14 +34,14 @@ class Music {
     this.squaredImage,
   });
 
-  int? id;
-  String? name;
-  String? duration;
-  String? playlistId;
-  String? musicUrl;
-  MusicFile? musicFile;
-  RoundedImage? roundedImage;
-  RoundedImage? squaredImage;
+  final int? id;
+  final String? name;
+  final String? duration;
+  final String? playlistId;
+  final String? musicUrl;
+  final MusicFile? musicFile;
+  final RoundedImage? roundedImage;
+  final RoundedImage? squaredImage;
 
   factory Music.fromJson(Map<String, dynamic> json) => Music(
         id: json["id"],
@@ -86,44 +64,16 @@ class Music {
         "rounded_image": roundedImage,
         "squared_image": squaredImage,
       };
-}
 
-class MusicFile {
-  MusicFile({
-    this.id,
-    this.modelId,
-    this.uuid,
-    this.name,
-    this.fileName,
-    this.size,
-    this.orderColumn,
-  });
-
-  int? id;
-  String? modelId;
-  String? uuid;
-  String? name;
-  String? fileName;
-  String? size;
-  String? orderColumn;
-
-  factory MusicFile.fromJson(Map<String, dynamic> json) => MusicFile(
-        id: json["id"],
-        modelId: json["model_id"],
-        uuid: json["uuid"],
-        name: json["name"],
-        fileName: json["file_name"],
-        size: json["size"],
-        orderColumn: json["order_column"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "model_id": modelId,
-        "uuid": uuid,
-        "name": name,
-        "file_name": fileName,
-        "size": size,
-        "order_column": orderColumn,
-      };
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        duration,
+        playlistId,
+        musicUrl,
+        musicFile,
+        roundedImage,
+        squaredImage,
+      ];
 }

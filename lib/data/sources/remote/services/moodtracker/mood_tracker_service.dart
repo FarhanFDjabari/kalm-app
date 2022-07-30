@@ -1,74 +1,56 @@
 import 'package:dio/dio.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_response.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_home_response.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_home_model.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_post_response.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_response.dart';
+import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
+import 'package:kalm/data/sources/remote/interceptor/dio.dart';
+import 'package:kalm/data/sources/remote/services/environtment.dart';
+import 'package:kalm/data/sources/remote/wrapper/api_response.dart';
+import 'package:retrofit/http.dart';
 
-class MoodTrackerService {
-  static MoodTrackerService? _service;
+part 'mood_tracker_service.g.dart';
 
-  MoodTrackerService._createObject();
+@RestApi()
+abstract class MoodTrackerService {
+  factory MoodTrackerService(Dio dio, {String baseUrl}) = _MoodTrackerService;
 
-  factory MoodTrackerService() =>
-      _service ?? MoodTrackerService._createObject();
+  static Future<MoodTrackerService> create({
+    Map<String, dynamic> headers = const {},
+    int connectTimeout = 30000,
+    int receiveTimeout = 30000,
+  }) async {
+    final defHeader = Map<String, dynamic>.from(headers);
+    // defHeader["Accept"] = "application/json";
 
-  Dio _dio = Dio();
-  final String BASE_URL = "http://calma.com-indo.com/";
-
-  Future<MoodTrackerHomeResponse> fetchHomeData(int userId) async {
-    try {
-      Response _response = await _dio.get(
-        BASE_URL + 'api/v1/mood-tracks/home',
-        queryParameters: {"user_id": userId},
-      );
-      MoodTrackerHomeResponse _moodTrackerData =
-          MoodTrackerHomeResponse.fromJson(_response.data);
-      return _moodTrackerData;
-    } on DioError catch (error) {
-      return MoodTrackerHomeResponse.fromJson(error.response?.data!);
-    }
+    return MoodTrackerService(
+      await AppDio().getDIO(
+          headers: defHeader,
+          connectTimeout: connectTimeout,
+          receiveTimeout: receiveTimeout),
+      baseUrl: ConfigEnvironments.getEnvironments().toString(),
+    );
   }
 
-  Future<MoodTrackerDailyResponse> fetchDailyMoodInsight(int userId) async {
-    try {
-      Response _response = await _dio.post(
-        BASE_URL + 'api/v1/mood-tracks/index-harian',
-        data: {"user_id": userId},
-      );
-      MoodTrackerDailyResponse _moodTrackerData =
-          MoodTrackerDailyResponse.fromJson(_response.data);
-      return _moodTrackerData;
-    } on DioError catch (error) {
-      return MoodTrackerDailyResponse.fromJson(error.response?.data!);
-    }
-  }
+  @GET('api/v1/mood-tracks/home')
+  Future<ApiResponse<MoodTrackerHomeModel>> fetchHomeData(
+      {@Query("user_id") required int userId});
 
-  Future<MoodTrackerWeeklyResponse> fetchWeeklyMoodInsight(int userId) async {
-    try {
-      Response _response = await _dio.post(
-        BASE_URL + 'api/v1/mood-tracks/index-mingguan',
-        data: {"user_id": userId},
-      );
-      MoodTrackerWeeklyResponse _moodTrackerData =
-          MoodTrackerWeeklyResponse.fromJson(_response.data);
-      return _moodTrackerData;
-    } on DioError catch (error) {
-      return MoodTrackerWeeklyResponse.fromJson(error.response?.data!);
-    }
-  }
+  @GET('api/v1/mood-tracks/index-harian')
+  Future<ApiResponse<MoodTrackerDailyInsightModel>> fetchDailyMoodInsight({
+    @Part(name: "user_id") required int userId,
+  });
 
-  Future<MoodTrackerPostResponse> postMoodTracker(
-      int userId, int mood, List<String> reasons) async {
-    try {
-      Response _response = await _dio.post(
-        BASE_URL + 'api/v1/mood-tracks',
-        data: {"user_id": userId, "mood": mood, "reasons": reasons},
-      );
-      MoodTrackerPostResponse _moodTrackerData =
-          MoodTrackerPostResponse.fromJson(_response.data);
-      return _moodTrackerData;
-    } on DioError catch (error) {
-      return MoodTrackerPostResponse.fromJson(error.response?.data!);
-    }
-  }
+  @GET('api/v1/mood-tracks/index-mingguan')
+  Future<ApiResponse<MoodTrackerWeeklyInsightModel>> fetchWeeklyMoodInsight({
+    @Part(name: "user_id") required int userId,
+  });
+
+  @GET('api/v1/mood-tracks')
+  Future<ApiResponse<MoodTrackerPostResponse>> postMoodTracker({
+    @Part(name: "user_id") required int userId,
+    @Part(name: "mood") required int mood,
+    @Part(name: "reasons") required List<String> reasons,
+  });
 }
+
+final moodTrackerClient = MoodTrackerService.create;

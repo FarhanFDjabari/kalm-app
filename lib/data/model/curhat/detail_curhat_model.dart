@@ -1,52 +1,31 @@
+import 'package:equatable/equatable.dart';
 import 'package:kalm/data/model/auth/user_model.dart';
+import 'package:kalm/data/model/curhat/curhat_like_model.dart';
+import 'package:kalm/data/model/curhat/detail_comment_model.dart';
+import 'package:kalm/data/sources/remote/wrapper/model_factory.dart';
 
-class DetailCurhatModel {
-  DetailCurhatModel({
-    required this.success,
-    this.statusCode,
-    this.message,
-    this.data,
-  });
-
-  bool success;
-  int? statusCode;
-  String? message;
-  Data? data;
-
-  factory DetailCurhatModel.fromJson(Map<String, dynamic> json) =>
-      DetailCurhatModel(
-        success: json["success"],
-        statusCode: json["statusCode"],
-        message: json["mesage"],
-        data: Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "success": success,
-        "statusCode": statusCode,
-        "mesage": message,
-        "data": data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
+class DetailCurhatModel extends Equatable implements ModelFactory {
+  const DetailCurhatModel({
     this.curhatan,
   });
 
-  DetailCurhatan? curhatan;
+  final DetailCurhatan? curhatan;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DetailCurhatModel.fromJson(Map<String, dynamic> json) =>
+      DetailCurhatModel(
         curhatan: DetailCurhatan.fromJson(json["curhatan"]),
       );
 
   Map<String, dynamic> toJson() => {
         "curhatan": curhatan!.toJson(),
       };
+
+  @override
+  List<Object?> get props => [curhatan];
 }
 
-class DetailCurhatan {
-  DetailCurhatan({
+class DetailCurhatan extends Equatable implements ModelFactory {
+  const DetailCurhatan({
     this.id,
     this.title,
     this.content,
@@ -59,16 +38,16 @@ class DetailCurhatan {
     this.comments,
   });
 
-  int? id;
-  String? title;
-  String? content;
-  bool? isAnonymous;
-  String? category;
-  DateTime? createdAt;
-  String? userId;
-  User? user;
-  List<DetailComment>? comments;
-  List<CurhatLike>? curhatLike;
+  final int? id;
+  final String? title;
+  final String? content;
+  final bool? isAnonymous;
+  final String? category;
+  final DateTime? createdAt;
+  final String? userId;
+  final User? user;
+  final List<DetailComment>? comments;
+  final List<CurhatLike>? curhatLike;
 
   factory DetailCurhatan.fromJson(Map<String, dynamic> json) => DetailCurhatan(
         id: json["id"],
@@ -96,75 +75,18 @@ class DetailCurhatan {
         "user": user!.toJson(),
         "comments": List<dynamic>.from(comments!.map((x) => x.toJson())),
       };
-}
 
-class DetailComment {
-  DetailComment(
-      {this.id,
-      this.content,
-      this.createdAt,
-      this.curhatanId,
-      this.userId,
-      this.username,
-      this.isAnonymous});
-
-  int? id;
-  String? content;
-  DateTime? createdAt;
-  String? curhatanId;
-  String? userId;
-  String? username;
-  bool? isAnonymous;
-
-  factory DetailComment.fromJson(Map<String, dynamic> json) => DetailComment(
-        id: json["id"],
-        content: json["content"],
-        createdAt: DateTime.parse(json["created_at"]),
-        curhatanId: json["curhatan_id"],
-        userId: json["user_id"],
-        username: json["username"],
-        isAnonymous: json["is_anonymous"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "content2": content,
-        "created_at": createdAt!.toIso8601String(),
-        "curhatan_id": curhatanId,
-        "user_id": userId,
-        "username": username,
-        "is_anonymous": isAnonymous
-      };
-}
-
-class CurhatLike {
-  CurhatLike({
-    this.userId,
-    this.id,
-    this.curhatanId,
-    this.createdAt,
-    this.updatedAt,
-  });
-
-  String? userId;
-  int? id;
-  String? curhatanId;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-
-  factory CurhatLike.fromJson(Map<String, dynamic> json) => CurhatLike(
-        userId: json["user_id"],
-        id: json["id"],
-        curhatanId: json["curhatan_id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "user_id": userId,
-        "id": id,
-        "curhatan_id": curhatanId,
-        "created_at": createdAt!.toIso8601String(),
-        "updated_at": updatedAt!.toIso8601String(),
-      };
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        content,
+        isAnonymous,
+        category,
+        curhatLike,
+        createdAt,
+        userId,
+        user,
+        comments,
+      ];
 }
