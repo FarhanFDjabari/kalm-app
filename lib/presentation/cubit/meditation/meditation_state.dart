@@ -8,13 +8,13 @@ class MeditationInitial extends MeditationState {}
 class MeditationLoading extends MeditationState {}
 
 class MeditationPlaylistLoaded extends MeditationState {
-  final List<Playlist> playlistList;
+  final List<PlaylistEntity> playlistList;
 
   MeditationPlaylistLoaded(this.playlistList);
 }
 
 class DetailPlaylistLoaded extends MeditationState {
-  final Playlist playlist;
+  final PlaylistEntity playlist;
 
   DetailPlaylistLoaded(this.playlist);
 }

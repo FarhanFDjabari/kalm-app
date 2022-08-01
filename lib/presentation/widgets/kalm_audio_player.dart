@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 import 'package:kalm/presentation/widgets/kalm_playlist_tile.dart';
 import 'package:kalm/presentation/widgets/kalm_slider.dart';
 import 'package:kalm/presentation/widgets/meditation_meta_info.dart';
@@ -9,7 +9,7 @@ import 'package:kalm/styles/kalm_theme.dart';
 
 class KalmAudioPlayer extends StatefulWidget {
   final int audioIndex;
-  final List<PlaylistMusicItem> musicList;
+  final List<PlaylistMusicItemEntity> musicList;
   final Future<bool> Function() onWillPop;
 
   KalmAudioPlayer({

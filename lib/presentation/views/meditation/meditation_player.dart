@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 import 'package:kalm/presentation/widgets/kalm_audio_player.dart';
 import 'package:kalm/presentation/widgets/kalm_dialog.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
 class MeditationPlayer extends StatefulWidget {
   final int audioIndex;
-  final List<PlaylistMusicItem> musicList;
+  final List<PlaylistMusicItemEntity> musicList;
 
   MeditationPlayer({this.audioIndex = 0, required this.musicList});
 

@@ -1,27 +1,41 @@
 import 'package:bloc/bloc.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:kalm/data/model/auth/user_model.dart';
-import 'package:kalm/data/sources/remote/services/auth/auth_service.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
+import 'package:kalm/domain/usecases/auth/create_user.dart';
+import 'package:kalm/domain/usecases/auth/get_user.dart';
+import 'package:kalm/domain/usecases/auth/logout.dart';
+import 'package:kalm/domain/usecases/auth/sign_in.dart';
 import 'package:meta/meta.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit() : super(AuthInitial());
-  AuthService authService = AuthService();
+  AuthCubit({
+    required this.createUser,
+    required this.getUser,
+    required this.signOut,
+    required this.signIn,
+  }) : super(AuthInitial());
+
+  final CreateUser createUser;
+  final GetUser getUser;
+  final Logout signOut;
+  final SignIn signIn;
 
   void login(String email, String password) async {
     emit(AuthLoading());
     try {
-      final result = await authService.signInUserWithEmailAndPassword(
+      final result = await signIn.execute(
         email: email,
         password: password,
       );
-      if (result.success == true) {
-        GetStorage().write("user_id", result.data!.userId);
-        emit(AuthLoginSuccess(result.data!.userId!));
-      } else
-        emit(AuthError('Login error: \n${result.message}'));
+      result.fold(
+        (l) => emit(AuthError('Login error: \n$l')),
+        (r) {
+          GetStorage().write("user_id", r.userId);
+          emit(AuthLoginSuccess(r.userId!));
+        },
+      );
     } catch (error) {
       emit(AuthError('Login error: \n$error'));
     }
@@ -31,16 +45,19 @@ class AuthCubit extends Cubit<AuthState> {
       String email, String password, String name, String jenisKelamin) async {
     emit(AuthLoading());
     try {
-      final result = await authService.createNewUser(
+      final result = await createUser.execute(
           email: email,
           password: password,
           name: name,
-          jenisKelamin: jenisKelamin);
-      if (result.success == true) {
-        GetStorage().write("user_id", result.data!.user!.id!);
-        emit(AuthRegisterSuccess(result.data!.user!));
-      } else
-        emit(AuthError('Register error: \nemail or password incorrect'));
+          username: name,
+          gender: jenisKelamin);
+      result.fold(
+        (l) => emit(AuthError('Register error: \n$l')),
+        (r) {
+          GetStorage().write("user_id", r.id);
+          emit(AuthRegisterSuccess(r));
+        },
+      );
     } catch (error) {
       emit(AuthError('Register error: \n$error'));
     }
@@ -49,11 +66,11 @@ class AuthCubit extends Cubit<AuthState> {
   void getUserInfo(int userId) async {
     emit(AuthLoading());
     try {
-      final result = await authService.getUserById(userId: userId);
-      if (result.success == true)
-        emit(AuthLoadSuccess(result.data!.user!));
-      else
-        emit(AuthError('Auth error: \nemail or password incorrect'));
+      final result = await getUser.execute(userId: userId);
+      result.fold(
+        (l) => emit(AuthError('Auth error: \n$l')),
+        (r) => emit(AuthLoadSuccess(r)),
+      );
     } catch (error) {
       emit(AuthError('Auth error: \n$error'));
     }
@@ -62,7 +79,7 @@ class AuthCubit extends Cubit<AuthState> {
   void logout() async {
     emit(AuthLoading());
     try {
-      final result = await authService.logout();
+      final result = await signOut.execute();
       if (result == true)
         emit(AuthDeleted());
       else

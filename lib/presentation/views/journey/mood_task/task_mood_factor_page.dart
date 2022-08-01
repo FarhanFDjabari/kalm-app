@@ -64,133 +64,127 @@ class _TaskMoodFactorPageState extends State<TaskMoodFactorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MoodTrackerCubit>(
-      create: (context) => MoodTrackerCubit(),
-      child: BlocListener<MoodTrackerCubit, MoodTrackerState>(
-        listener: (context, state) {
-          if (state is MoodTrackerError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              KalmSnackbar(
-                message: state.errorMessage,
-                duration: Duration(seconds: 2),
-              ),
-            );
-          } else if (state is MoodTrackerSaved) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              KalmSnackbar(
-                message: 'Mood Tracker berhasil disimpan',
-                duration: Duration(seconds: 2),
-              ),
-            );
-            Navigator.of(context).pop(true);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            elevation: 0,
-            leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(
-                Icons.arrow_back_ios_rounded,
-                color: primaryText,
-              ),
+    return BlocListener<MoodTrackerCubit, MoodTrackerState>(
+      listener: (context, state) {
+        if (state is MoodTrackerError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            KalmSnackbar(
+              message: state.errorMessage,
+              duration: Duration(seconds: 2),
             ),
-            title: Text(
-              'MOOD TRACKER',
-              style: kalmOfflineTheme.textTheme.headline1!.apply(
-                color: primaryText,
-              ),
+          );
+        } else if (state is MoodTrackerSaved) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            KalmSnackbar(
+              message: 'Mood Tracker berhasil disimpan',
+              duration: Duration(seconds: 2),
+            ),
+          );
+          Navigator.of(context).pop(true);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          centerTitle: true,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(
+              Icons.arrow_back_ios_rounded,
+              color: primaryText,
             ),
           ),
-          body: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Image.asset(
-                    'assets/picture/picture-background_bottom_middle.png',
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(vertical: 15),
-                        child: Text(
-                          'Apa yang membuat harimu terasa buruk?',
-                          style: kalmOfflineTheme.textTheme.headline1!
-                              .apply(color: primaryText, fontSizeFactor: 1.1),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.15),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.40,
-                        child: GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 15,
-                            childAspectRatio: 0.85,
-                          ),
-                          itemCount: factorCategory.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) => MoodFactorTile(
-                            label: factorCategory[index]['factor'],
-                            selectedIcon: factorCategory[index]
-                                ['selected_icon'],
-                            icon: factorCategory[index]['icon'],
-                            onTap: () {
-                              if (moodFactor
-                                  .contains(factorCategory[index]['factor']))
-                                moodFactor
-                                    .remove(factorCategory[index]['factor']);
-                              else
-                                moodFactor.add(factorCategory[index]['factor']);
-                            },
-                          ),
-                        ),
-                      ),
-                      BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
-                        builder: (buildContext, state) {
-                          return KalmButton(
-                            width: double.infinity,
-                            height: 56,
-                            child: Text(
-                              'Simpan Mood',
-                              style: kalmOfflineTheme.textTheme.button!.apply(
-                                  color: tertiaryColor, fontSizeFactor: 1.2),
-                            ),
-                            primaryColor: primaryColor,
-                            borderRadius: 10,
-                            onPressed: () {
-                              if (moodFactor.isNotEmpty)
-                                buildContext
-                                    .read<MoodTrackerCubit>()
-                                    .postMoodTracker(
-                                      GetStorage().read('user_id'),
-                                      widget.moodPoint!.toInt(),
-                                      moodFactor,
-                                    );
-                            },
-                          );
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ],
+          title: Text(
+            'MOOD TRACKER',
+            style: kalmOfflineTheme.textTheme.headline1!.apply(
+              color: primaryText,
             ),
+          ),
+        ),
+        body: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Image.asset(
+                  'assets/picture/picture-background_bottom_middle.png',
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 15),
+                      child: Text(
+                        'Apa yang membuat harimu terasa buruk?',
+                        style: kalmOfflineTheme.textTheme.headline1!
+                            .apply(color: primaryText, fontSizeFactor: 1.1),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.40,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 15,
+                          childAspectRatio: 0.85,
+                        ),
+                        itemCount: factorCategory.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) => MoodFactorTile(
+                          label: factorCategory[index]['factor'],
+                          selectedIcon: factorCategory[index]['selected_icon'],
+                          icon: factorCategory[index]['icon'],
+                          onTap: () {
+                            if (moodFactor
+                                .contains(factorCategory[index]['factor']))
+                              moodFactor
+                                  .remove(factorCategory[index]['factor']);
+                            else
+                              moodFactor.add(factorCategory[index]['factor']);
+                          },
+                        ),
+                      ),
+                    ),
+                    BlocBuilder<MoodTrackerCubit, MoodTrackerState>(
+                      builder: (buildContext, state) {
+                        return KalmButton(
+                          width: double.infinity,
+                          height: 56,
+                          child: Text(
+                            'Simpan Mood',
+                            style: kalmOfflineTheme.textTheme.button!.apply(
+                                color: tertiaryColor, fontSizeFactor: 1.2),
+                          ),
+                          primaryColor: primaryColor,
+                          borderRadius: 10,
+                          onPressed: () {
+                            if (moodFactor.isNotEmpty)
+                              buildContext
+                                  .read<MoodTrackerCubit>()
+                                  .postMoodTracker(
+                                    GetStorage().read('user_id'),
+                                    widget.moodPoint!.toInt(),
+                                    moodFactor,
+                                  );
+                          },
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

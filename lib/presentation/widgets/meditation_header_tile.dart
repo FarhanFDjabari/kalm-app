@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/meditation/playlist_model.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 import 'package:kalm/presentation/views/meditation/meditation_player.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
@@ -10,7 +10,7 @@ class MeditationHeaderTile extends StatelessWidget {
     this.musicList,
   }) : super(key: key);
 
-  final List<PlaylistMusicItem>? musicList;
+  final List<PlaylistMusicItemEntity>? musicList;
 
   @override
   Widget build(BuildContext context) {

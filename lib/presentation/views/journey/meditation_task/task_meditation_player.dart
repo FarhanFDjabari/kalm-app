@@ -92,8 +92,7 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
   }
 
   void postMeditationTask() async {
-    JourneyCubit journeyCubit = JourneyCubit();
-    journeyCubit.postMeditationTask(
+    context.read<JourneyCubit>().postMeditationTask(
         GetStorage().read('user_id'), widget.taskId, widget.journeyId);
     showDialog(
         context: context,
@@ -111,191 +110,183 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<JourneyCubit>().getMeditationTask(
+          GetStorage().read('user_id'),
+          widget.taskId,
+        );
     return Material(
-      child: BlocProvider<JourneyCubit>(
-        create: (context) => JourneyCubit()
-          ..getMeditationTask(
-            GetStorage().read('user_id'),
-            widget.taskId,
-          ),
-        child: BlocListener<JourneyCubit, JourneyState>(
-          listener: (context, state) {
-            if (state is JourneyError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                KalmSnackbar(
-                  message: state.errorMessage,
-                  duration: Duration(seconds: 2),
-                ),
-              );
-            } else if (state is MeditationTaskPosted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                KalmSnackbar(
-                  message: 'Task ini telah selesai',
-                  duration: Duration(seconds: 2),
-                ),
-              );
-              Navigator.of(context).pop();
-              Navigator.of(context).pop(true);
-            } else if (state is MeditationTaskLoaded) {
-              _audioPlayer.setSourceUrl(state.meditationTask.musicUrl);
-            }
-          },
-          child: Scaffold(
-            backgroundColor: backgroundColor,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-              elevation: 0,
-              leading: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: Icon(
-                  Icons.arrow_back_ios_rounded,
-                  color: primaryText,
-                ),
+      child: BlocListener<JourneyCubit, JourneyState>(
+        listener: (context, state) {
+          if (state is JourneyError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              KalmSnackbar(
+                message: state.errorMessage,
+                duration: Duration(seconds: 2),
               ),
-              title: Text(
-                'PEMUTAR MEDITASI',
-                style: kalmOfflineTheme.textTheme.headline1!
-                    .apply(color: primaryText),
+            );
+          } else if (state is MeditationTaskPosted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              KalmSnackbar(
+                message: 'Task ini telah selesai',
+                duration: Duration(seconds: 2),
+              ),
+            );
+            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
+          } else if (state is MeditationTaskLoaded) {
+            _audioPlayer.setSourceUrl(state.meditationTask.musicUrl);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            centerTitle: true,
+            elevation: 0,
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: primaryText,
               ),
             ),
-            body: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: BlocBuilder<JourneyCubit, JourneyState>(
-                builder: (builderContext, state) {
-                  if (state is MeditationTaskLoaded)
-                    return Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(top: 26),
-                          child: CachedNetworkImage(
-                            imageUrl: state.meditationTask.roundedImage.url!,
-                            imageBuilder: (_, image) {
-                              return Image.network(
-                                state.meditationTask.roundedImage.url!,
-                                scale: 1.8,
-                              );
-                            },
-                            placeholder: (_, __) {
-                              return CircularProgressIndicator(
-                                color: primaryColor,
-                              );
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              children: [
-                                MeditationMetaInfo(
-                                  title: state.meditationTask.name,
-                                  duration: '${state.meditationTask.duration}',
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      timeFormatter(_progress
-                                          .toString()
-                                          .split(".")
-                                          .first),
-                                      style: kalmOfflineTheme
-                                          .textTheme.subtitle1!
-                                          .apply(color: primaryColor),
-                                    ),
-                                    Text(
-                                      '-' +
-                                          timeFormatter(
-                                              (_progress - _audioDuration)
-                                                  .toString()
-                                                  .split(".")
-                                                  .first),
-                                      style: kalmOfflineTheme
-                                          .textTheme.subtitle1!
-                                          .apply(color: primaryText),
-                                    ),
-                                  ],
-                                ),
-                                KalmSlider(
-                                  value: _progress.inSeconds.toDouble(),
-                                  max: _audioDuration.inSeconds.toDouble(),
-                                  min: 0.0,
-                                  onChanged: (value) {
-                                    seekTo(value.toInt());
-                                  },
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        seekTo(_progress.inSeconds - 10);
-                                      },
-                                      icon: Icon(
-                                        Iconsax.backward5,
-                                        color: primaryText,
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: accentColor,
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          _playerState == PlayerState.playing
-                                              ? pause()
-                                              : play(state
-                                                  .meditationTask.musicUrl);
-                                        },
-                                        color:
-                                            _playerState == PlayerState.playing
-                                                ? primaryColor
-                                                : primaryText,
-                                        icon: Icon(
-                                          _playerState == PlayerState.playing
-                                              ? Iconsax.pause5
-                                              : Iconsax.play5,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    IconButton(
-                                      onPressed: () {
-                                        seekTo(_progress.inSeconds + 10);
-                                      },
-                                      icon: Icon(
-                                        Iconsax.forward5,
-                                        color: primaryText,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  else
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: primaryColor,
+            title: Text(
+              'PEMUTAR MEDITASI',
+              style: kalmOfflineTheme.textTheme.headline1!
+                  .apply(color: primaryText),
+            ),
+          ),
+          body: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: BlocBuilder<JourneyCubit, JourneyState>(
+              builder: (builderContext, state) {
+                if (state is MeditationTaskLoaded)
+                  return Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 26),
+                        child: CachedNetworkImage(
+                          imageUrl: state.meditationTask.roundedImage.url!,
+                          imageBuilder: (_, image) {
+                            return Image.network(
+                              state.meditationTask.roundedImage.url!,
+                              scale: 1.8,
+                            );
+                          },
+                          placeholder: (_, __) {
+                            return CircularProgressIndicator(
+                              color: primaryColor,
+                            );
+                          },
                         ),
                       ),
-                    );
-                },
-              ),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              MeditationMetaInfo(
+                                title: state.meditationTask.name,
+                                duration: '${state.meditationTask.duration}',
+                              ),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.05),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    timeFormatter(
+                                        _progress.toString().split(".").first),
+                                    style: kalmOfflineTheme.textTheme.subtitle1!
+                                        .apply(color: primaryColor),
+                                  ),
+                                  Text(
+                                    '-' +
+                                        timeFormatter(
+                                            (_progress - _audioDuration)
+                                                .toString()
+                                                .split(".")
+                                                .first),
+                                    style: kalmOfflineTheme.textTheme.subtitle1!
+                                        .apply(color: primaryText),
+                                  ),
+                                ],
+                              ),
+                              KalmSlider(
+                                value: _progress.inSeconds.toDouble(),
+                                max: _audioDuration.inSeconds.toDouble(),
+                                min: 0.0,
+                                onChanged: (value) {
+                                  seekTo(value.toInt());
+                                },
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      seekTo(_progress.inSeconds - 10);
+                                    },
+                                    icon: Icon(
+                                      Iconsax.backward5,
+                                      color: primaryText,
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: accentColor,
+                                    ),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _playerState == PlayerState.playing
+                                            ? pause()
+                                            : play(
+                                                state.meditationTask.musicUrl);
+                                      },
+                                      color: _playerState == PlayerState.playing
+                                          ? primaryColor
+                                          : primaryText,
+                                      icon: Icon(
+                                        _playerState == PlayerState.playing
+                                            ? Iconsax.pause5
+                                            : Iconsax.play5,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  IconButton(
+                                    onPressed: () {
+                                      seekTo(_progress.inSeconds + 10);
+                                    },
+                                    icon: Icon(
+                                      Iconsax.forward5,
+                                      color: primaryText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                else
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    ),
+                  );
+              },
             ),
           ),
         ),

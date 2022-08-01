@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/auth/user_model.dart';
-import 'package:kalm/data/model/curhat/detail_curhat_model.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
+import 'package:kalm/domain/entity/curhat/curhat_like_entity.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
@@ -17,11 +17,11 @@ class KalmDetailCurhatTile extends StatelessWidget {
     this.isAnonymous,
   }) : super(key: key);
 
-  final User user;
+  final UserEntity user;
   final DateTime? postedAt;
   final String content;
   final String topic;
-  final List<CurhatLike> likeCount;
+  final List<CurhatLikeEntity> likeCount;
   final bool? isAnonymous;
 
   @override

@@ -1,25 +1,39 @@
 import 'package:bloc/bloc.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_home_model.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
 import 'package:kalm/data/sources/remote/services/moodtracker/mood_tracker_service.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_daily_insight_entity.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_entity.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_home_entity.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_weekly_insight_entity.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_daily_mood_insight.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_mood_tracker_home_data.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_weekly_mood_insight.dart';
+import 'package:kalm/domain/usecases/mood_tracker/post_mood.dart';
 import 'package:meta/meta.dart';
 
 part 'mood_tracker_state.dart';
 
 class MoodTrackerCubit extends Cubit<MoodTrackerState> {
-  MoodTrackerCubit() : super(MoodTrackerInitial());
-  MoodTrackerService moodTrackerService = MoodTrackerService();
+  MoodTrackerCubit({
+    required this.getDailyMoodInsight,
+    required this.getMoodTrackerHomeData,
+    required this.getWeeklyMoodInsight,
+    required this.postMood,
+  }) : super(MoodTrackerInitial());
+
+  final GetDailyMoodInsight getDailyMoodInsight;
+  final GetMoodTrackerHomeData getMoodTrackerHomeData;
+  final GetWeeklyMoodInsight getWeeklyMoodInsight;
+  final PostMood postMood;
 
   void fetchMoodTrackerHome(int userId) async {
     emit(MoodTrackerLoading());
     try {
-      final result = await moodTrackerService.fetchHomeData(userId);
-      if (result.success) {
-        emit(MoodTrackerLoadSuccess(result.data!));
-      } else {
-        emit(MoodTrackerError(result.message));
-      }
+      final result = await getMoodTrackerHomeData.execute(userId: userId);
+
+      result.fold(
+        (l) => emit(MoodTrackerError(l)),
+        (r) => emit(MoodTrackerLoadSuccess(r)),
+      );
     } catch (error) {
       emit(MoodTrackerError(error.toString()));
     }
@@ -28,12 +42,12 @@ class MoodTrackerCubit extends Cubit<MoodTrackerState> {
   void fetchWeeklyMoodInsight(int userId) async {
     emit(MoodTrackerLoading());
     try {
-      final result = await moodTrackerService.fetchWeeklyMoodInsight(userId);
-      if (result.success) {
-        emit(WeeklyInsightLoaded(result.data!));
-      } else {
-        emit(MoodTrackerError(result.message));
-      }
+      final result = await getWeeklyMoodInsight.execute(userId: userId);
+
+      result.fold(
+        (l) => emit(MoodTrackerError(l)),
+        (r) => emit(WeeklyInsightLoaded(r)),
+      );
     } catch (error) {
       emit(MoodTrackerError(error.toString()));
     }
@@ -42,12 +56,12 @@ class MoodTrackerCubit extends Cubit<MoodTrackerState> {
   void fetchDailyMoodInsight(int userId) async {
     emit(MoodTrackerLoading());
     try {
-      final result = await moodTrackerService.fetchDailyMoodInsight(userId);
-      if (result.success) {
-        emit(DailyInsightLoaded(result.data!));
-      } else {
-        emit(MoodTrackerError(result.message));
-      }
+      final result = await getDailyMoodInsight.execute(userId: userId);
+
+      result.fold(
+        (l) => emit(MoodTrackerError(l)),
+        (r) => emit(DailyInsightLoaded(r)),
+      );
     } catch (error) {
       emit(MoodTrackerError(error.toString()));
     }
@@ -57,12 +71,12 @@ class MoodTrackerCubit extends Cubit<MoodTrackerState> {
     emit(MoodTrackerLoading());
     try {
       final result =
-          await moodTrackerService.postMoodTracker(userId, mood, reasons);
-      if (result.success != null) {
-        emit(MoodTrackerSaved());
-      } else {
-        emit(MoodTrackerError(result.message!));
-      }
+          await postMood.execute(userId: userId, mood: mood, reasons: reasons);
+
+      result.fold(
+        (l) => emit(MoodTrackerError(l)),
+        (r) => emit(MoodTrackerSaved()),
+      );
     } catch (error) {
       emit(MoodTrackerError(error.toString()));
     }

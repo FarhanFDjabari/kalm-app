@@ -7,18 +7,16 @@ import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
-  final AuthService service;
-
-  AuthRepositoryImpl({required this.service});
-
   @override
   Future<Either<String, LoginEntity>> signIn(
       {required String email, required String password}) async {
-    await service
-        .signInUserWithEmailAndPassword(email: email, password: password)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.toEntity());
+    await authClient().then((client) {
+      client
+          .signInUserWithEmailAndPassword(email: email, password: password)
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -32,17 +30,19 @@ class AuthRepositoryImpl extends AuthRepository {
       required String username,
       required String password,
       required String gender}) async {
-    await service
-        .createNewUser(
-          name: name,
-          email: email,
-          username: username,
-          password: password,
-          jenisKelamin: gender,
-        )
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.user!.toEntity());
+    await authClient().then((client) {
+      client
+          .createNewUser(
+            name: name,
+            email: email,
+            username: username,
+            password: password,
+            jenisKelamin: gender,
+          )
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.user!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -51,8 +51,10 @@ class AuthRepositoryImpl extends AuthRepository {
 
   @override
   Future<Either<String, UserEntity>> getUser({required int userId}) async {
-    await service.getUserById(userId: userId).validateStatus().then((response) {
-      return Right(response.data!.user!.toEntity());
+    await authClient().then((client) {
+      client.getUserById(userId: userId).validateStatus().then((response) {
+        return Right(response.data!.user!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });

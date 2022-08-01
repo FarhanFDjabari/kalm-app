@@ -8,18 +8,16 @@ import 'package:kalm/domain/entity/mood_tracker/mood_tracker_daily_insight_entit
 import 'package:kalm/domain/repository/mood_tracker_repository.dart';
 
 class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
-  final MoodTrackerService service;
-
-  MoodTrackerRepositoryImpl({required this.service});
-
   @override
   Future<Either<String, MoodTrackerDailyInsightEntity>> getDailyMoodInsight(
       {required int userId}) async {
-    await service
-        .fetchDailyMoodInsight(userId: userId)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.toEntity());
+    await moodTrackerClient().then((client) {
+      client
+          .fetchDailyMoodInsight(userId: userId)
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -29,11 +27,10 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   @override
   Future<Either<String, MoodTrackerHomeEntity>> getMoodTrackerHomeData(
       {required int userId}) async {
-    await service
-        .fetchHomeData(userId: userId)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.toEntity());
+    await moodTrackerClient().then((client) {
+      client.fetchHomeData(userId: userId).validateStatus().then((response) {
+        return Right(response.data!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -43,11 +40,13 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   @override
   Future<Either<String, MoodTrackerWeeklyInsightEntity>> getWeeklyMoodInsight(
       {required int userId}) async {
-    await service
-        .fetchWeeklyMoodInsight(userId: userId)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.toEntity());
+    await moodTrackerClient().then((client) {
+      client
+          .fetchWeeklyMoodInsight(userId: userId)
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -59,11 +58,13 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
       {required int userId,
       required int mood,
       required List<String> reasons}) async {
-    await service
-        .postMoodTracker(userId: userId, mood: mood, reasons: reasons)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.toEntity());
+    await moodTrackerClient().then((client) {
+      client
+          .postMoodTracker(userId: userId, mood: mood, reasons: reasons)
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });

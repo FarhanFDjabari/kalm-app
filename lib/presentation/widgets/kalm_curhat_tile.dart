@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kalm/data/model/auth/user_model.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
 class KalmCurhatTile extends StatelessWidget {
   final Function()? onTap;
-  final User userData;
+  final UserEntity userData;
   final String content;
   final DateTime? createdAt;
   final int? likeCount;

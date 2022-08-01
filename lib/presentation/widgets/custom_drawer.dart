@@ -18,7 +18,6 @@ class CustomDrawer extends StatefulWidget {
 class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   late AnimationController _drawerController;
-  final AuthCubit _authCubit = AuthCubit();
 
   Widget _buildDrawer() {
     return BlocBuilder<AuthCubit, AuthState>(
@@ -192,11 +191,11 @@ class _CustomDrawerState extends State<CustomDrawer>
   void initState() {
     super.initState();
     if (GetStorage().read('user_id') != null)
-      _authCubit.getUserInfo(GetStorage().read('user_id'));
-    _drawerController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 250),
-    );
+      // _authCubit.getUserInfo(GetStorage().read('user_id'));
+      _drawerController = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 250),
+      );
   }
 
   @override
@@ -213,70 +212,67 @@ class _CustomDrawerState extends State<CustomDrawer>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onDrawerTap,
-      child: BlocProvider<AuthCubit>(
-        create: (context) => _authCubit,
-        child: BlocConsumer<AuthCubit, AuthState>(
-          listener: (authContext, state) {
-            if (state is AuthError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                KalmSnackbar(
-                  message: state.errorMessage,
-                  duration: Duration(seconds: 2),
+      child: BlocConsumer<AuthCubit, AuthState>(
+        listener: (authContext, state) {
+          if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              KalmSnackbar(
+                message: state.errorMessage,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+          if (state is AuthDeleted) {
+            Navigator.pushReplacementNamed(context, '/splash');
+          }
+        },
+        builder: (builderContext, state) {
+          return AnimatedBuilder(
+            animation: _drawerController,
+            builder: (context, child) {
+              double slide = 300.0 * _drawerController.value;
+              double scale = 1 - (_drawerController.value * 0.1);
+              return Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image:
+                        AssetImage('assets/picture/camera-bg-placeholder.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    _buildDrawer(),
+                    Transform(
+                      transform: Matrix4.identity()
+                        ..translate(slide - 30)
+                        ..scale(scale - 0.1),
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xFFE7EAFF),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+                    Transform(
+                      transform: Matrix4.identity()
+                        ..translate(slide)
+                        ..scale(scale),
+                      alignment: Alignment.centerLeft,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          _drawerController.value > 0 ? 15 : 0,
+                        ),
+                        child: widget.content,
+                      ),
+                    ),
+                  ],
                 ),
               );
-            }
-            if (state is AuthDeleted) {
-              Navigator.pushReplacementNamed(context, '/splash');
-            }
-          },
-          builder: (builderContext, state) {
-            return AnimatedBuilder(
-              animation: _drawerController,
-              builder: (context, child) {
-                double slide = 300.0 * _drawerController.value;
-                double scale = 1 - (_drawerController.value * 0.1);
-                return Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'assets/picture/camera-bg-placeholder.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      _buildDrawer(),
-                      Transform(
-                        transform: Matrix4.identity()
-                          ..translate(slide - 30)
-                          ..scale(scale - 0.1),
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Color(0xFFE7EAFF),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
-                      Transform(
-                        transform: Matrix4.identity()
-                          ..translate(slide)
-                          ..scale(scale),
-                        alignment: Alignment.centerLeft,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                            _drawerController.value > 0 ? 15 : 0,
-                          ),
-                          child: widget.content,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        ),
+            },
+          );
+        },
       ),
     );
   }

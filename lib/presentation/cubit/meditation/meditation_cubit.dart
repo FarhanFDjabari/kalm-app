@@ -1,23 +1,32 @@
 import 'package:bloc/bloc.dart';
-import 'package:kalm/data/model/meditation/playlist_model.dart';
-import 'package:kalm/data/sources/remote/services/meditation/meditation_service.dart';
+import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
+import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
+import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
+import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
 import 'package:meta/meta.dart';
 
 part 'meditation_state.dart';
 
 class MeditationCubit extends Cubit<MeditationState> {
-  MeditationCubit() : super(MeditationInitial());
-  MeditationService meditationService = MeditationService();
+  MeditationCubit({
+    required this.getAllPlaylist,
+    required this.getAllPlaylistByCategory,
+    required this.getPlaylistDetail,
+  }) : super(MeditationInitial());
+
+  final GetAllPlaylistByCategory getAllPlaylistByCategory;
+  final GetAllPlaylist getAllPlaylist;
+  final GetPlaylistDetail getPlaylistDetail;
 
   void fetchAllPlaylist(int userId) async {
     emit(MeditationLoading());
     try {
-      final result = await meditationService.fetchAllPlaylist(userId: userId);
-      if (result.success) {
-        emit(MeditationPlaylistLoaded(result.data!.playlists!));
-      } else {
-        emit(MeditationLoadError('Error: ${result.message}'));
-      }
+      final result = await getAllPlaylist.execute(userId: userId);
+
+      result.fold(
+        (l) => emit(MeditationLoadError('Error: $l')),
+        (r) => emit(MeditationPlaylistLoaded(r)),
+      );
     } catch (error) {
       emit(MeditationLoadError('Error: $error'));
     }
@@ -26,13 +35,13 @@ class MeditationCubit extends Cubit<MeditationState> {
   void fetchPlaylistByCategory(int userId, String category) async {
     emit(MeditationLoading());
     try {
-      final result = await meditationService.fetchPlaylistByCategory(
+      final result = await getAllPlaylistByCategory.execute(
           userId: userId, category: category);
-      if (result.success) {
-        emit(MeditationPlaylistLoaded(result.data!.playlists!));
-      } else {
-        emit(MeditationLoadError('Error: ${result.message}'));
-      }
+
+      result.fold(
+        (l) => emit(MeditationLoadError('Error: $l')),
+        (r) => emit(MeditationPlaylistLoaded(r)),
+      );
     } catch (error) {
       emit(MeditationLoadError('Error: $error'));
     }
@@ -41,15 +50,15 @@ class MeditationCubit extends Cubit<MeditationState> {
   void fetchPlaylistById(int userId, int playlistId) async {
     emit(MeditationLoading());
     try {
-      final result = await meditationService.fetchPlaylistById(
+      final result = await getPlaylistDetail.execute(
         userId: userId,
         playlistId: playlistId,
       );
-      if (result.success) {
-        emit(DetailPlaylistLoaded(result.data!.playlist!));
-      } else {
-        emit(MeditationLoadError('Error: ${result.message}'));
-      }
+
+      result.fold(
+        (l) => emit(MeditationLoadError('Error: $l')),
+        (r) => emit(DetailPlaylistLoaded(r)),
+      );
     } catch (error) {
       emit(MeditationLoadError('Error: $error'));
     }

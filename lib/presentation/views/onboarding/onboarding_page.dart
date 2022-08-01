@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:kalm/presentation/views/auth/auth_page.dart';
 import 'package:kalm/presentation/widgets/kalm_button.dart';
 import 'package:kalm/presentation/widgets/kalm_onboarding_content.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:kalm/utilities/routes/route_name.dart';
 
 class OnboardingPage extends StatefulWidget {
   @override
@@ -124,11 +124,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           width: double.infinity,
                           height: 56,
                           onPressed: () {
-                            Navigator.pushAndRemoveUntil(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => AuthPage(),
-                              ),
+                              RouteName.AUTH,
                               (route) => false,
                             );
                           },

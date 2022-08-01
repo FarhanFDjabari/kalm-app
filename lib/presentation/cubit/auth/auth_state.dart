@@ -14,13 +14,13 @@ class AuthLoginSuccess extends AuthState {
 }
 
 class AuthLoadSuccess extends AuthState {
-  final User user;
+  final UserEntity user;
 
   AuthLoadSuccess(this.user);
 }
 
 class AuthRegisterSuccess extends AuthState {
-  final User user;
+  final UserEntity user;
 
   AuthRegisterSuccess(this.user);
 }

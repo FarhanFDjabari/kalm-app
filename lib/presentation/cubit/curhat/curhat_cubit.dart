@@ -1,24 +1,39 @@
 import 'package:bloc/bloc.dart';
-import 'package:kalm/data/model/curhat/curhat_model.dart';
-import 'package:kalm/data/model/curhat/detail_curhat_model.dart';
-import 'package:kalm/data/sources/remote/services/curhat/curhat_service.dart';
+import 'package:kalm/domain/entity/curhat/curhat_entity.dart';
+import 'package:kalm/domain/entity/curhat/detail_curhat_entity.dart';
+import 'package:kalm/domain/usecases/curhat/create_comment.dart';
+import 'package:kalm/domain/usecases/curhat/create_curhat.dart';
+import 'package:kalm/domain/usecases/curhat/get_all_curhat.dart';
+import 'package:kalm/domain/usecases/curhat/get_all_curhat_by_category.dart';
+import 'package:kalm/domain/usecases/curhat/get_curhat_detail.dart';
 import 'package:meta/meta.dart';
 
 part 'curhat_state.dart';
 
 class CurhatCubit extends Cubit<CurhatState> {
-  CurhatCubit() : super(CurhatInitial());
-  CurhatService curhatService = CurhatService();
+  CurhatCubit({
+    required this.createComment,
+    required this.createCurhat,
+    required this.getAllCurhat,
+    required this.getAllCurhatByCategory,
+    required this.getCurhatDetailUseCase,
+  }) : super(CurhatInitial());
+
+  final CreateComment createComment;
+  final CreateCurhat createCurhat;
+  final GetAllCurhat getAllCurhat;
+  final GetAllCurhatByCategory getAllCurhatByCategory;
+  final GetCurhatDetail getCurhatDetailUseCase;
 
   void fetchAllCurhat(int userId) async {
     emit(CurhatLoading());
     try {
-      final result = await curhatService.fetchAllCurhat(userId: userId);
-      if (result.success) {
-        emit(CurhatLoaded(result.data!.curhatans!));
-      } else {
-        emit(CurhatLoadError("Error: ${result.message}"));
-      }
+      final result = await getAllCurhat.execute(userId: userId);
+
+      result.fold(
+        (l) => emit(CurhatLoadError("Error: $l}")),
+        (r) => emit(CurhatLoaded(r)),
+      );
     } catch (error) {
       emit(CurhatLoadError("Error: $error}"));
     }
@@ -27,13 +42,13 @@ class CurhatCubit extends Cubit<CurhatState> {
   void fetchCurhatByCategory(int userId, String category) async {
     emit(CurhatLoading());
     try {
-      final result = await curhatService.fetchCurhatByCategory(
+      final result = await getAllCurhatByCategory.execute(
           userId: userId, category: category);
-      if (result.success) {
-        emit(CurhatLoaded(result.data!.curhatans!));
-      } else {
-        emit(CurhatLoadError("Error: ${result.message}"));
-      }
+
+      result.fold(
+        (l) => emit(CurhatLoadError("Error: $l}")),
+        (r) => emit(CurhatLoaded(r)),
+      );
     } catch (error) {
       emit(CurhatLoadError("Error: $error}"));
     }
@@ -42,13 +57,13 @@ class CurhatCubit extends Cubit<CurhatState> {
   void getCurhatDetail(int userId, int curhatId) async {
     emit(CurhatLoading());
     try {
-      final result = await curhatService.fetchCurhatById(
+      final result = await getCurhatDetailUseCase.execute(
           userId: userId, curhatId: curhatId);
-      if (result.success) {
-        emit(DetailCurhatLoaded(result.data!.curhatan!));
-      } else {
-        emit(CurhatLoadError("Error: ${result.message}"));
-      }
+
+      result.fold(
+        (l) => emit(CurhatLoadError("Error: $l")),
+        (r) => emit(DetailCurhatLoaded(r)),
+      );
     } catch (error) {
       emit(CurhatLoadError("Error: $error}"));
     }
@@ -58,17 +73,17 @@ class CurhatCubit extends Cubit<CurhatState> {
       int userId, bool isAnonymous, String content, String topic) async {
     emit(CurhatLoading());
     try {
-      final result = await curhatService.createNewCurhat(
+      final result = await createCurhat.execute(
         userId: userId,
         isAnonymous: isAnonymous,
         content: content,
         topic: topic,
       );
-      if (result.success) {
-        emit(CurhatPosted());
-      } else {
-        emit(CurhatPostError('Error: ${result.message}'));
-      }
+
+      result.fold(
+        (l) => emit(CurhatPostError('Error: $l')),
+        (r) => emit(CurhatPosted()),
+      );
     } catch (error) {
       emit(CurhatPostError('Error: $error'));
     }
@@ -78,17 +93,17 @@ class CurhatCubit extends Cubit<CurhatState> {
       int userId, int curhatId, String content, bool isAnonymous) async {
     emit(CurhatLoading());
     try {
-      final result = await curhatService.createNewComment(
+      final result = await createComment.execute(
         userId: userId,
         isAnonymous: isAnonymous,
         curhatId: curhatId,
         content: content,
       );
-      if (result.success) {
-        emit(CommentPosted());
-      } else {
-        emit(CurhatPostError('Error: ${result.message}'));
-      }
+
+      result.fold(
+        (l) => emit(CurhatPostError('Error: $l')),
+        (r) => emit(CommentPosted()),
+      );
     } catch (error) {
       emit(CurhatPostError('Error: $error'));
     }

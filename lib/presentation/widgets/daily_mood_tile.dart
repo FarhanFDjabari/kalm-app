@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_reason_entity.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
@@ -11,7 +11,7 @@ class DailyMoodTile extends StatelessWidget {
   }) : super(key: key);
 
   final int moodPoint;
-  final List<Reason> reasons;
+  final List<MoodReasonEntity> reasons;
 
   String getMoodAsset(int? moodPoint) {
     if (moodPoint == 0) {

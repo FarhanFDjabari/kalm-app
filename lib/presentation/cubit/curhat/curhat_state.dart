@@ -6,7 +6,7 @@ abstract class CurhatState {}
 class CurhatInitial extends CurhatState {}
 
 class CurhatLoaded extends CurhatState {
-  final List<Curhatan> curhatanList;
+  final List<CurhatanEntity> curhatanList;
 
   CurhatLoaded(this.curhatanList);
 }
@@ -14,7 +14,7 @@ class CurhatLoaded extends CurhatState {
 class CurhatLoading extends CurhatState {}
 
 class DetailCurhatLoaded extends CurhatState {
-  final DetailCurhatan detailCurhatan;
+  final DetailCurhatanEntity detailCurhatan;
 
   DetailCurhatLoaded(this.detailCurhatan);
 }

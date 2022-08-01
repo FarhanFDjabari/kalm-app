@@ -1,10 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
+import 'package:kalm/domain/entity/mood_tracker/mood_tracker_entity.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
 class KalmMoodGraph extends StatefulWidget {
-  final List<MoodTracker> graphData;
+  final List<MoodTrackerEntity> graphData;
 
   KalmMoodGraph({required this.graphData});
 

@@ -8,7 +8,7 @@ class JourneyInitial extends JourneyState {}
 class JourneyLoading extends JourneyState {}
 
 class JourneyQuoteLoadSuccess extends JourneyState {
-  final Quote quoteData;
+  final QuoteEntity quoteData;
 
   JourneyQuoteLoadSuccess(this.quoteData);
 }
@@ -18,7 +18,7 @@ class JournalPosted extends JourneyState {}
 class MeditationTaskPosted extends JourneyState {}
 
 class JourneyLoaded extends JourneyState {
-  final List<Journey> journeyList;
+  final List<JourneyEntity> journeyList;
 
   JourneyLoaded(this.journeyList);
 }
@@ -30,19 +30,19 @@ class JourneyError extends JourneyState {
 }
 
 class JourneyDetailLoaded extends JourneyState {
-  final DetailJourney detailJourney;
+  final DetailJourneyEntity detailJourney;
 
   JourneyDetailLoaded(this.detailJourney);
 }
 
 class JourneyTaskLoaded extends JourneyState {
-  final JournalItem journeyTask;
+  final JournalItemEntity journeyTask;
 
   JourneyTaskLoaded(this.journeyTask);
 }
 
 class MeditationTaskLoaded extends JourneyState {
-  final MeditationItem meditationTask;
+  final MeditationItemEntity meditationTask;
 
   MeditationTaskLoaded(this.meditationTask);
 }

@@ -5,18 +5,14 @@ import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
 import 'package:kalm/domain/repository/meditation_repository.dart';
 
 class MeditationRepositoryImpl extends MeditationRepository {
-  final MeditationService service;
-
-  MeditationRepositoryImpl({required this.service});
-
   @override
   Future<Either<String, List<PlaylistEntity>>> getAllPlaylist(
       {required int userId}) async {
-    await service
-        .fetchAllPlaylist(userId: userId)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.playlists!.map((e) => e.toEntity()).toList());
+    await meditationClient().then((client) {
+      client.fetchAllPlaylist(userId: userId).validateStatus().then((response) {
+        return Right(
+            response.data!.playlists!.map((e) => e.toEntity()).toList());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -26,11 +22,13 @@ class MeditationRepositoryImpl extends MeditationRepository {
   @override
   Future<Either<String, PlaylistEntity>> getPlaylistDetail(
       {required int userId, required int playlistId}) async {
-    await service
-        .fetchPlaylistById(userId: userId, playlistId: playlistId)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.playlist!.toEntity());
+    await meditationClient().then((client) {
+      client
+          .fetchPlaylistById(userId: userId, playlistId: playlistId)
+          .validateStatus()
+          .then((response) {
+        return Right(response.data!.playlist!.toEntity());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });
@@ -40,11 +38,14 @@ class MeditationRepositoryImpl extends MeditationRepository {
   @override
   Future<Either<String, List<PlaylistEntity>>> getPlaylistsByCategory(
       {required int userId, required String category}) async {
-    await service
-        .fetchPlaylistByCategory(userId: userId, category: category)
-        .validateStatus()
-        .then((response) {
-      return Right(response.data!.playlists!.map((e) => e.toEntity()).toList());
+    await meditationClient().then((client) {
+      client
+          .fetchPlaylistByCategory(userId: userId, category: category)
+          .validateStatus()
+          .then((response) {
+        return Right(
+            response.data!.playlists!.map((e) => e.toEntity()).toList());
+      });
     }).handleError((onError) {
       return Left(onError.toString());
     });

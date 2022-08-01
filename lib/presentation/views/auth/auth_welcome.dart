@@ -56,27 +56,27 @@ class AuthWelcome extends StatelessWidget {
             },
           ),
           SizedBox(height: 24),
-          KalmButton(
-            width: double.infinity,
-            height: 54,
-            primaryColor: tertiaryColor,
-            borderRadius: 10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/icon/Google.svg',
-                ),
-                SizedBox(width: 8),
-                Text(
-                  'Login dengan Google',
-                  style: kalmOfflineTheme.textTheme.button!
-                      .apply(color: primaryColor),
-                ),
-              ],
-            ),
-            onPressed: () {},
-          ),
+          // KalmButton(
+          //   width: double.infinity,
+          //   height: 54,
+          //   primaryColor: tertiaryColor,
+          //   borderRadius: 10,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       SvgPicture.asset(
+          //         'assets/icon/Google.svg',
+          //       ),
+          //       SizedBox(width: 8),
+          //       Text(
+          //         'Login dengan Google',
+          //         style: kalmOfflineTheme.textTheme.button!
+          //             .apply(color: primaryColor),
+          //       ),
+          //     ],
+          //   ),
+          //   onPressed: () {},
+          // ),
           SizedBox(height: 24),
           KalmTextButton(
             primaryColor: accentColor,

@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:kalm/presentation/widgets/kalm_animation_container.dart';
 import 'package:kalm/presentation/widgets/kalm_dialog.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:kalm/utilities/routes/route_name.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -39,13 +40,13 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         if (await GetStorage().read('user_id') == null)
           Navigator.pushNamedAndRemoveUntil(
             context,
-            '/onboarding',
+            RouteName.ONBOARDING,
             (route) => false,
           );
         else
           Navigator.pushNamedAndRemoveUntil(
             context,
-            '/',
+            RouteName.HOME,
             (route) => false,
           );
       }

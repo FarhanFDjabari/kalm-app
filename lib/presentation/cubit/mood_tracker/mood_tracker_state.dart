@@ -6,7 +6,7 @@ abstract class MoodTrackerState {}
 class MoodTrackerInitial extends MoodTrackerState {}
 
 class MoodTrackerLoadSuccess extends MoodTrackerState {
-  final MoodTrackerData moodTrackerData;
+  final MoodTrackerHomeEntity moodTrackerData;
 
   MoodTrackerLoadSuccess(this.moodTrackerData);
 }
@@ -20,13 +20,13 @@ class MoodTrackerError extends MoodTrackerState {
 class MoodTrackerLoading extends MoodTrackerState {}
 
 class DailyInsightLoaded extends MoodTrackerState {
-  final DailyInsightData dailyInsightData;
+  final MoodTrackerDailyInsightEntity dailyInsightData;
 
   DailyInsightLoaded(this.dailyInsightData);
 }
 
 class WeeklyInsightLoaded extends MoodTrackerState {
-  final WeeklyInsightData weeklyInsightData;
+  final MoodTrackerWeeklyInsightEntity weeklyInsightData;
 
   WeeklyInsightLoaded(this.weeklyInsightData);
 }
