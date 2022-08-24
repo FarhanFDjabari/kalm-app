@@ -29,6 +29,12 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
   String kategori = '';
 
   @override
+  void initState() {
+    super.initState();
+    context.read<AuthCubit>().getCurrentUser();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _judulFocus.dispose();
@@ -37,7 +43,6 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<AuthCubit>().getUserInfo(GetStorage().read('user_id'));
     return MultiBlocListener(
       listeners: [
         BlocListener<CurhatCubit, CurhatState>(listener: (context, state) {
@@ -111,7 +116,7 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                               return Text(
                                 state is AuthLoadSuccess
                                     ? state.user.name!
-                                    : 'User',
+                                    : '-',
                                 style: kalmOfflineTheme.textTheme.button!.apply(
                                     color: primaryText, fontSizeFactor: 1.2),
                               );
@@ -209,7 +214,7 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.075,
+                    height: 25,
                   ),
                   BlocBuilder<CurhatCubit, CurhatState>(
                     builder: (builderContext, state) {

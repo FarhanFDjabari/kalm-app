@@ -12,79 +12,81 @@ class JourneyRepositoryImpl extends JourneyRepository {
   @override
   Future<Either<String, List<JourneyEntity>>> getAllJourney(
       {required int userId}) async {
-    await journeyClient().then((client) {
-      client.fetchAllJourney(userId: userId).validateStatus().then((response) {
-        return Right(
-            response.data!.journeys!.map((e) => e.toEntity()).toList());
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response = client.fetchAllJourney(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.journeys!.map((e) => e.toEntity()).toList());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, JournalItemEntity>> getJournalTask(
       {required int userId, required int taskId}) async {
-    await journeyClient().then((client) {
-      client
-          .getJournalTask(userId: userId, taskId: taskId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.item.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response = client.getJournalTask(userId: userId, taskId: taskId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.item.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, DetailJourneyEntity>> getJourneyDetail(
       {required int userId, required int journeyId}) async {
-    await journeyClient().then((client) {
-      client
-          .getJourneyById(journeyId: journeyId, userId: userId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.journey.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response =
+        client.getJourneyById(journeyId: journeyId, userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.journey.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, MeditationItemEntity>> getMeditationTask(
       {required int userId, required int taskId}) async {
-    await journeyClient().then((client) {
-      client
-          .getMeditationTask(userId: userId, taskId: taskId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.item.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response = client.getMeditationTask(userId: userId, taskId: taskId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.item.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, QuoteEntity>> getQuote(
       {required int userId, required int journeyId}) async {
-    await journeyClient().then((client) {
-      client
-          .getJourneyQuote(userId: userId, journeyId: journeyId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.quote.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response =
+        client.getJourneyQuote(userId: userId, journeyId: journeyId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.quote.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
@@ -93,22 +95,21 @@ class JourneyRepositoryImpl extends JourneyRepository {
       required int componentId,
       required int journeyId,
       required List<Map<String, dynamic>> answers}) async {
-    await journeyClient().then((client) {
-      client
-          .postJournalTask(
-            userId: userId,
-            componentId: componentId,
-            journeyId: journeyId,
-            answers: answers,
-          )
-          .validateStatus()
-          .then((response) {
-        return Right(response.message);
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response = client.postJournalTask(
+      userId: userId,
+      componentId: componentId,
+      journeyId: journeyId,
+      answers: answers,
+    );
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.message);
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
@@ -116,20 +117,20 @@ class JourneyRepositoryImpl extends JourneyRepository {
       {required int userId,
       required int componentId,
       required int journeyId}) async {
-    await journeyClient().then((client) {
-      client
-          .postMeditationTask(
-            userId: userId,
-            componentId: componentId,
-            journeyId: journeyId,
-          )
-          .validateStatus()
-          .then((response) {
-        return Right(response.message);
-      });
-    }).handleError((onError) {
+    final client = await journeyClient();
+    final response = client.postMeditationTask(
+      userId: userId,
+      componentId: componentId,
+      journeyId: journeyId,
+    );
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.message);
+    } else {
+      return Left(result.message);
+    }
   }
 }

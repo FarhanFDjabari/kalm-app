@@ -59,16 +59,26 @@ class _KalmMoodGraphState extends State<KalmMoodGraph> {
                   //       .apply(color: secondaryText, fontSizeFactor: 1.1);
                   // },
                   getTitlesWidget: (value, meta) {
-                    switch (value.toInt()) {
-                      case 0:
-                        return const Text('Buruk');
-                      case 1:
-                        return const Text('Biasa');
-                      case 2:
-                        return const Text('Baik');
-                      default:
-                        return const Text('');
-                    }
+                    if (value == 0.0)
+                      return Text(
+                        'Buruk',
+                        style: kalmOfflineTheme.textTheme.overline!
+                            .apply(color: secondaryText, fontSizeFactor: 1),
+                      );
+                    if (value == 1.0)
+                      return Text(
+                        'Biasa',
+                        style: kalmOfflineTheme.textTheme.overline!
+                            .apply(color: secondaryText, fontSizeFactor: 1),
+                      );
+                    if (value == 2.0)
+                      return Text(
+                        'Baik',
+                        style: kalmOfflineTheme.textTheme.overline!
+                            .apply(color: secondaryText, fontSizeFactor: 1),
+                      );
+                    else
+                      return const Text('');
                   },
                   // margin: 20,
                 ),
@@ -84,19 +94,47 @@ class _KalmMoodGraphState extends State<KalmMoodGraph> {
                   getTitlesWidget: (value, meta) {
                     switch (value.toInt()) {
                       case 0:
-                        return const Text('Sen');
+                        return Text(
+                          'Sen',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 1:
-                        return const Text('Sel');
+                        return Text(
+                          'Sel',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 2:
-                        return const Text('Rab');
+                        return Text(
+                          'Rab',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 3:
-                        return const Text('Kam');
+                        return Text(
+                          'Kam',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 4:
-                        return const Text('Jum');
+                        return Text(
+                          'Jum',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 5:
-                        return const Text('Sab');
+                        return Text(
+                          'Sab',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       case 6:
-                        return const Text('Min');
+                        return Text(
+                          'Min',
+                          style: kalmOfflineTheme.textTheme.overline!
+                              .apply(color: secondaryText, fontSizeFactor: 1),
+                        );
                       default:
                         return const Text('');
                     }

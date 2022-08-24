@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/entity/curhat/curhat_like_entity.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
@@ -24,6 +25,29 @@ class KalmDetailCurhatTile extends StatelessWidget {
   final List<CurhatLikeEntity> likeCount;
   final bool? isAnonymous;
 
+  getFormattedDate(DateTime? date) {
+    return DateFormat('d MMMM y').format(date ?? DateTime.now());
+  }
+
+  int calculateDifference(DateTime? date) {
+    DateTime now = DateTime.now();
+    return DateTime(date?.year ?? now.year, date?.month ?? now.month,
+            date?.day ?? now.day)
+        .difference(DateTime(now.year, now.month, now.day))
+        .inDays;
+  }
+
+  String getTimestamp(int timeDifference, DateTime? date) {
+    if (timeDifference < 0) {
+      if (timeDifference > -1)
+        return '${timeDifference * -1} hari yang lalu';
+      else
+        return getFormattedDate(date);
+    } else {
+      return 'Hari ini';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +55,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.35,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: tertiaryColor,
+        color: primaryColor.withAlpha(45),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
@@ -60,7 +84,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        '1 hari yang lalu',
+                        getTimestamp(calculateDifference(postedAt), postedAt),
                         style: kalmOfflineTheme.textTheme.subtitle2!
                             .apply(color: secondaryText),
                       ),
@@ -68,30 +92,31 @@ class KalmDetailCurhatTile extends StatelessWidget {
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () {},
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
+              InkWell(
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {},
+                child: Container(
+                  width: 40,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
                         Icons.favorite_border_rounded,
                         color: primaryColor,
                         size: 28,
                       ),
-                    ),
+                      Text(
+                        '${likeCount.length}',
+                        style: kalmOfflineTheme.textTheme.subtitle1!
+                            .apply(color: primaryColor, fontSizeFactor: 0.9),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '${likeCount.length}',
-                    style: kalmOfflineTheme.textTheme.subtitle1!
-                        .apply(color: primaryColor),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -100,6 +125,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
             child: Container(
               child: Text(
                 content,
+                maxLines: 100,
                 style: kalmOfflineTheme.textTheme.subtitle2!
                     .apply(color: primaryText, fontSizeFactor: 1),
               ),

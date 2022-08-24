@@ -7,6 +7,7 @@ import 'package:kalm/presentation/views/mood_tracker/mood_factor_page.dart';
 import 'package:kalm/presentation/widgets/dominasi_mood_tile.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:kalm/utilities/routes/route_name.dart';
 
 import 'kalm_button.dart';
 import 'kalm_outlined_button.dart';
@@ -44,8 +45,11 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
                   color: tertiaryColor,
                 ),
                 child: DominasiMoodTile(
-                  moodPoint: state.moodTrackerData.mood!.toDouble(),
-                  moodFactor: state.moodTrackerData.reasons![0].reason,
+                  moodPoint: state.moodTrackerData.mood?.toDouble(),
+                  moodFactor: state.moodTrackerData.reasons != null &&
+                          state.moodTrackerData.reasons?.isNotEmpty == true
+                      ? state.moodTrackerData.reasons![0].reason
+                      : '-',
                 ),
               ),
               SizedBox(height: 10),
@@ -56,22 +60,13 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.085,
                       borderRadius: 10,
-                      primaryColor: primaryColor,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Iconsax.edit_25,
-                            color: primaryColor,
-                            size: 28,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            'Ubah',
-                            style: kalmOfflineTheme.textTheme.button!.apply(
-                                color: primaryColor, fontSizeFactor: 1.1),
-                          ),
-                        ],
+                      primaryColor: secondaryText,
+                      child: Center(
+                        child: Text(
+                          'Sudah diisi hari ini',
+                          style: kalmOfflineTheme.textTheme.button!
+                              .apply(color: secondaryText, fontSizeFactor: 1.1),
+                        ),
                       ),
                       onPressed: () {},
                     ),
@@ -128,9 +123,7 @@ class _KalmMoodWidgetState extends State<KalmMoodWidget> {
                       ),
                       onPressed: () {
                         Navigator.of(context)
-                            .push(MaterialPageRoute(
-                          builder: (context) => MoodCamera(),
-                        ))
+                            .pushNamed(RouteName.MOODCAMERA)
                             .then((value) {
                           builderContext
                               .read<MoodTrackerCubit>()

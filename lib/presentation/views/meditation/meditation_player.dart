@@ -17,7 +17,7 @@ class MeditationPlayer extends StatefulWidget {
 
 class _MeditationPlayerState extends State<MeditationPlayer> {
   Future<bool> onWillPop() async {
-    final shouldPop = await showDialog(
+    final shouldPop = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
       builder: (context) => KalmDialog(

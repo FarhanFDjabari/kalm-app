@@ -8,47 +8,47 @@ class MeditationRepositoryImpl extends MeditationRepository {
   @override
   Future<Either<String, List<PlaylistEntity>>> getAllPlaylist(
       {required int userId}) async {
-    await meditationClient().then((client) {
-      client.fetchAllPlaylist(userId: userId).validateStatus().then((response) {
-        return Right(
-            response.data!.playlists!.map((e) => e.toEntity()).toList());
-      });
-    }).handleError((onError) {
+    final client = await meditationClient();
+    final response = client.fetchAllPlaylist(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.playlists!.map((e) => e.toEntity()).toList());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, PlaylistEntity>> getPlaylistDetail(
       {required int userId, required int playlistId}) async {
-    await meditationClient().then((client) {
-      client
-          .fetchPlaylistById(userId: userId, playlistId: playlistId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.playlist!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await meditationClient();
+    final response =
+        client.fetchPlaylistById(userId: userId, playlistId: playlistId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.playlist!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, List<PlaylistEntity>>> getPlaylistsByCategory(
       {required int userId, required String category}) async {
-    await meditationClient().then((client) {
-      client
-          .fetchPlaylistByCategory(userId: userId, category: category)
-          .validateStatus()
-          .then((response) {
-        return Right(
-            response.data!.playlists!.map((e) => e.toEntity()).toList());
-      });
-    }).handleError((onError) {
+    final client = await meditationClient();
+    final response =
+        client.fetchPlaylistByCategory(userId: userId, category: category);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.playlists!.map((e) => e.toEntity()).toList());
+    } else {
+      return Left(result.message);
+    }
   }
 }

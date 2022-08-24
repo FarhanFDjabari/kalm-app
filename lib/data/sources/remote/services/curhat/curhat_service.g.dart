@@ -67,18 +67,12 @@ class _CurhatService implements CurhatService {
 
   @override
   Future<ApiResponse<CreateCurhatanModel>> createNewCurhat(
-      {required userId,
-      required isAnonymous,
-      required content,
-      required topic}) async {
+      {required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('user_id', userId.toString()));
-    _data.fields.add(MapEntry('is_anonymous', isAnonymous.toString()));
-    _data.fields.add(MapEntry('content', content));
-    _data.fields.add(MapEntry('topic', topic));
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<CreateCurhatanModel>>(
             Options(method: 'POST', headers: _headers, extra: _extra)
@@ -90,19 +84,12 @@ class _CurhatService implements CurhatService {
   }
 
   @override
-  Future<ApiResponse<CommentModel>> createNewComment(
-      {required userId,
-      required curhatId,
-      required content,
-      required isAnonymous}) async {
+  Future<ApiResponse<CommentModel>> createNewComment({required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('user_id', userId.toString()));
-    _data.fields.add(MapEntry('curhat_id', curhatId.toString()));
-    _data.fields.add(MapEntry('content', content));
-    _data.fields.add(MapEntry('is_anonymous', isAnonymous.toString()));
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<CommentModel>>(
             Options(method: 'POST', headers: _headers, extra: _extra)

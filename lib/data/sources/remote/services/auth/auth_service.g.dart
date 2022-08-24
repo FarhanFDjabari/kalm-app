@@ -43,7 +43,7 @@ class _AuthService implements AuthService {
     _data.fields.add(MapEntry('user_id', userId.toString()));
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<UserInfo>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
+            Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/user/get_user',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));

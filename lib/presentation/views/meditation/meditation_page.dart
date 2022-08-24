@@ -23,6 +23,14 @@ class _MeditationPageState extends State<MeditationPage>
 
   int selectedIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<MeditationCubit>()
+        .fetchAllPlaylist(GetStorage().read('user_id') ?? 0);
+  }
+
   List<Map<String, dynamic>> topicData = [
     {
       'topic': 'Semua',
@@ -70,9 +78,6 @@ class _MeditationPageState extends State<MeditationPage>
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<MeditationCubit>()
-        .fetchAllPlaylist(GetStorage().read('user_id'));
     super.build(context);
     return BlocListener<MeditationCubit, MeditationState>(
       listener: (context, state) {
@@ -83,12 +88,6 @@ class _MeditationPageState extends State<MeditationPage>
               duration: Duration(seconds: 2),
             ),
           );
-        } else if (state is MeditationPlaylistLoaded) {
-          if (state.playlistList.isEmpty) {
-            context
-                .read<MeditationCubit>()
-                .fetchAllPlaylist(GetStorage().read('user_id'));
-          }
         }
       },
       child: Scaffold(
@@ -97,9 +96,10 @@ class _MeditationPageState extends State<MeditationPage>
           backgroundColor: Colors.transparent,
           centerTitle: true,
           elevation: 0,
-          leading: Icon(
-            Iconsax.menu_1,
+          leading: IconButton(
+            icon: Icon(Iconsax.menu_1),
             color: primaryText,
+            onPressed: () => Scaffold.of(context).openDrawer(),
           ),
           automaticallyImplyLeading: false,
           title: Text(
@@ -109,19 +109,6 @@ class _MeditationPageState extends State<MeditationPage>
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MeditationSearchPage(),
-                  ),
-                );
-              },
-              icon: Icon(
-                Iconsax.search_normal,
-                color: primaryText,
-              ),
-            ),
             IconButton(
               onPressed: () {},
               icon: Icon(
@@ -135,11 +122,15 @@ class _MeditationPageState extends State<MeditationPage>
           children: [
             BlocBuilder<MeditationCubit, MeditationState>(
               builder: (context, state) {
-                if (state is MeditationPlaylistLoaded)
-                  return MeditationHeaderTile(
-                    musicList: state.playlistList[0].playlistMusicItems,
-                  );
-                else
+                if (state is MeditationPlaylistLoaded) {
+                  if (state.playlistList.isNotEmpty) {
+                    return MeditationHeaderTile(
+                      musicList: state.playlistList[0].playlistMusicItems,
+                    );
+                  } else {
+                    return MeditationHeaderTile(musicList: []);
+                  }
+                } else
                   return Container(
                     margin: const EdgeInsets.symmetric(
                         vertical: 12, horizontal: 20),
@@ -155,39 +146,16 @@ class _MeditationPageState extends State<MeditationPage>
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Topik Musik Meditasi',
-                    style: kalmOfflineTheme.textTheme.bodyText1!
-                        .apply(color: primaryText, fontSizeFactor: 1.1),
-                  ),
-                  KalmTextButton(
-                    width: 130,
-                    height: 20,
-                    primaryColor: primaryColor,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Lihat Semua',
-                          style: kalmOfflineTheme.textTheme.bodyText1!
-                              .apply(color: primaryText, fontSizeFactor: 1),
-                        ),
-                        SizedBox(width: 5),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: primaryText,
-                          size: 18,
-                        )
-                      ],
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Topik Musik Meditasi',
+                  style: kalmOfflineTheme.textTheme.bodyText1!
+                      .apply(color: primaryText, fontSizeFactor: 1.1),
+                ),
               ),
             ),
+            const SizedBox(height: 20),
             SizedBox(
               height: 90,
               child: BlocBuilder<MeditationCubit, MeditationState>(
@@ -235,25 +203,34 @@ class _MeditationPageState extends State<MeditationPage>
                 builder: (builderContext, state) {
                   if (state is MeditationPlaylistLoaded) {
                     final playlistList = state.playlistList;
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        builderContext
-                            .read<MeditationCubit>()
-                            .fetchAllPlaylist(GetStorage().read('user_id'));
-                      },
-                      color: primaryColor,
-                      child: ListView.builder(
-                        itemCount: playlistList.length,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemBuilder: (_, index) => KalmMeditationTile(
-                          playlistId: playlistList[index].id!,
-                          imagePath: playlistList[index].squaredImage!.url!,
-                          series: playlistList[index].quantity!,
-                          description: playlistList[index].description!,
-                          title: playlistList[index].name!,
+                    if (playlistList.isNotEmpty) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          builderContext
+                              .read<MeditationCubit>()
+                              .fetchAllPlaylist(GetStorage().read('user_id'));
+                        },
+                        color: primaryColor,
+                        child: ListView.builder(
+                          itemCount: playlistList.length,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          itemBuilder: (_, index) => KalmMeditationTile(
+                            playlistId: playlistList[index].id!,
+                            imagePath: playlistList[index].squaredImage!.url!,
+                            series: playlistList[index].quantity!,
+                            description: playlistList[index].description!,
+                            title: playlistList[index].name!,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      return SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: Text('Playlistmu masih kosong'),
+                        ),
+                      );
+                    }
                   } else
                     return Container(
                       child: Center(
@@ -267,11 +244,13 @@ class _MeditationPageState extends State<MeditationPage>
                           child: ListView(
                             padding: const EdgeInsets.all(20),
                             children: [
-                              Container(
-                                width: 25,
-                                height: 25,
-                                child: CircularProgressIndicator(
-                                  color: primaryColor,
+                              Center(
+                                child: Container(
+                                  width: 25,
+                                  height: 25,
+                                  child: CircularProgressIndicator(
+                                    color: primaryColor,
+                                  ),
                                 ),
                               ),
                             ],

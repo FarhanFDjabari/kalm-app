@@ -11,46 +11,46 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   @override
   Future<Either<String, MoodTrackerDailyInsightEntity>> getDailyMoodInsight(
       {required int userId}) async {
-    await moodTrackerClient().then((client) {
-      client
-          .fetchDailyMoodInsight(userId: userId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await moodTrackerClient();
+    final response = client.fetchDailyMoodInsight(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, MoodTrackerHomeEntity>> getMoodTrackerHomeData(
       {required int userId}) async {
-    await moodTrackerClient().then((client) {
-      client.fetchHomeData(userId: userId).validateStatus().then((response) {
-        return Right(response.data!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await moodTrackerClient();
+    final response = client.fetchHomeData(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, MoodTrackerWeeklyInsightEntity>> getWeeklyMoodInsight(
       {required int userId}) async {
-    await moodTrackerClient().then((client) {
-      client
-          .fetchWeeklyMoodInsight(userId: userId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await moodTrackerClient();
+    final response = client.fetchWeeklyMoodInsight(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
@@ -58,16 +58,16 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
       {required int userId,
       required int mood,
       required List<String> reasons}) async {
-    await moodTrackerClient().then((client) {
-      client
-          .postMoodTracker(userId: userId, mood: mood, reasons: reasons)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await moodTrackerClient();
+    final response =
+        client.postMoodTracker(userId: userId, mood: mood, reasons: reasons);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 }

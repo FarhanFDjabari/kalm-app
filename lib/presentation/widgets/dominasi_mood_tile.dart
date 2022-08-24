@@ -56,8 +56,8 @@ class DominasiMoodTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.12,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      height: MediaQuery.of(context).size.height * 0.10,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 5),
       decoration: BoxDecoration(
         color: tertiaryColor,
         borderRadius: BorderRadius.circular(10),
@@ -124,7 +124,7 @@ class DominasiMoodTile extends StatelessWidget {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          moodFactor ?? 'Pekerjaan',
+                          moodFactor ?? '-',
                           style: kalmOfflineTheme.textTheme.bodyText1!
                               .apply(color: primaryText, fontSizeFactor: 1.1),
                         ),

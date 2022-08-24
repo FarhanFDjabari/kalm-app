@@ -18,5 +18,9 @@ abstract class AuthRepository {
     required String gender,
   });
 
+  Future<bool> saveCurrentUser({required UserEntity user});
+
+  Future<Either<String, UserEntity>> getCurrentUser();
+
   Future<bool> logout();
 }

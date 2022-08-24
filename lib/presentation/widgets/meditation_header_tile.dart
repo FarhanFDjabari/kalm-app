@@ -48,49 +48,55 @@ class MeditationHeaderTile extends StatelessWidget {
               color: tertiaryColor,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      musicList![0].name ?? '-',
-                      style: kalmOfflineTheme.textTheme.subtitle1!
-                          .apply(color: primaryText, fontSizeFactor: 1.2),
-                    ),
-                    Text(
-                      musicList![0].duration ?? '-',
-                      style: kalmOfflineTheme.textTheme.subtitle1!
-                          .apply(color: secondaryText, fontSizeFactor: 1.2),
-                    )
-                  ],
-                ),
-                CircleAvatar(
-                  backgroundColor: accentColor,
-                  radius: 25,
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MeditationPlayer(
-                            musicList: musicList!,
+            child: musicList!.isNotEmpty
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            musicList?[0].name ?? '-',
+                            style: kalmOfflineTheme.textTheme.subtitle1!
+                                .apply(color: primaryText, fontSizeFactor: 1.2),
+                          ),
+                          Text(
+                            musicList?[0].duration ?? '-',
+                            style: kalmOfflineTheme.textTheme.subtitle1!.apply(
+                                color: secondaryText, fontSizeFactor: 1.2),
+                          )
+                        ],
+                      ),
+                      CircleAvatar(
+                        backgroundColor: accentColor,
+                        radius: 25,
+                        child: IconButton(
+                          onPressed: () {
+                            if (musicList!.isNotEmpty) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MeditationPlayer(
+                                    musicList: musicList!,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            Iconsax.play5,
+                            color: primaryColor,
+                            size: 24,
                           ),
                         ),
-                      );
-                    },
-                    icon: Icon(
-                      Iconsax.play5,
-                      color: primaryColor,
-                      size: 24,
-                    ),
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Text('Belum ada rekomendasi musik untuk kamu'),
                   ),
-                ),
-              ],
-            ),
           ),
         ],
       ),

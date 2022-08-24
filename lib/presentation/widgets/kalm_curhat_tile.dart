@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kalm/data/model/auth/user_model.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
@@ -22,114 +23,114 @@ class KalmCurhatTile extends StatelessWidget {
     this.isAnonymous,
   }) : super(key: key);
 
+  getFormattedDate(DateTime? date) {
+    return DateFormat('d MMMM y').format(date ?? DateTime.now());
+  }
+
+  int calculateDifference(DateTime? date) {
+    DateTime now = DateTime.now();
+    return DateTime(date?.year ?? now.year, date?.month ?? now.month,
+            date?.day ?? now.day)
+        .difference(DateTime(now.year, now.month, now.day))
+        .inDays;
+  }
+
+  String getTimestamp(int timeDifference, DateTime? date) {
+    if (timeDifference < 0) {
+      if (timeDifference > -1)
+        return '${timeDifference * -1} hari yang lalu';
+      else
+        return getFormattedDate(date);
+    } else {
+      return 'Hari ini';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width / 1.65,
-      height: MediaQuery.of(context).size.height / 3,
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 18),
-      child: Stack(
-        children: [
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height / 3.2,
-              margin: const EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: tertiaryColor.withOpacity(0.55),
-                borderRadius: BorderRadius.circular(14),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: onTap,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height / 3.2,
+          decoration: BoxDecoration(
+            color: primaryColor.withAlpha(45),
             borderRadius: BorderRadius.circular(14),
-            child: Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height / 3.2,
-              decoration: BoxDecoration(
-                color: tertiaryColor,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: primaryColor,
-                        child: Icon(
-                          Iconsax.user,
-                          color: tertiaryColor,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          isAnonymous == false ? userData.name! : 'Anonim',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: kalmOfflineTheme.textTheme.button!
+                              .apply(color: primaryText),
                         ),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              isAnonymous == false ? userData.name! : 'Anonim',
-                              style: kalmOfflineTheme.textTheme.button!
-                                  .apply(color: primaryText),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              '1 hari yang lalu',
-                              style: kalmOfflineTheme.textTheme.subtitle2!
-                                  .apply(color: secondaryText),
-                            ),
-                          ],
+                        SizedBox(height: 4),
+                        Text(
+                          getTimestamp(
+                              calculateDifference(createdAt), createdAt),
+                          style: kalmOfflineTheme.textTheme.subtitle2!
+                              .apply(color: secondaryText, fontSizeFactor: 0.9),
                         ),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () {},
+                    child: Container(
+                      width: 30,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      Column(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          InkWell(
-                            borderRadius: BorderRadius.circular(50),
-                            onTap: () {},
-                            child: Container(
-                              width: 30,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.favorite_border_rounded,
-                                color: primaryColor,
-                                size: 28,
-                              ),
-                            ),
+                          Icon(
+                            Icons.favorite_border_rounded,
+                            color: primaryColor,
+                            size: 22,
                           ),
                           Text(
                             '$likeCount',
-                            style: kalmOfflineTheme.textTheme.subtitle1!
-                                .apply(color: primaryColor),
+                            style: kalmOfflineTheme.textTheme.subtitle1!.apply(
+                                color: primaryColor, fontSizeFactor: 0.9),
                           ),
                         ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 14),
-                  Container(
-                    child: Flexible(
-                      child: Text(
-                        content,
-                        maxLines: 8,
-                        overflow: TextOverflow.ellipsis,
-                        style: kalmOfflineTheme.textTheme.subtitle2!
-                            .apply(color: primaryText),
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
+              SizedBox(height: 14),
+              Container(
+                child: Flexible(
+                  child: Text(
+                    content,
+                    maxLines: 6,
+                    overflow: TextOverflow.ellipsis,
+                    style: kalmOfflineTheme.textTheme.subtitle2!
+                        .apply(color: primaryText),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -35,17 +35,17 @@ abstract class MoodTrackerService {
   Future<ApiResponse<MoodTrackerHomeModel>> fetchHomeData(
       {@Query("user_id") required int userId});
 
-  @GET('api/v1/mood-tracks/index-harian')
+  @POST('api/v1/mood-tracks/index-harian')
   Future<ApiResponse<MoodTrackerDailyInsightModel>> fetchDailyMoodInsight({
     @Part(name: "user_id") required int userId,
   });
 
-  @GET('api/v1/mood-tracks/index-mingguan')
+  @POST('api/v1/mood-tracks/index-mingguan')
   Future<ApiResponse<MoodTrackerWeeklyInsightModel>> fetchWeeklyMoodInsight({
     @Part(name: "user_id") required int userId,
   });
 
-  @GET('api/v1/mood-tracks')
+  @POST('api/v1/mood-tracks')
   Future<ApiResponse<MoodTrackerPostResponse>> postMoodTracker({
     @Part(name: "user_id") required int userId,
     @Part(name: "mood") required int mood,

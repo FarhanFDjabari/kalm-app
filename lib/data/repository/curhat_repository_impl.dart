@@ -14,22 +14,24 @@ class CurhatRepositoryImpl extends CurhatRepository {
       required int curhatId,
       required String content,
       required bool isAnonymous}) async {
-    await curhatClient().then((client) {
-      client
-          .createNewComment(
-            userId: userId,
-            curhatId: curhatId,
-            content: content,
-            isAnonymous: isAnonymous,
-          )
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.comment!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await curhatClient();
+    final response = client.createNewComment(
+      body: {
+        'user_id': userId,
+        'curhat_id': curhatId,
+        'content': content,
+        'is_anonymous': isAnonymous,
+      },
+    );
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.comment!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
@@ -38,68 +40,69 @@ class CurhatRepositoryImpl extends CurhatRepository {
       required bool isAnonymous,
       required String content,
       required String topic}) async {
-    await curhatClient().then((client) {
-      client
-          .createNewCurhat(
-            userId: userId,
-            isAnonymous: isAnonymous,
-            content: content,
-            topic: topic,
-          )
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.curhatan!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await curhatClient();
+    final response = client.createNewCurhat(
+      body: {
+        'user_id': userId,
+        'is_anonymous': isAnonymous,
+        'content': content,
+        'topic': topic,
+      },
+    );
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.curhatan!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, List<CurhatanEntity>>> getAllCurhat(
       {required int userId}) async {
-    await curhatClient().then((client) {
-      client.fetchAllCurhat(userId: userId).validateStatus().then((response) {
-        return Right(
-            response.data!.curhatans!.map((e) => e.toEntity()).toList());
-      });
-    }).handleError((onError) {
+    final client = await curhatClient();
+    final response = client.fetchAllCurhat(userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.curhatans!.map((e) => e.toEntity()).toList());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, List<CurhatanEntity>>> getAllCurhatByCategory(
       {required int userId, required String category}) async {
-    await curhatClient().then((client) {
-      client
-          .fetchCurhatByCategory(category: category, userId: userId)
-          .validateStatus()
-          .then((response) {
-        return Right(
-            response.data!.curhatans!.map((e) => e.toEntity()).toList());
-      });
-    }).handleError((onError) {
+    final client = await curhatClient();
+    final response =
+        client.fetchCurhatByCategory(category: category, userId: userId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.curhatans!.map((e) => e.toEntity()).toList());
+    } else {
+      return Left(result.message);
+    }
   }
 
   @override
   Future<Either<String, DetailCurhatanEntity>> getCurhatDetail(
       {required int userId, required int curhatId}) async {
-    await curhatClient().then((client) {
-      client
-          .fetchCurhatById(userId: userId, curhatId: curhatId)
-          .validateStatus()
-          .then((response) {
-        return Right(response.data!.curhatan!.toEntity());
-      });
-    }).handleError((onError) {
+    final client = await curhatClient();
+    final response = client.fetchCurhatById(userId: userId, curhatId: curhatId);
+    final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
-    return Left("Unknown Error");
+    if (result.statusCode >= 200 && result.statusCode <= 299) {
+      return Right(result.data!.curhatan!.toEntity());
+    } else {
+      return Left(result.message);
+    }
   }
 }

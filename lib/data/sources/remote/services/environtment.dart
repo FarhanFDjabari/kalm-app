@@ -1,6 +1,6 @@
 class Environments {
-  static const String PRODUCTION = 'http://calma.com-indo.com/';
-  static const String DEV = 'http://calma.com-indo.com/';
+  static const String PRODUCTION = 'http://calma.mides.id/';
+  static const String DEV = 'http://calma.mides.id/';
 }
 
 class ConfigEnvironments {
@@ -8,11 +8,11 @@ class ConfigEnvironments {
   static const List<Map<String, String>> _availableEnvironments = [
     {
       'env': Environments.DEV,
-      'url': 'http://calma.com-indo.com/',
+      'url': 'http://calma.mides.id/',
     },
     {
       'env': Environments.PRODUCTION,
-      'url': 'http://calma.com-indo.com/',
+      'url': 'http://calma.mides.id/',
     },
   ];
 

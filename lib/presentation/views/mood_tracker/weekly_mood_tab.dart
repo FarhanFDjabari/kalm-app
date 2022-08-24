@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
 import 'package:kalm/domain/entity/mood_tracker/list_acc_reason_entity.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
@@ -17,7 +18,7 @@ class WeeklyMoodTab extends StatefulWidget {
 
 class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
   String getTimeRange(DateTime date) {
-    return '${date.day} - ${date.month} - ${date.year}';
+    return DateFormat('d MMM y').format(date);
   }
 
   IconData getMoodFactorIcon(String? moodFactor) {
@@ -85,23 +86,6 @@ class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(8),
-                          splashColor: tertiaryColor,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                            height: MediaQuery.of(context).size.width * 0.1,
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: tertiaryColor,
-                            ),
-                          ),
-                        ),
                         Expanded(
                           child: Container(
                             alignment: Alignment.center,
@@ -116,23 +100,23 @@ class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
                             ),
                           ),
                         ),
-                        InkWell(
-                          onTap: () {},
-                          borderRadius: BorderRadius.circular(8),
-                          splashColor: tertiaryColor,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.1,
-                            height: MediaQuery.of(context).size.width * 0.1,
-                            decoration: BoxDecoration(
-                              color: primaryColor,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: tertiaryColor,
-                            ),
-                          ),
-                        ),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   borderRadius: BorderRadius.circular(8),
+                        //   splashColor: tertiaryColor,
+                        //   child: Container(
+                        //     width: MediaQuery.of(context).size.width * 0.1,
+                        //     height: MediaQuery.of(context).size.width * 0.1,
+                        //     decoration: BoxDecoration(
+                        //       color: primaryColor,
+                        //       borderRadius: BorderRadius.circular(10),
+                        //     ),
+                        //     child: Icon(
+                        //       Icons.arrow_forward_ios_rounded,
+                        //       color: tertiaryColor,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     Container(
@@ -149,7 +133,12 @@ class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
                           getMoodPoint(state.weeklyInsightData.sortedMood)
                               .toDouble(),
                       moodFactor:
-                          state.weeklyInsightData.listAccReason![0].factor,
+                          state.weeklyInsightData.listAccReason != null &&
+                                  state.weeklyInsightData.listAccReason
+                                          ?.isNotEmpty ==
+                                      true
+                              ? state.weeklyInsightData.listAccReason![0].factor
+                              : '-',
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 15, bottom: 15),

@@ -36,7 +36,7 @@ abstract class AuthService {
     @Part(name: 'password') required String password,
   });
 
-  @GET("api/v1/user/get_user")
+  @POST("api/v1/user/get_user")
   Future<ApiResponse<UserInfo>> getUserById(
       {@Part(name: 'user_id') required int userId});
 

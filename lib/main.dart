@@ -6,15 +6,8 @@ import 'package:kalm/presentation/cubit/curhat/curhat_cubit.dart';
 import 'package:kalm/presentation/cubit/journey/journey_cubit.dart';
 import 'package:kalm/presentation/cubit/meditation/meditation_cubit.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
-import 'package:kalm/presentation/views/auth/auth_page.dart';
-import 'package:kalm/presentation/views/curhat/curhat_home.dart';
-import 'package:kalm/presentation/views/journey/journey_page.dart';
-import 'package:kalm/presentation/views/meditation/meditation_audio_list.dart';
-import 'package:kalm/presentation/views/mood_tracker/mood_tracker_page.dart';
-import 'package:kalm/presentation/views/onboarding/onboarding_page.dart';
-import 'package:kalm/presentation/views/splash.dart';
-import 'package:kalm/presentation/views/view.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:kalm/utilities/routes/app_routes.dart';
 import 'package:kalm/utilities/routes/route_name.dart';
 
 import 'injection.dart' as di;
@@ -22,7 +15,8 @@ import 'injection.dart' as di;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  di.init();
+  await di.init();
+  await di.initHive();
   runApp(KalmApp());
 }
 
@@ -47,21 +41,17 @@ class KalmApp extends StatelessWidget {
           create: (_) => di.locator<MoodTrackerCubit>(),
         ),
       ],
-      child: MaterialApp(
-        title: 'KALM',
-        theme: kalmOfflineTheme,
-        debugShowCheckedModeBanner: false,
-        routes: {
-          RouteName.HOME: (context) => View(),
-          RouteName.MEDITATIONPLAYLIST: (context) => MeditationAudioList(),
-          RouteName.MOODTRACKER: (context) => MoodTrackerPage(),
-          RouteName.SPLASH: (context) => Splash(),
-          RouteName.ONBOARDING: (context) => OnboardingPage(),
-          RouteName.JOURNEY: (context) => JourneyPage(),
-          RouteName.CURHAT: (context) => CurhatHome(),
-          RouteName.AUTH: (context) => AuthPage(),
+      child: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
         },
-        initialRoute: RouteName.SPLASH,
+        child: MaterialApp(
+          title: 'KALM',
+          theme: kalmOfflineTheme,
+          debugShowCheckedModeBanner: false,
+          routes: AppRoutes.pages,
+          initialRoute: RouteName.SPLASH,
+        ),
       ),
     );
   }

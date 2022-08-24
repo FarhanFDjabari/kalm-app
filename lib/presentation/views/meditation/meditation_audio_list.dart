@@ -24,6 +24,9 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
   @override
   void initState() {
     super.initState();
+    context
+        .read<MeditationCubit>()
+        .fetchPlaylistById(GetStorage().read('user_id'), widget.playlistId);
   }
 
   @override
@@ -33,9 +36,6 @@ class _MeditationAudioListState extends State<MeditationAudioList> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<MeditationCubit>()
-        .fetchPlaylistById(GetStorage().read('user_id'), widget.playlistId);
     return BlocListener<MeditationCubit, MeditationState>(
       listener: (context, state) {
         if (state is MeditationLoadError) {

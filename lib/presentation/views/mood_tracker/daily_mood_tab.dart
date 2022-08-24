@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:kalm/domain/entity/mood_tracker/recomended_playlist_entity.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
 import 'package:kalm/presentation/widgets/daily_mood_tile.dart';
@@ -15,6 +16,10 @@ class DailyMoodTab extends StatefulWidget {
 }
 
 class _DailyMoodTabState extends State<DailyMoodTab> {
+  getFormattedDate() {
+    return DateFormat('d MMMM y').format(DateTime.now());
+  }
+
   @override
   Widget build(BuildContext context) {
     context
@@ -43,28 +48,11 @@ class _DailyMoodTabState extends State<DailyMoodTab> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(8),
-                        splashColor: tertiaryColor,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.1,
-                          height: MediaQuery.of(context).size.width * 0.1,
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            Icons.arrow_back_ios_rounded,
-                            color: tertiaryColor,
-                          ),
-                        ),
-                      ),
                       Expanded(
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            '${DateTime.now().day} - ${DateTime.now().month} - ${DateTime.now().year}',
+                            getFormattedDate(),
                             style: kalmOfflineTheme.textTheme.bodyText2!
                                 .copyWith(
                                     fontWeight: FontWeight.bold,
@@ -73,49 +61,42 @@ class _DailyMoodTabState extends State<DailyMoodTab> {
                           ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {},
-                        borderRadius: BorderRadius.circular(8),
-                        splashColor: tertiaryColor,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.1,
-                          height: MediaQuery.of(context).size.width * 0.1,
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            color: tertiaryColor,
-                          ),
-                        ),
-                      ),
+                      // InkWell(
+                      //   onTap: () {},
+                      //   borderRadius: BorderRadius.circular(8),
+                      //   splashColor: tertiaryColor,
+                      //   child: Container(
+                      //     width: MediaQuery.of(context).size.width * 0.1,
+                      //     height: MediaQuery.of(context).size.width * 0.1,
+                      //     decoration: BoxDecoration(
+                      //       color: primaryColor,
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     child: Icon(
+                      //       Icons.arrow_forward_ios_rounded,
+                      //       color: tertiaryColor,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 15, bottom: 10),
                     alignment: Alignment.centerLeft,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
                           'Moodmu Hari Ini',
                           style: kalmOfflineTheme.textTheme.button!
                               .apply(color: primaryText, fontSizeFactor: 1.1),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Iconsax.edit_25,
-                            color: primaryColor,
-                          ),
-                        ),
                       ],
                     ),
                   ),
                   DailyMoodTile(
                       moodPoint: state.dailyInsightData.mood!,
-                      reasons: state.dailyInsightData.reasons!),
+                      reasons: state.dailyInsightData.reasons ?? []),
                   Container(
                     margin: const EdgeInsets.only(top: 15, bottom: 10),
                     alignment: Alignment.centerLeft,

@@ -8,6 +8,7 @@ import 'package:kalm/presentation/widgets/kalm_snackbar.dart';
 import 'package:kalm/presentation/widgets/mood_factor_tile.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:kalm/utilities/routes/route_name.dart';
 
 class MoodFactorPage extends StatefulWidget {
   final double? moodPoint;
@@ -63,6 +64,14 @@ class _MoodFactorPageState extends State<MoodFactorPage> {
   ];
   List<String> moodFactor = [];
 
+  String getMoodTitle(double? moodPoint) {
+    if (moodPoint == 0) return 'buruk';
+    if (moodPoint == 1)
+      return 'biasa';
+    else
+      return 'baik';
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<MoodTrackerCubit, MoodTrackerState>(
@@ -81,11 +90,9 @@ class _MoodFactorPageState extends State<MoodFactorPage> {
               duration: Duration(seconds: 2),
             ),
           );
-          Navigator.pushReplacement(
+          Navigator.pushReplacementNamed(
             context,
-            MaterialPageRoute(
-              builder: (context) => MoodGraphPage(),
-            ),
+            RouteName.MOODGRAPH,
           );
         }
       },
@@ -129,7 +136,7 @@ class _MoodFactorPageState extends State<MoodFactorPage> {
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 15),
                       child: Text(
-                        'Apa yang membuat harimu terasa buruk?',
+                        'Apa yang membuat harimu terasa ${getMoodTitle(widget.moodPoint)}?',
                         style: kalmOfflineTheme.textTheme.headline1!
                             .apply(color: primaryText, fontSizeFactor: 1.1),
                         textAlign: TextAlign.center,

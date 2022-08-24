@@ -7,4 +7,7 @@ class RouteName {
   static const MOODTRACKER = '/mood-tracker';
   static const HOME = '/';
   static const AUTH = '/auth';
+  static const MOODGRAPH = '/mood-graph';
+  static const MOODCAMERA = '/mood-camera';
+  static const MOODFACTOR = '/mood-factor';
 }

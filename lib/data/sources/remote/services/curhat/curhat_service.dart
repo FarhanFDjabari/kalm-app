@@ -49,18 +49,12 @@ abstract class CurhatService {
 
   @POST('api/v1/curhatans')
   Future<ApiResponse<CreateCurhatanModel>> createNewCurhat({
-    @Part(name: "user_id") required int userId,
-    @Part(name: "is_anonymous") required bool isAnonymous,
-    @Part(name: "content") required String content,
-    @Part(name: "topic") required String topic,
+    @Body() required Map<String, dynamic> body,
   });
 
   @POST('api/v1/comments')
   Future<ApiResponse<CommentModel>> createNewComment({
-    @Part(name: "user_id") required int userId,
-    @Part(name: "curhat_id") required int curhatId,
-    @Part(name: "content") required String content,
-    @Part(name: "is_anonymous") required bool isAnonymous,
+    @Body() required Map<String, dynamic> body,
   });
 }
 

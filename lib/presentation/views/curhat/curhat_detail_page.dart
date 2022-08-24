@@ -27,6 +27,9 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
 
   @override
   void initState() {
+    context
+        .read<CurhatCubit>()
+        .getCurhatDetail(GetStorage().read('user_id'), widget.curhatId);
     super.initState();
   }
 
@@ -38,9 +41,6 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<CurhatCubit>()
-        .getCurhatDetail(GetStorage().read('user_id'), widget.curhatId);
     return BlocListener<CurhatCubit, CurhatState>(
       listener: (context, state) {
         if (state is CurhatPostError) {
@@ -90,39 +90,27 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                 kalmOfflineTheme.textTheme.headline1!.apply(color: primaryText),
           ),
         ),
-        body: Stack(
-          children: [
-            Positioned(
-              bottom: 0,
-              left: 1,
-              right: 1,
-              child: Image.asset(
-                'assets/picture/picture-background_bottom_middle.png',
-                scale: 1.5,
-              ),
-            ),
-            SizedBox(height: 10),
-            BlocBuilder<CurhatCubit, CurhatState>(
-              builder: (builderContext, state) {
-                if (state is DetailCurhatLoaded)
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: KalmDetailCurhatTile(
-                          user: state.detailCurhatan.user!,
-                          content: state.detailCurhatan.content!,
-                          topic: state.detailCurhatan.category!,
-                          postedAt: state.detailCurhatan.createdAt,
-                          likeCount: state.detailCurhatan.curhatLike!,
-                          isAnonymous: state.detailCurhatan.isAnonymous,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: SizedBox(
-                          height: 30,
-                          child: Row(
+        body: BlocBuilder<CurhatCubit, CurhatState>(
+          builder: (builderContext, state) {
+            if (state is DetailCurhatLoaded)
+              return Column(
+                children: [
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          KalmDetailCurhatTile(
+                            user: state.detailCurhatan.user!,
+                            content: state.detailCurhatan.content!,
+                            topic: state.detailCurhatan.category!,
+                            postedAt: state.detailCurhatan.createdAt,
+                            likeCount: state.detailCurhatan.curhatLike!,
+                            isAnonymous: state.detailCurhatan.isAnonymous,
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
@@ -145,133 +133,140 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: RefreshIndicator(
-                            onRefresh: () async {},
-                            color: primaryColor,
-                            child: ListView.builder(
-                              itemCount: state.detailCurhatan.comments!.length,
-                              itemBuilder: (_, index) {
-                                DetailCommentEntity komentar =
-                                    state.detailCurhatan.comments![index];
-                                return KalmCurhatReplyTile(
-                                  comment: komentar.content ?? '-',
-                                  userName: komentar.username ?? '-',
-                                  postedAt: komentar.createdAt,
-                                  isAnonymous: komentar.isAnonymous,
-                                );
-                              },
+                          const SizedBox(height: 10),
+                          Container(
+                            height: state.detailCurhatan.comments!.isEmpty
+                                ? 200
+                                : null,
+                            child: RefreshIndicator(
+                              onRefresh: () async {},
+                              color: primaryColor,
+                              child: state.detailCurhatan.comments!.isNotEmpty
+                                  ? ListView.builder(
+                                      itemCount:
+                                          state.detailCurhatan.comments!.length,
+                                      itemBuilder: (_, index) {
+                                        DetailCommentEntity komentar = state
+                                            .detailCurhatan.comments![index];
+                                        return KalmCurhatReplyTile(
+                                          comment: komentar.content ?? '-',
+                                          userName: komentar.username ?? '-',
+                                          postedAt: komentar.createdAt,
+                                          isAnonymous: komentar.isAnonymous,
+                                        );
+                                      },
+                                    )
+                                  : Center(
+                                      child: Text('Belum ada komentar'),
+                                    ),
                             ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.17,
-                        color: tertiaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 5),
-                        margin: const EdgeInsets.all(0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 5),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Sembunyikan namaku',
-                                    style: kalmOfflineTheme.textTheme.bodyText2,
-                                  ),
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.25,
-                                  ),
-                                  KalmSwitchButton(
-                                    primaryColor: primaryColor,
-                                    accentColor: accentColor,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _isAnonymous = value;
-                                      });
-                                      print('is anonymous: $value');
-                                    },
-                                    value: _isAnonymous,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Form(
-                              key: _formKey,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Container(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.75,
-                                    child: KalmTextField(
-                                      kalmTextFieldController: _replyController,
-                                      minLines: 1,
-                                      keyboardType: TextInputType.multiline,
-                                      hintText: 'Berkomentar sebagai Selene...',
-                                      focusColor: primaryColor,
-                                      primaryColor: accentColor,
-                                      accentColor: secondaryText,
-                                      validator: (value) {
-                                        if (value!.isEmpty) {
-                                          return 'Kolom komentar tidak boleh kosong';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      if (_formKey.currentState!.validate()) {
-                                        builderContext
-                                            .read<CurhatCubit>()
-                                            .postComment(
-                                              GetStorage().read('user_id'),
-                                              widget.curhatId,
-                                              _replyController.text,
-                                              _isAnonymous,
-                                            );
-                                        _replyController.clear();
-                                      }
-                                    },
-                                    child: Container(
-                                      child: Icon(
-                                        Iconsax.send_2,
-                                        size: 28,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                else
-                  return Container(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: primaryColor,
+                        ],
                       ),
                     ),
-                  );
-              },
-            ),
-          ],
+                  )),
+                  Container(
+                    width: double.infinity,
+                    color: tertiaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 10),
+                    margin: const EdgeInsets.all(0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Sembunyikan namaku',
+                                style: kalmOfflineTheme.textTheme.bodyText2,
+                              ),
+                              KalmSwitchButton(
+                                primaryColor: primaryColor,
+                                accentColor: accentColor,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _isAnonymous = value;
+                                  });
+                                  print('is anonymous: $value');
+                                },
+                                value: _isAnonymous,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Form(
+                          key: _formKey,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: KalmTextField(
+                                  kalmTextFieldController: _replyController,
+                                  minLines: 1,
+                                  keyboardType: TextInputType.multiline,
+                                  hintText: 'Tulis komentar...',
+                                  focusColor: primaryColor,
+                                  primaryColor: accentColor,
+                                  accentColor: secondaryText,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return null;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  if (_replyController.text.isNotEmpty &&
+                                      _formKey.currentState!.validate()) {
+                                    builderContext
+                                        .read<CurhatCubit>()
+                                        .postComment(
+                                          GetStorage().read('user_id'),
+                                          widget.curhatId,
+                                          _replyController.text,
+                                          _isAnonymous,
+                                        );
+                                    _replyController.clear();
+                                  }
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  width: 56,
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: primaryColor.withAlpha(35)),
+                                  child: Icon(
+                                    Iconsax.send_2,
+                                    size: 24,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            else
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
+                ),
+              );
+          },
         ),
       ),
     );

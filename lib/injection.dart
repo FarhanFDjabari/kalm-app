@@ -1,17 +1,27 @@
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:kalm/data/repository/auth_repository_impl.dart';
 import 'package:kalm/data/repository/curhat_repository_impl.dart';
 import 'package:kalm/data/repository/journey_repository_impl.dart';
 import 'package:kalm/data/repository/meditation_repository_impl.dart';
 import 'package:kalm/data/repository/mood_tracker_repository_impl.dart';
+import 'package:kalm/data/sources/local/database_adapter.dart';
+import 'package:kalm/data/sources/local/hive_constants.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
+import 'package:kalm/domain/entity/meditation/rounded_image_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
 import 'package:kalm/domain/repository/curhat_repository.dart';
 import 'package:kalm/domain/repository/journey_repository.dart';
 import 'package:kalm/domain/repository/meditation_repository.dart';
 import 'package:kalm/domain/repository/mood_tracker_repository.dart';
 import 'package:kalm/domain/usecases/auth/create_user.dart';
+import 'package:kalm/domain/usecases/auth/get_current_user.dart';
 import 'package:kalm/domain/usecases/auth/get_user.dart';
 import 'package:kalm/domain/usecases/auth/logout.dart';
+import 'package:kalm/domain/usecases/auth/save_current_user.dart';
 import 'package:kalm/domain/usecases/auth/sign_in.dart';
 import 'package:kalm/domain/usecases/curhat/create_comment.dart';
 import 'package:kalm/domain/usecases/curhat/create_curhat.dart';
@@ -37,10 +47,11 @@ import 'package:kalm/presentation/cubit/curhat/curhat_cubit.dart';
 import 'package:kalm/presentation/cubit/journey/journey_cubit.dart';
 import 'package:kalm/presentation/cubit/meditation/meditation_cubit.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
+import 'package:path_provider/path_provider.dart';
 
 final locator = GetIt.instance;
 
-void init() {
+Future<void> init() async {
   // cubit
   locator.registerFactory(
     () => AuthCubit(
@@ -48,6 +59,8 @@ void init() {
       getUser: locator(),
       signOut: locator(),
       signIn: locator(),
+      getCurrentUserUsecase: locator(),
+      saveCurrentUserUsecase: locator(),
     ),
   );
   locator.registerFactory(
@@ -90,6 +103,8 @@ void init() {
   locator.registerLazySingleton(() => GetUser(repository: locator()));
   locator.registerLazySingleton(() => Logout(repository: locator()));
   locator.registerLazySingleton(() => SignIn(repository: locator()));
+  locator.registerLazySingleton(() => SaveCurrentUser(repository: locator()));
+  locator.registerLazySingleton(() => GetCurrentUser(repository: locator()));
 
   locator.registerLazySingleton(() => CreateComment(repository: locator()));
   locator.registerLazySingleton(() => CreateCurhat(repository: locator()));
@@ -137,9 +152,27 @@ void init() {
     () => MoodTrackerRepositoryImpl(),
   );
 
-  // data sources (api services)
+  // data sources
 
   // helper
 
   // external
+
+  _initSystemPreference();
+}
+
+Future<void> initHive() async {
+  final dir = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter(dir.path);
+  DatabaseAdapter().registerAdapter();
+  await Hive.openBox<UserEntity>(HiveConstants.USERS);
+  await Hive.openBox<PlaylistMusicItemEntity>(HiveConstants.MUSICS);
+  await Hive.openBox<RoundedImageEntity>(HiveConstants.ROUNDEDIMAGE);
+}
+
+void _initSystemPreference() {
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 }

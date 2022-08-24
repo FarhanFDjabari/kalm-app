@@ -42,7 +42,7 @@ class _MoodTrackerService implements MoodTrackerService {
     _data.fields.add(MapEntry('user_id', userId.toString()));
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerDailyInsightModel>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
+            Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/mood-tracks/index-harian',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
@@ -61,7 +61,7 @@ class _MoodTrackerService implements MoodTrackerService {
     _data.fields.add(MapEntry('user_id', userId.toString()));
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerWeeklyInsightModel>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
+            Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/mood-tracks/index-mingguan',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
@@ -84,7 +84,7 @@ class _MoodTrackerService implements MoodTrackerService {
     });
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerPostResponse>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
+            Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/mood-tracks',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));

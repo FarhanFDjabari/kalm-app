@@ -7,6 +7,7 @@ class KalmTextField extends StatefulWidget {
   final int minLines;
   final int? maxLines;
   final TextInputType keyboardType;
+  final TextInputAction? inputAction;
   final String hintText;
   final Color primaryColor;
   final Color accentColor;
@@ -20,6 +21,7 @@ class KalmTextField extends StatefulWidget {
       {required this.kalmTextFieldController,
       required this.minLines,
       this.keyboardType = TextInputType.text,
+      this.inputAction,
       required this.hintText,
       required this.focusColor,
       this.suffixIcon,
@@ -65,6 +67,7 @@ class _KalmTextFieldState extends State<KalmTextField> {
       maxLines: widget.maxLines,
       cursorColor: widget.accentColor,
       keyboardType: widget.keyboardType,
+      textInputAction: widget.inputAction,
       obscuringCharacter: '*',
       decoration: InputDecoration(
         hintText: widget.hintText,

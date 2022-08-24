@@ -19,6 +19,15 @@ class MoodTrackerTaskPage extends StatefulWidget {
 class _MoodTrackerTaskPageState extends State<MoodTrackerTaskPage> {
   int moodValue = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<MoodTrackerCubit>()
+        .fetchMoodTrackerHome(GetStorage().read('user_id'));
+    context.read<AuthCubit>().getCurrentUser();
+  }
+
   getMoodImage(int value) {
     switch (value) {
       case 0:
@@ -43,10 +52,6 @@ class _MoodTrackerTaskPageState extends State<MoodTrackerTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<MoodTrackerCubit>()
-        .fetchMoodTrackerHome(GetStorage().read('user_id'));
-    context.read<AuthCubit>().getUserInfo(GetStorage().read('user_id'));
     return Material(
       child: MultiBlocListener(
         listeners: [

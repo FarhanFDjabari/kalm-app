@@ -27,6 +27,8 @@ class AuthRegisterSuccess extends AuthState {
 
 class AuthDeleted extends AuthState {}
 
+class AuthSaveSuccess extends AuthState {}
+
 class AuthError extends AuthState {
   final String errorMessage;
 
