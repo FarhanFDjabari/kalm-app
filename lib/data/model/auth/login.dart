@@ -18,7 +18,7 @@ class Login extends Equatable implements ModelFactory {
       };
 
   LoginEntity toEntity() {
-    return LoginEntity(userId: userId);
+    return LoginEntity(userId: userId.toString());
   }
 
   @override

@@ -14,7 +14,7 @@ class UserEntity extends HiveObject {
   });
 
   @HiveField(0)
-  final int? id;
+  final String? id;
   @HiveField(1)
   final String? name;
   @HiveField(2)

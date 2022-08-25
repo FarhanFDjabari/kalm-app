@@ -1,6 +1,6 @@
 class Environments {
-  static const String PRODUCTION = 'http://calma.mides.id/';
-  static const String DEV = 'http://calma.mides.id/';
+  static const String PRODUCTION = 'PRODUCTION';
+  static const String DEV = 'DEV';
 }
 
 class ConfigEnvironments {
@@ -8,7 +8,7 @@ class ConfigEnvironments {
   static const List<Map<String, String>> _availableEnvironments = [
     {
       'env': Environments.DEV,
-      'url': 'http://calma.mides.id/',
+      'url': 'https://xtxiyjuvarutzorjpudq.supabase.co',
     },
     {
       'env': Environments.PRODUCTION,
@@ -16,7 +16,7 @@ class ConfigEnvironments {
     },
   ];
 
-  static String? getEnvironments() {
+  static String getEnvironments() {
     return _availableEnvironments
         .firstWhere(
           (d) => d['env'] == _currentEnvironments,
@@ -24,5 +24,9 @@ class ConfigEnvironments {
         .values
         .last
         .toString();
+  }
+
+  static String getPublicKey() {
+    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0eGl5anV2YXJ1dHpvcmpwdWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyNzQ0MDUsImV4cCI6MTk3Njg1MDQwNX0.XOeN0u6qNEOJ7wJrorI3U5FPAC4Uo97AvU8t8WTAu20';
   }
 }

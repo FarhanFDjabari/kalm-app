@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:kalm/data/model/auth/login.dart';
 import 'package:kalm/data/model/auth/user_info.dart';
 import 'package:kalm/data/sources/remote/interceptor/dio.dart';

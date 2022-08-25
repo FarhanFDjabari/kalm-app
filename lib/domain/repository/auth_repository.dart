@@ -8,7 +8,7 @@ abstract class AuthRepository {
     required String password,
   });
 
-  Future<Either<String, UserEntity>> getUser({required int userId});
+  Future<Either<String, UserEntity>> getUser({required String userId});
 
   Future<Either<String, UserEntity>> createUser({
     required String name,

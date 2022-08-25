@@ -2,31 +2,34 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:kalm/data/sources/local/database_helper.dart';
 import 'package:kalm/data/sources/local/hive_constants.dart';
 import 'package:kalm/data/sources/local/hive_keys.dart';
 import 'package:kalm/data/sources/remote/error/error_handler.dart';
 import 'package:kalm/data/sources/remote/services/auth/auth_service.dart';
+import 'package:kalm/data/sources/remote/services/environtment.dart';
 import 'package:kalm/domain/entity/auth/login_entity.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
+import 'package:supabase/supabase.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
+  final client = SupabaseClient(
+      ConfigEnvironments.getEnvironments(), ConfigEnvironments.getPublicKey());
+
   @override
   Future<Either<String, LoginEntity>> signIn(
       {required String email, required String password}) async {
     try {
-      final client = await authClient();
-      final response = client.signInUserWithEmailAndPassword(
-          email: email, password: password);
-      final result = await response.validateStatus().handleError((onError) {
+      // final client = await authClient();
+      final response = await client.auth
+          .signIn(email: email, password: password)
+          .handleError((onError) {
         return Left(onError.toString());
       });
-
-      if (result.statusCode >= 200 && result.statusCode <= 299) {
-        return Right(result.data!.toEntity());
+      if (response.statusCode! >= 200 && response.statusCode! <= 299) {
+        return Right(LoginEntity(userId: response.data?.user?.id));
       } else {
-        return Left(result.message);
+        return Left(response.error!.message);
       }
     } catch (e) {
       return Left("Unknown Error");
@@ -40,36 +43,63 @@ class AuthRepositoryImpl extends AuthRepository {
       required String username,
       required String password,
       required String gender}) async {
-    final client = await authClient();
-    final response = client.createNewUser(
-      name: name,
-      email: email,
-      username: username,
-      password: password,
-      jenisKelamin: gender,
-    );
-    final result = await response.validateStatus().handleError((onError) {
+    // final client = await authClient();
+    final response =
+        await client.auth.signUp(email, password).handleError((onError) {
       return Left(onError.toString());
     });
 
-    if (result.statusCode >= 200 && result.statusCode <= 299) {
-      return Right(result.data!.user!.toEntity());
+    if (response.statusCode! >= 200 && response.statusCode! <= 299) {
+      final result = await client.from('profiles').insert({
+        'user_id': response.data!.user!.id,
+        'nama_lengkap': name,
+        'jenis_kelamin': gender,
+        'username': username,
+        'email': email,
+        'role': 'user',
+      }).execute();
+
+      if (result.status! >= 200 && result.status! <= 299) {
+        final userData = UserEntity(
+          id: response.data!.user!.id,
+          email: email,
+          jenisKelamin: gender,
+          name: name,
+          username: username,
+        );
+        return Right(userData);
+      } else {
+        return Left(result.error!.message);
+      }
     } else {
-      return Left(result.message);
+      return Left(response.error!.message);
     }
   }
 
   @override
-  Future<Either<String, UserEntity>> getUser({required int userId}) async {
-    final client = await authClient();
-    final response = client.getUserById(userId: userId);
-    final result = await response.validateStatus().handleError((onError) {
+  Future<Either<String, UserEntity>> getUser({required String userId}) async {
+    // final client = await authClient();
+    final response = await client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .execute()
+        .handleError((onError) {
       return Left(onError.toString());
     });
-    if (result.statusCode >= 200 && result.statusCode <= 299) {
-      return Right(result.data!.user!.toEntity());
+    if (response.status! >= 200 && response.status! <= 299) {
+      // response data: [{id, email, name, username}]
+
+      final userData = UserEntity(
+        id: response.data[0].val('id'),
+        email: response.data[0].val('email'),
+        name: response.data[0].val('nama_lengkap'),
+        username: response.data[0].val('username'),
+        jenisKelamin: response.data[0].val('jenis_kelamin'),
+      );
+      return Right(userData);
     } else {
-      return Left(result.message);
+      return Left(response.error!.message);
     }
   }
 
@@ -103,10 +133,15 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<bool> logout() async {
     try {
-      final storageBox = Hive.box<UserEntity>(HiveConstants.USERS);
-      await storageBox.delete(HiveKeys.CURRENT_USER);
-      await GetStorage().remove("user_id");
-      return true;
+      final response = await client.auth.signOut();
+      if (response.statusCode! >= 200 && response.statusCode! <= 299) {
+        final storageBox = Hive.box<UserEntity>(HiveConstants.USERS);
+        await storageBox.delete(HiveKeys.CURRENT_USER);
+        await GetStorage().remove("user_id");
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       return false;
     }

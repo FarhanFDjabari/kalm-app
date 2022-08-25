@@ -5,7 +5,7 @@ class LoginEntity extends Equatable {
     this.userId,
   });
 
-  final int? userId;
+  final String? userId;
 
   @override
   List<Object?> get props => [userId];
