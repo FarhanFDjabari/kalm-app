@@ -35,7 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
       result.fold(
         (l) => emit(AuthError('Login error: $l')),
         (r) async {
-          getUserInfo(r.userId ?? "0");
+          getUserInfo(r.userId ?? 0);
           // emit(AuthLoginSuccess(r.userId ?? 0));
         },
       );
@@ -66,7 +66,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void getUserInfo(String userId) async {
+  void getUserInfo(int userId) async {
     emit(AuthLoading());
     try {
       final result = await getUser.execute(userId: userId);

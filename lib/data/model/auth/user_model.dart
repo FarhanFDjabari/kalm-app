@@ -35,7 +35,7 @@ class User extends Equatable implements ModelFactory {
 
   UserEntity toEntity() {
     return UserEntity(
-      id: id.toString(),
+      id: id,
       email: email,
       name: name,
       username: username,

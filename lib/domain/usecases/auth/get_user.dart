@@ -7,7 +7,7 @@ class GetUser {
 
   GetUser({required this.repository});
 
-  Future<Either<String, UserEntity>> execute({required String userId}) {
+  Future<Either<String, UserEntity>> execute({required int userId}) {
     return repository.getUser(userId: userId);
   }
 }
