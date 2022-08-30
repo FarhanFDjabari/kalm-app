@@ -21,7 +21,7 @@ class CurhatServiceSupa {
           .eq('user_id', userId)
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
-        final curhatsMapData = response.data as List<Map<String, dynamic>>;
+        final curhatsMapData = response.data as List<dynamic>;
         final curhatsData = await Future.wait<Curhatan>(
           curhatsMapData.map((curhat) async {
             final curhatLike =
@@ -42,64 +42,87 @@ class CurhatServiceSupa {
 
         return curhatsData;
       }
+      print(response.error!.message);
       throw ErrorDescription(response.error!.message);
     } catch (e) {
+      print(e.toString());
       throw ErrorDescription(e.toString());
     }
   }
 
   Future<List<CurhatLike>> fetchCurhatLike({required int curhatId}) async {
-    final response = await client
-        .from('curhat_likes')
-        .select()
-        .eq('curhat_id', curhatId)
-        .execute();
+    try {
+      final response = await client
+          .from('curhat_likes')
+          .select()
+          .eq('curhat_id', curhatId)
+          .execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final curhatLikeMapData = response.data as List<Map<String, dynamic>>;
-      final curhatLikeData = curhatLikeMapData.map((curhatLike) {
-        return CurhatLike(
-          id: curhatLike['id'] as int?,
-          userId: curhatLike['user_id'] as String?,
-          curhatanId: curhatLike['curhat_id'] as String?,
-          createdAt: DateTime.tryParse(curhatLike['created_at']),
-        );
-      }).toList();
+      if (response.status! >= 200 && response.status! <= 299) {
+        final curhatLikeMapData = response.data as List<dynamic>;
+        final curhatLikeData = curhatLikeMapData.map((curhatLike) {
+          return CurhatLike(
+            id: curhatLike['id'] as int?,
+            userId: curhatLike['user_id'] as String?,
+            curhatanId: curhatLike['curhat_id'] as String?,
+            createdAt: DateTime.tryParse(curhatLike['created_at']),
+          );
+        }).toList();
 
-      return curhatLikeData;
+        return curhatLikeData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<userModel.User> fetchUserData({required int userId}) async {
-    final response = await client
-        .from('profiles')
-        .select('nama_lengkap, username')
-        .eq('user_id', userId)
-        .execute();
+    try {
+      final response = await client
+          .from('profiles')
+          .select('nama_lengkap, username')
+          .eq('user_id', userId)
+          .execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      // response data: [{id, email, name, username}]
-      final userMapData = response.data as List<Map<String, dynamic>>;
-      final userData = userModel.User(
-        id: int.tryParse(userMapData.first['id']),
-        name: userMapData.first['nama_lengkap'] as String?,
-        username: userMapData.first['username'] as String?,
-      );
+      if (response.status! >= 200 && response.status! <= 299) {
+        // response data: [{id, email, name, username}]
+        final userMapData = response.data as List<dynamic>;
+        final userData = userModel.User(
+          id: int.tryParse(userMapData.first['id']),
+          name: userMapData.first['nama_lengkap'] as String?,
+          username: userMapData.first['username'] as String?,
+        );
 
-      return userData;
+        return userData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<PostgrestResponse<dynamic>> fetchCurhatComment(
       {required int curhatId}) async {
-    return await client
-        .from('comments')
-        .select()
-        .eq('curhat_id', curhatId)
-        .execute();
+    try {
+      final response = await client
+          .from('comments')
+          .select()
+          .eq('curhat_id', curhatId)
+          .execute();
+      if (response.status! >= 200 && response.status! <= 299) {
+        return response;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
+    }
   }
 
   Future<List<Curhatan>> fetchCurhatByCategory({
@@ -115,7 +138,7 @@ class CurhatServiceSupa {
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
-        final curhatsMapData = response.data as List<Map<String, dynamic>>;
+        final curhatsMapData = response.data as List<dynamic>;
         final curhatsData =
             await Future.wait<Curhatan>(curhatsMapData.map((curhat) async {
           final curhatLike =
@@ -136,8 +159,10 @@ class CurhatServiceSupa {
 
         return curhatsData;
       }
+      print(response.error!.message);
       throw ErrorDescription(response.error!.message);
     } catch (e) {
+      print(e.toString());
       throw ErrorDescription(e.toString());
     }
   }
@@ -154,27 +179,27 @@ class CurhatServiceSupa {
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
-        final detailCurhatMapData = response.data as List<Map<String, dynamic>>;
+        final detailCurhatMapData = response.data as List<dynamic>;
 
         final curhatLikes = await fetchCurhatLike(curhatId: curhatId);
         final userData = await fetchUserData(
             userId: detailCurhatMapData.first['user_id'] as int);
         final commentsResponse = await fetchCurhatComment(curhatId: curhatId);
 
-        final comments = commentsResponse.data as List<Map<String, dynamic>>;
+        final comments = commentsResponse.data as List<dynamic>;
         final commentData = await Future.wait<DetailComment>(
           comments.map((comment) async {
             final userCommentData =
                 await fetchUserData(userId: comment['user_id'] as int);
 
             return DetailComment(
-              id: comment['id'],
-              curhatanId: comment['curhat_id'],
-              userId: comment['user_id'],
+              id: comment['id'] as int?,
+              curhatanId: comment['curhat_id'] as String?,
+              userId: comment['user_id'] as String?,
               username: userCommentData.username,
-              isAnonymous: comment['is_anonymous'],
-              content: comment['content'],
-              createdAt: comment['created_at'],
+              isAnonymous: comment['is_anonymous'] as bool?,
+              content: comment['content'] as String?,
+              createdAt: DateTime.parse(comment['created_at'] as String),
             );
           }),
         );
@@ -201,8 +226,10 @@ class CurhatServiceSupa {
 
         return detailCurhatData;
       }
+      print(response.error!.message);
       throw ErrorDescription(response.error!.message);
     } catch (e) {
+      print(e.toString());
       throw ErrorDescription(e.toString());
     }
   }
@@ -213,25 +240,31 @@ class CurhatServiceSupa {
     required String content,
     required String topic,
   }) async {
-    final response = await client.from('curhats').insert({
-      'user_id': userId,
-      'is_anonymous': isAnonymous,
-      'content': content,
-      'topic': topic,
-    }).execute();
+    try {
+      final response = await client.from('curhats').insert({
+        'user_id': userId,
+        'is_anonymous': isAnonymous,
+        'content': content,
+        'topic': topic,
+      }).execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final createCurhatMapData = response.data as List<Map<String, dynamic>>;
-      final createCurhatData = CreateCurhatan(
-        id: createCurhatMapData.first['id'] as int?,
-        userId: createCurhatMapData.first['user_id'] as int?,
-        createdAt: DateTime.tryParse(createCurhatMapData.first['created_at']),
-        isAnonymous: createCurhatMapData.first['is_anonymous'] as bool?,
-        content: createCurhatMapData.first['content'] as String?,
-      );
-      return createCurhatData;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final createCurhatMapData = response.data as List<dynamic>;
+        final createCurhatData = CreateCurhatan(
+          id: createCurhatMapData.first['id'] as int?,
+          userId: createCurhatMapData.first['user_id'] as int?,
+          createdAt: DateTime.tryParse(createCurhatMapData.first['created_at']),
+          isAnonymous: createCurhatMapData.first['is_anonymous'] as bool?,
+          content: createCurhatMapData.first['content'] as String?,
+        );
+        return createCurhatData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<Comment> createNewComment({
@@ -240,27 +273,33 @@ class CurhatServiceSupa {
     required String content,
     required bool isAnonymous,
   }) async {
-    final response = await client.from('comments').insert({
-      'user_id': userId,
-      'curhat_id': curhatId,
-      'content': content,
-      'is_anonymous': isAnonymous
-    }).execute();
+    try {
+      final response = await client.from('comments').insert({
+        'user_id': userId,
+        'curhat_id': curhatId,
+        'content': content,
+        'is_anonymous': isAnonymous
+      }).execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final commentMapData = response.data as List<Map<String, dynamic>>;
-      final commentData = Comment(
-        id: commentMapData.first['id'] as int?,
-        userId: commentMapData.first['user_id'] as int?,
-        content: commentMapData.first['content'] as String?,
-        createdAt: DateTime.tryParse(commentMapData.first['createdAt']),
-        curhatanId: commentMapData.first['curhat_id'] as int?,
-        isAnonymous: commentMapData.first['is_anonymous'] as bool?,
-        username: commentMapData.first['user_id'] as String?,
-      );
-      return commentData;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final commentMapData = response.data as List<dynamic>;
+        final commentData = Comment(
+          id: commentMapData.first['id'] as int?,
+          userId: commentMapData.first['user_id'] as int?,
+          content: commentMapData.first['content'] as String?,
+          createdAt: DateTime.tryParse(commentMapData.first['createdAt']),
+          curhatanId: commentMapData.first['curhat_id'] as int?,
+          isAnonymous: commentMapData.first['is_anonymous'] as bool?,
+          username: commentMapData.first['user_id'] as String?,
+        );
+        return commentData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-    throw ErrorDescription(response.error!.message);
   }
 }
 

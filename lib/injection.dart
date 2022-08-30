@@ -39,9 +39,11 @@ import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
 import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_daily_mood_insight.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_mood_recognition.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_mood_tracker_home_data.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_weekly_mood_insight.dart';
 import 'package:kalm/domain/usecases/mood_tracker/post_mood.dart';
+import 'package:kalm/domain/usecases/mood_tracker/post_mood_image.dart';
 import 'package:kalm/presentation/cubit/auth/auth_cubit.dart';
 import 'package:kalm/presentation/cubit/curhat/curhat_cubit.dart';
 import 'package:kalm/presentation/cubit/journey/journey_cubit.dart';
@@ -134,6 +136,9 @@ Future<void> init() async {
   locator
       .registerLazySingleton(() => GetWeeklyMoodInsight(repository: locator()));
   locator.registerLazySingleton(() => PostMood(repository: locator()));
+  locator
+      .registerLazySingleton(() => GetMoodRecognition(repository: locator()));
+  locator.registerLazySingleton(() => PostMoodImage(repository: locator()));
 
   // repository
   locator.registerLazySingleton<AuthRepository>(

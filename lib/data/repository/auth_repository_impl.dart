@@ -16,12 +16,8 @@ class AuthRepositoryImpl extends AuthRepository {
       {required String email, required String password}) async {
     try {
       final client = authServiceSupa;
-      final result = await client
-          .signInUserWithEmailAndPassword(email: email, password: password)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
-
+      final result = await client.signInUserWithEmailAndPassword(
+          email: email, password: password);
       return Right(result.toEntity());
     } catch (e) {
       return Left(e.toString());
@@ -37,16 +33,12 @@ class AuthRepositoryImpl extends AuthRepository {
       required String gender}) async {
     try {
       final client = authServiceSupa;
-      final result = await client
-          .createNewUser(
-              email: email,
-              password: password,
-              name: name,
-              username: username,
-              jenisKelamin: gender)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result = await client.createNewUser(
+          email: email,
+          password: password,
+          name: name,
+          username: username,
+          jenisKelamin: gender);
 
       return Right(result.toEntity());
     } catch (e) {
@@ -58,9 +50,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<Either<String, UserEntity>> getUser({required int userId}) async {
     try {
       final client = authServiceSupa;
-      final result = await client
-          .getUserById(userId: userId)
-          .handleError((onError) => Left(onError.toString()));
+      final result = await client.getUserById(userId: userId);
 
       return Right(result.toEntity());
     } catch (e) {

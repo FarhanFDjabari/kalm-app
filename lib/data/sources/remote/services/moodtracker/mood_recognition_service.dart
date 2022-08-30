@@ -27,7 +27,7 @@ abstract class MoodRecognitionService {
   }
 
   @POST("mood/predict")
-  Future<Map<String, dynamic>> getMoodRecognition(
+  Future<dynamic> getMoodRecognition(
       {@Part(name: "image_path") required String imagePath});
 }
 

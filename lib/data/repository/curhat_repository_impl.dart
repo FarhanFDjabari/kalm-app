@@ -20,15 +20,11 @@ class CurhatRepositoryImpl extends CurhatRepository {
     try {
       final client = curhatServiceSupa;
 
-      final result = await client
-          .createNewComment(
-              userId: userId,
-              curhatId: curhatId,
-              content: content,
-              isAnonymous: isAnonymous)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result = await client.createNewComment(
+          userId: userId,
+          curhatId: curhatId,
+          content: content,
+          isAnonymous: isAnonymous);
 
       return Right(result.toEntity());
     } catch (e) {
@@ -44,15 +40,11 @@ class CurhatRepositoryImpl extends CurhatRepository {
       required String topic}) async {
     try {
       final client = curhatServiceSupa;
-      final result = await client
-          .createNewCurhat(
-              userId: userId,
-              isAnonymous: isAnonymous,
-              content: content,
-              topic: topic)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result = await client.createNewCurhat(
+          userId: userId,
+          isAnonymous: isAnonymous,
+          content: content,
+          topic: topic);
 
       return Right(result.toEntity());
     } catch (e) {
@@ -65,10 +57,7 @@ class CurhatRepositoryImpl extends CurhatRepository {
       {required int userId}) async {
     try {
       final client = curhatServiceSupa;
-      final result =
-          await client.fetchAllCurhat(userId: userId).handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result = await client.fetchAllCurhat(userId: userId);
 
       return Right(result.map((e) => e.toEntity()).toList());
     } catch (e) {
@@ -81,11 +70,8 @@ class CurhatRepositoryImpl extends CurhatRepository {
       {required int userId, required String category}) async {
     try {
       final client = curhatServiceSupa;
-      final result = await client
-          .fetchCurhatByCategory(category: category, userId: userId)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result = await client.fetchCurhatByCategory(
+          category: category, userId: userId);
       return Right(result.map((e) => e.toEntity()).toList());
     } catch (e) {
       return Left(e.toString());
@@ -97,11 +83,8 @@ class CurhatRepositoryImpl extends CurhatRepository {
       {required int userId, required int curhatId}) async {
     try {
       final client = curhatServiceSupa;
-      final result = await client
-          .fetchCurhatById(userId: userId, curhatId: curhatId)
-          .handleError((onError) {
-        return Left(onError.toString());
-      });
+      final result =
+          await client.fetchCurhatById(userId: userId, curhatId: curhatId);
 
       return Right(result.toEntity());
     } catch (e) {

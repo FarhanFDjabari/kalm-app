@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import 'package:kalm/data/sources/remote/services/moodtracker/mood_classifier.dart';
-import 'package:kalm/data/sources/remote/services/moodtracker/mood_unquant_classifier.dart';
+import 'package:kalm/data/repository/mood_tracker_repository_impl.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_mood_recognition.dart';
+import 'package:kalm/domain/usecases/mood_tracker/post_mood_image.dart';
 import 'package:kalm/presentation/views/journey/mood_task/task_mood_factor_page.dart';
+import 'package:kalm/presentation/widgets/kalm_snackbar.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
@@ -15,11 +18,10 @@ class MoodCamera extends StatefulWidget {
 }
 
 class _MoodCameraState extends State<MoodCamera> {
-  late MoodClassifier _moodClassifier;
-
   File? _image;
   final picker = ImagePicker();
   Image? _imageWidget;
+  bool isLoading = false;
 
   img.Image? fox;
 
@@ -28,7 +30,6 @@ class _MoodCameraState extends State<MoodCamera> {
   @override
   void initState() {
     super.initState();
-    _moodClassifier = MoodUnquantClassifier();
     getImage();
   }
 
@@ -36,29 +37,66 @@ class _MoodCameraState extends State<MoodCamera> {
     final pickedFile =
         await picker.pickImage(source: ImageSource.camera, maxWidth: 640);
 
-    setState(() {
-      _image = File(pickedFile!.path);
-      _imageWidget = Image.file(_image!);
-
-      _predict();
-    });
+    _image = File(pickedFile!.path);
+    _imageWidget = Image.file(_image!);
+    final imageUrl = await _getImageUrl(_image!);
+    print("imageUrl = $imageUrl");
+    await _predictFromWeb(imageUrl);
+    // setState(() {});
   }
 
-  void _predict() async {
-    img.Image imageInput = img.decodeImage(_image!.readAsBytesSync())!;
-    var prediction = _moodClassifier.predict(imageInput);
+  Future<String> _getImageUrl(File imageFile) async {
+    setState(() {
+      isLoading = true;
+    });
+    var postMoodImageUsecase =
+        PostMoodImage(repository: MoodTrackerRepositoryImpl());
+    return await postMoodImageUsecase.execute(
+        image: imageFile, userId: GetStorage().read('user_id'));
+  }
+
+  // void _predict() async {
+  //   img.Image imageInput = img.decodeImage(_image!.readAsBytesSync())!;
+  //   var prediction = _moodClassifier.predict(imageInput);
+
+  //   setState(() {
+  //     this._category = prediction;
+  //   });
+  // }
+
+  Future<void> _predictFromWeb(String url) async {
+    Category? prediction;
+    var getMoodRecognitionUsecase =
+        GetMoodRecognition(repository: MoodTrackerRepositoryImpl());
+
+    var result = await getMoodRecognitionUsecase.execute(imagePath: url);
+    result.fold(
+      (l) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          KalmSnackbar(
+            message: l,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      },
+      (r) {
+        prediction = Category(
+            r['label'].toString(), (r['prediction'] as int).toDouble());
+      },
+    );
 
     setState(() {
       this._category = prediction;
+      isLoading = false;
     });
   }
 
   getImageName(String category) {
-    if (category == 'Buruk') {
+    if (category.toLowerCase() == 'buruk') {
       return 'assets/picture/picture-facerecognition_buruk.png';
-    } else if (category == 'Biasa') {
+    } else if (category.toLowerCase() == 'biasa') {
       return 'assets/picture/picture-facerecognition_biasa.png';
-    } else if (category == 'Baik') {
+    } else if (category.toLowerCase() == 'baik') {
       return 'assets/picture/picture-facerecognition_baik.png';
     } else {
       return 'assets/picture/picture-facerecognition_buruk.png';
@@ -66,11 +104,11 @@ class _MoodCameraState extends State<MoodCamera> {
   }
 
   int getMoodPoint(String category) {
-    if (category == 'Buruk') {
+    if (category.toLowerCase() == 'buruk') {
       return 0;
-    } else if (category == 'Biasa') {
+    } else if (category.toLowerCase() == 'biasa') {
       return 1;
-    } else if (category == 'Baik') {
+    } else if (category.toLowerCase() == 'baik') {
       return 2;
     } else {
       return 0;

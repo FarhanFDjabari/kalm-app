@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:kalm/data/model/meditation/rounded_image_model.dart';
 import 'package:kalm/data/model/mood_tracker/mood_reason_model.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_daily_insight_model.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_home_model.dart';
@@ -13,107 +18,299 @@ class MoodTrackerServiceSupa {
       ConfigEnvironments.getEnvironments(), ConfigEnvironments.getPublicKey());
 
   Future<MoodTrackerHomeModel> fetchHomeData({required int userId}) async {
-    final response = await client.from('mood_tracker').select().eq('user_id', userId).execute();
+    try {
+      final todayDate = DateFormat.yMd().format(DateTime.now());
+      final response = await client
+          .from('mood_tracker')
+          .select()
+          .eq('user_id', userId)
+          .eq('created_at', todayDate)
+          .execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final moodTrackerHomeMapData =
-          response.data as List<Map<String, dynamic>>;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final moodTrackerHomeMapData = response.data as List<dynamic>;
 
-      final moodReasons = await getMoodReason(moodTrackerId: moodTrackerHomeMapData.first['id']);
+        final moodReasons = await getMoodReason(
+            moodTrackerId: moodTrackerHomeMapData.first['id']);
 
-      final recomendedPlaylists = await getRecomendedPlaylist(reasons: moodReasons, moodPoint: moodTrackerHomeMapData.first['mood'],);
+        final recomendedPlaylists = await getRecomendedPlaylist(
+          reasons: moodReasons,
+          moodPoint: moodTrackerHomeMapData.first['mood'],
+        );
 
-      return MoodTrackerHomeModel(
-        isTodayFinished: isTodayFinished,
-        mood: moodTrackerHomeMapData.first['mood'],
-        reasons: moodReasons,
-        reccomendedPlaylists: recomendedPlaylists,
-      );
+        // bool isTodayFinished = checkIfTodayIsFinished(date: date);
+
+        return MoodTrackerHomeModel(
+          isTodayFinished: moodTrackerHomeMapData.isNotEmpty,
+          mood: moodTrackerHomeMapData.first['mood'] as int?,
+          reasons: moodReasons,
+          reccomendedPlaylists: recomendedPlaylists,
+        );
+      }
+
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
+  }
 
-    throw ErrorDescription(response.error!.message);
+  bool checkIfTodayIsFinished({required DateTime date}) {
+    if (DateFormat.yMMMMd().format(date) ==
+        DateFormat.yMMMMd().format(DateTime.now())) {
+      return true;
+    }
+    return false;
   }
 
   Future<List<MoodReason>> getMoodReason({required int moodTrackerId}) async {
-    final response = await client.from('mood_tracker_reasons').select().eq('mood_tracker_id', moodTrackerId).execute();
+    try {
+      final response = await client
+          .from('mood_tracker_reasons')
+          .select()
+          .eq('mood_tracker_id', moodTrackerId)
+          .execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final moodReasonsMapData = response.data as List<Map<String, dynamic>>;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final moodReasonsMapData = response.data as List<dynamic>;
 
-      final moodReasonsData = moodReasonsMapData.map((moodReason) {
-        return MoodReason(id: moodReason['id'], moodTrackerId: moodReason['mood_tracker_id'], reason: moodReason['reason'],);
-      }).toList();
+        final moodReasonsData = moodReasonsMapData.map((moodReason) {
+          return MoodReason(
+            id: moodReason['id'],
+            moodTrackerId: moodReason['mood_tracker_id'],
+            reason: moodReason['reason'],
+          );
+        }).toList();
 
-      return moodReasonsData;
+        return moodReasonsData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-
-    throw ErrorDescription(response.error!.message);
   }
 
-  Future<List<RecomendedPlaylist>> getRecomendedPlaylist({required List<MoodReason> reasons, required int moodPoint}) async {
-    final response = await client.from().select().execute();
+  Future<List<RecomendedPlaylist>> getRecomendedPlaylist(
+      {required List<MoodReason> reasons, required int moodPoint}) async {
+    try {
+      final response =
+          await client.from('playlists').select().range(0, 3).execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final playlistsMapData = response.data as List<Map<String, dynamic>>;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final playlistsMapData = response.data as List<dynamic>;
 
-      final playlistsData = playlistsMapData.map((playlist) {
-        return RecomendedPlaylist(
-          id: playlist['id'], 
-          name: , 
-          createdAt: , 
-          description2: , 
-          quantity: , 
-          topicId: , 
-          roundedImage: , 
-          squaredImage: ,
+        final playlistsData = playlistsMapData.map((playlist) {
+          return RecomendedPlaylist(
+            id: playlist['id'] as int,
+            name: playlist['name'] as String?,
+            createdAt: DateTime.tryParse(playlist['created_at'] as String),
+            description2: playlist['description'] as String?,
+            quantity: playlist['quantity'] as String?,
+            topicId: playlist['topic_id'] as String?,
+            roundedImage: RoundedImage(url: playlist['image'] as String?),
+            squaredImage:
+                RoundedImage(thumbnail: playlist['thumbnail'] as String?),
           );
-      }).toList();
+        }).toList();
 
-      return playlistsData;
+        return playlistsData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<MoodTrackerDailyInsightModel> fetchDailyMoodInsight({
     required int userId,
   }) async {
-    final response = await client.from().select().execute();
+    try {
+      final todayDate = DateFormat.yMd().format(DateTime.now());
+      final response = await client
+          .from('mood_tracker')
+          .select()
+          .eq('user_id', userId)
+          .eq('created_at', todayDate)
+          .execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final dailyMoodMapData = response.data as List<Map<String, dynamic>>;
+      if (response.status! >= 200 && response.status! <= 299) {
+        final dailyMoodMapData = response.data as List<dynamic>;
 
-      final dailyMoodData = MoodTrackerDailyInsightModel(
-        isTodayFinished: ,
-        mood: ,
-        reasons: ,
-        reccomendedPlaylists: ,
-      );
+        final moodReasons = await getMoodReason(
+          moodTrackerId: dailyMoodMapData.first['id'],
+        );
 
-      return dailyMoodData;
+        final recommendedPlaylists = await getRecomendedPlaylist(
+          reasons: moodReasons,
+          moodPoint: dailyMoodMapData.first['mood'],
+        );
+
+        final dailyMoodData = MoodTrackerDailyInsightModel(
+          isTodayFinished: true,
+          mood: dailyMoodMapData.first['mood'],
+          reasons: moodReasons,
+          reccomendedPlaylists: recommendedPlaylists,
+        );
+
+        return dailyMoodData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<MoodTrackerWeeklyInsightModel> fetchWeeklyMoodInsight({
     required int userId,
   }) async {
-    final response = await client.from().select().execute();
+    try {
+      final todaysDate = DateTime.now();
+      final dateBegin = DateFormat.yMd().format(DateTime(todaysDate.year,
+          todaysDate.month, todaysDate.day - (todaysDate.weekday - 1)));
+      final dateEnd = DateFormat.yMd().format(todaysDate
+          .add(Duration(days: DateTime.daysPerWeek - todaysDate.weekday)));
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      final weeklyMoodMapData = response.data as List<Map<String, dynamic>>;
+      final response = await client
+          .from('mood_tracker')
+          .select()
+          .eq('user_id', userId)
+          .gte('created_at', dateBegin)
+          .lte('created_at', dateEnd)
+          .execute();
 
-      final weeklyMoodData = MoodTrackerWeeklyInsightModel(
-        listAccReason: ,
-        moodTrackers: ,
-        sortedMood: ,
-      );
+      if (response.status! >= 200 && response.status! <= 299) {
+        var moodTrackersMapData = response.data as List<dynamic>;
+        final accReasonsData = <MoodReason>[];
+        final dateStart = DateTime(todaysDate.year, todaysDate.month,
+            todaysDate.day - (todaysDate.weekday - 1));
+        final dateStop = todaysDate
+            .add(Duration(days: DateTime.daysPerWeek - todaysDate.weekday));
 
-      return weeklyMoodData;
+        var moodTrackersData = await Future.wait<MoodTracker>(
+            moodTrackersMapData.mapIndexed((index, moodTrackerMap) async {
+          final moodReasons =
+              await getMoodReason(moodTrackerId: moodTrackerMap['id']);
+          return MoodTracker(
+            index: index,
+            createdAt: moodTrackerMap['created_at'],
+            updatedAt: moodTrackerMap['created_at'],
+            mood: moodTrackerMap['mood'],
+            reasons: moodReasons,
+          );
+        }));
+
+        int index = 0;
+        for (var i = dateStart;
+            i.isBefore(dateStop) || i.isAtSameMomentAs(dateStop);
+            i.add(const Duration(days: 1))) {
+          var existedItem = moodTrackersData.firstWhereOrNull((moodTracker) {
+            final isDateIsAfterOrNow = moodTracker.createdAt.isAfter(i) ||
+                moodTracker.createdAt.isAtSameMomentAs(i);
+            final isDateIsBeforeOrNow =
+                moodTracker.createdAt.isBefore(i.add(Duration(days: 1))) ||
+                    moodTracker.createdAt
+                        .isAtSameMomentAs(i.add(Duration(days: 1)));
+            return isDateIsAfterOrNow && isDateIsBeforeOrNow;
+          });
+
+          if (existedItem == null) {
+            final newItem = MoodTracker(
+              index: index,
+              createdAt: i,
+              updatedAt: i,
+              mood: 0,
+              reasons: [],
+            );
+            moodTrackersData.add(newItem);
+            index++;
+            continue;
+          }
+          existedItem.index = index;
+          index++;
+          accReasonsData.addAll(existedItem.reasons ?? []);
+        }
+
+        // sorted mood tracker
+        moodTrackersData.sortBy((element) => element.createdAt);
+
+        // sorted mood
+        var sortedMood = <String, int>{"Buruk": 0, "Biasa": 0, "Baik": 0};
+        var burukCount = 0;
+        var biasaCount = 0;
+        var baikCount = 0;
+        moodTrackersData.forEach((element) {
+          switch (element.mood) {
+            case 0:
+              burukCount++;
+              sortedMood["Buruk"] = burukCount;
+              break;
+            case 1:
+              biasaCount++;
+              sortedMood["Biasa"] = biasaCount;
+              break;
+            case 2:
+              baikCount++;
+              sortedMood["Baik"] = baikCount;
+              break;
+          }
+        });
+        var finalSortedMood = "";
+        sortedMood.entries.forEachIndexed((index, element) {
+          if (index > 0) {
+            if (element.value > sortedMood.entries.toList()[index - 1].value) {
+              finalSortedMood = element.key;
+            } else {
+              if (sortedMood.entries.toList()[index - 1].value >
+                  sortedMood.entries.toList().first.value) {
+                finalSortedMood = sortedMood.entries.toList()[index - 1].key;
+              } else {
+                finalSortedMood = sortedMood.entries.toList().first.key;
+              }
+            }
+          }
+        });
+
+        // sorted accumulated reason
+        var listAccReasonData = <String, int>{
+          'Tidur': 0,
+          'Pekerjaan': 0,
+          'Hubungan': 0,
+          'Keluarga': 0,
+          'Teman': 0,
+          'Pendidikan': 0,
+          'Finansial': 0,
+          'Lainnya': 0,
+        };
+        accReasonsData.forEach((element) {
+          listAccReasonData[element.reason!] =
+              listAccReasonData[element.reason!]! + 1;
+        });
+        var accumulatedReason = <ListAccReason>[];
+        listAccReasonData.forEach((key, value) {
+          accumulatedReason.add(ListAccReason(factor: key, total: value));
+        });
+
+        final weeklyMoodData = MoodTrackerWeeklyInsightModel(
+          listAccReason: accumulatedReason,
+          moodTrackers: moodTrackersData,
+          sortedMood: finalSortedMood,
+        );
+
+        return weeklyMoodData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
-
-    throw ErrorDescription(response.error!.message);
   }
 
   Future<MoodTrackerPostResponse> postMoodTracker({
@@ -121,10 +318,62 @@ class MoodTrackerServiceSupa {
     required int mood,
     required List<String> reasons,
   }) async {
-    final response = await client.from().insert().execute();
+    try {
+      final response = await client.from('mood_tracker').insert({
+        "mood": mood,
+        "user_id": userId,
+      }).execute();
 
-    if (response.status! >= 200 && response.status! <= 299) {
-      
+      if (response.status! >= 200 && response.status! <= 299) {
+        final moodTrackerMapData = response.data as List<dynamic>;
+        final moodTrackerReasonResponse =
+            await Future.wait<PostgrestResponse<dynamic>>(
+                reasons.map((reason) async {
+          return await client.from('mood_tracker_reasons').insert({
+            'mood_tracker_id': moodTrackerMapData.first['id'],
+            'reason': reason
+          }).execute();
+        }));
+        if (moodTrackerReasonResponse.last.hasError) {
+          throw ErrorDescription(moodTrackerReasonResponse.last.error!.message);
+        }
+        return MoodTrackerPostResponse(data: moodTrackerMapData);
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
+    }
+  }
+
+  Future<String> postMoodImage({
+    required File image,
+    required int userId,
+  }) async {
+    try {
+      final fileName = image.uri.pathSegments.last;
+
+      final storageList = await client.storage
+          .from('images')
+          .list(path: '/mood_images/$userId');
+      final filesToRemove = storageList.data
+          ?.map((e) => '/mood_images/$userId/${e.name}')
+          .toList();
+      await client.storage.from('images').remove(filesToRemove ?? []);
+
+      final response = await client.storage.from('images').upload(
+            '/mood_images/$userId/$fileName',
+            image,
+          );
+      if (response.error == null) {
+        return response.data ?? "";
+      }
+      print(response.error!.message);
+      return response.error!.message;
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
     }
   }
 }

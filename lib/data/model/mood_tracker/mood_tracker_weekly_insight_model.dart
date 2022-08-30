@@ -46,7 +46,7 @@ class MoodTrackerWeeklyInsightModel extends Equatable implements ModelFactory {
 }
 
 class MoodTracker extends Equatable implements ModelFactory {
-  const MoodTracker({
+  MoodTracker({
     required this.index,
     required this.createdAt,
     required this.updatedAt,
@@ -54,7 +54,7 @@ class MoodTracker extends Equatable implements ModelFactory {
     this.reasons,
   });
 
-  final int index;
+  int index;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int mood;
