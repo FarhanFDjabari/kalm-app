@@ -14,7 +14,7 @@ class PlaylistModel extends Equatable implements ModelFactory {
 
   factory PlaylistModel.fromJson(Map<String, dynamic> json) => PlaylistModel(
         playlists: List<Playlist>.from(
-            json["playlists"].map((x) => Playlist.fromJson(x))),
+            (json["playlists"] as List).map((x) => Playlist.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -58,8 +58,9 @@ class Playlist extends Equatable implements ModelFactory {
         squaredImage: RoundedImage.fromJson(json["squared_image"]),
         topic: Topic.fromJson(json["topic"]),
         playlistMusicItems: json["playlist_music_items"] != null
-            ? List<PlaylistMusicItem>.from(json["playlist_music_items"]
-                .map((x) => PlaylistMusicItem.fromJson(x)))
+            ? List<PlaylistMusicItem>.from(
+                (json["playlist_music_items"] as List<dynamic>)
+                    .map((x) => PlaylistMusicItem.fromJson(x)))
             : [],
       );
 

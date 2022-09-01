@@ -34,7 +34,7 @@ class PlaylistMusicItem extends Equatable implements ModelFactory {
         playlistId: json["playlist_id"],
         musicFile: MusicFile.fromJson(json["music_file"]),
         roundedImage: RoundedImage.fromJson(json["rounded_image"]),
-        squaredImage: json["squared_image"],
+        squaredImage: RoundedImage.fromJson(json["squared_image"]),
       );
 
   Map<String, dynamic> toJson() => {

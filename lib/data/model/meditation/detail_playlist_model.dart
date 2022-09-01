@@ -15,7 +15,7 @@ class DetailPlaylistModel extends Equatable implements ModelFactory {
       );
 
   Map<String, dynamic> toJson() => {
-        "playlists": playlist,
+        "playlist": playlist,
       };
 
   @override

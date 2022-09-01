@@ -248,52 +248,65 @@ class JourneyDetailPage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: BlocBuilder<JourneyCubit, JourneyState>(
                           builder: (context, state) {
-                            if (state is JourneyDetailLoaded)
-                              return ListView.builder(
-                                  itemCount:
-                                      state.detailJourney.components!.length,
-                                  padding: const EdgeInsets.only(top: 0),
-                                  itemBuilder: (_, index) {
-                                    ComponentEntity task =
-                                        state.detailJourney.components![index];
-                                    return Container(
-                                      margin: const EdgeInsets.only(bottom: 10),
-                                      child: KalmPlaylistTile(
-                                        icon: Icons.flag,
-                                        iconBackgroundColor: task.isFinished
-                                            ? primaryColor
-                                            : accentColor,
-                                        iconColor: task.isFinished
-                                            ? tertiaryColor
-                                            : primaryColor,
-                                        title: getTitleFromType(task.modelType),
-                                        subtitle: getSubtitleFromType(
-                                            task.modelType, task.name!),
-                                        onTap: () {
-                                          taskRouteMap(
-                                            context,
-                                            task.isFinished,
-                                            task.modelType,
-                                            task.id,
-                                            task.journeyId,
-                                          );
-                                        },
-                                        trailing: IconButton(
-                                          onPressed: null,
-                                          icon: Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            color: primaryText,
+                            if (state is JourneyDetailLoaded) {
+                              if (state.detailJourney.components?.length != 0 &&
+                                  state.detailJourney.components != null) {
+                                return ListView.builder(
+                                    itemCount: state
+                                            .detailJourney.components?.length ??
+                                        0,
+                                    padding: const EdgeInsets.only(top: 0),
+                                    itemBuilder: (_, index) {
+                                      ComponentEntity? task = state
+                                          .detailJourney.components?[index];
+                                      return Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 10),
+                                        child: KalmPlaylistTile(
+                                          icon: Icons.flag,
+                                          iconBackgroundColor:
+                                              task?.isFinished == true
+                                                  ? primaryColor
+                                                  : accentColor,
+                                          iconColor: task?.isFinished == true
+                                              ? tertiaryColor
+                                              : primaryColor,
+                                          title: getTitleFromType(
+                                              task?.modelType ?? ""),
+                                          subtitle: getSubtitleFromType(
+                                              task?.modelType ?? "",
+                                              task?.name ?? ""),
+                                          onTap: () {
+                                            if (task != null)
+                                              taskRouteMap(
+                                                context,
+                                                task.isFinished,
+                                                task.modelType,
+                                                task.id,
+                                                task.journeyId,
+                                              );
+                                          },
+                                          trailing: IconButton(
+                                            onPressed: null,
+                                            icon: Icon(
+                                              Icons.arrow_forward_ios_rounded,
+                                              color: primaryText,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  });
-                            else
+                                      );
+                                    });
+                              }
+                              return Center(
+                                child: Text('Aktivitas belum tersedia'),
+                              );
+                            } else {
                               return Center(
                                 child: CircularProgressIndicator(
                                   color: primaryColor,
                                 ),
                               );
+                            }
                           },
                         ),
                       ),

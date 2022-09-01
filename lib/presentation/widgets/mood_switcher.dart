@@ -113,7 +113,7 @@ class _MoodSwitcherState extends State<MoodSwitcher> {
                 ),
               if (!widget.todayFinished)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 35.0),
                   child: Row(
                     children: [
                       Expanded(
@@ -145,7 +145,7 @@ class _MoodSwitcherState extends State<MoodSwitcher> {
                               Text(
                                 'Kenali Perasaanmu',
                                 style: kalmOfflineTheme.textTheme.button!.apply(
-                                    color: primaryColor, fontSizeFactor: 1),
+                                    color: primaryColor, fontSizeFactor: 0.95),
                               ),
                             ],
                           ),

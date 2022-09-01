@@ -45,7 +45,7 @@ abstract class MoodTrackerService {
     @Part(name: "user_id") required int userId,
   });
 
-  @POST('api/v1/mood-tracks')
+  @GET('api/v1/mood-tracks')
   Future<ApiResponse<MoodTrackerPostResponse>> postMoodTracker({
     @Part(name: "user_id") required int userId,
     @Part(name: "mood") required int mood,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/mood_tracker/mood_tracker_daily_insight_entity.dart';
 import 'package:kalm/domain/entity/mood_tracker/mood_tracker_home_entity.dart';
@@ -18,4 +20,7 @@ abstract class MoodTrackerRepository {
     required int mood,
     required List<String> reasons,
   });
+  Future<Either<String, Map<String, dynamic>>> getMoodRecognition(
+      {required String imagePath});
+  Future<String> postMoodImage({required File image, required int userId});
 }

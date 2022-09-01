@@ -84,7 +84,7 @@ class _MoodTrackerService implements MoodTrackerService {
     });
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerPostResponse>>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
+            Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/mood-tracks',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));

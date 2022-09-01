@@ -17,19 +17,20 @@ class AuthRepositoryImpl extends AuthRepository {
       {required String email, required String password}) async {
     try {
       final client = await authClient();
-      final response = client.signInUserWithEmailAndPassword(
-          email: email, password: password);
-      final result = await response.validateStatus().handleError((onError) {
+      final response = await client
+          .signInUserWithEmailAndPassword(email: email, password: password)
+          .validateStatus()
+          .handleError((onError) {
         return Left(onError.toString());
       });
 
-      if (result.statusCode >= 200 && result.statusCode <= 299) {
-        return Right(result.data!.toEntity());
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        return Right(response.data!.toEntity());
       } else {
-        return Left(result.message);
+        return Left(response.message);
       }
     } catch (e) {
-      return Left("Unknown Error");
+      return Left("email/password is wrong");
     }
   }
 
