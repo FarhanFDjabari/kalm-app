@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get_storage/get_storage.dart';
@@ -5,14 +7,15 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:kalm/data/sources/local/hive_constants.dart';
 import 'package:kalm/data/sources/local/hive_keys.dart';
 import 'package:kalm/data/sources/remote/error/error_handler.dart';
-import 'package:kalm/data/sources/remote/services/auth/auth_service.supa.dart';
+import 'package:kalm/data/sources/remote/services/auth/auth_service_supa.dart';
 import 'package:kalm/domain/entity/auth/login_entity.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/repository/auth_repository.dart';
+import 'package:supabase/supabase.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   @override
-  Future<Either<String, LoginEntity>> signIn(
+  Future<Either<String, UserEntity>> signIn(
       {required String email, required String password}) async {
     try {
       final client = authServiceSupa;
@@ -86,21 +89,51 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
+  Future<Either<String, UserEntity>> updateUserProfile(
+      {required int userId, String? username, File? profilePhoto}) async {
+    try {
+      final client = authServiceSupa;
+      final result = await client.updateProfile(
+        userId: userId,
+        username: username,
+        profilePhoto: profilePhoto,
+      );
+
+      return Right(result.toEntity());
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
+
+  @override
   Future<bool> logout() async {
     try {
       final client = authServiceSupa;
 
       final response = await client.signOut();
-      if (response.statusCode! >= 200 && response.statusCode! <= 299) {
+      if (response.error == null) {
         final storageBox = Hive.box<UserEntity>(HiveConstants.USERS);
         await storageBox.delete(HiveKeys.CURRENT_USER);
         await GetStorage().remove("user_id");
+        await GetStorage().remove("user_uuid");
         return true;
       } else {
         return false;
       }
     } catch (e) {
-      return false;
+      throw ErrorDescription(e.toString());
+    }
+  }
+
+  @override
+  Future<Session?> checkSession() async {
+    try {
+      final client = authServiceSupa;
+
+      final result = await client.checkSession();
+      return result;
+    } catch (e) {
+      throw ErrorDescription(e.toString());
     }
   }
 }

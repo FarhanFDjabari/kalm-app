@@ -7,20 +7,26 @@ part 'user_entity.g.dart';
 class UserEntity extends HiveObject {
   UserEntity({
     this.id,
+    this.uuid,
     this.name,
     this.email,
     this.username,
     this.jenisKelamin,
+    this.photoProfileUrl,
   });
 
   @HiveField(0)
   final int? id;
   @HiveField(1)
-  final String? name;
+  final String? uuid;
   @HiveField(2)
-  final String? email;
+  final String? name;
   @HiveField(3)
-  final String? username;
+  final String? email;
   @HiveField(4)
+  final String? username;
+  @HiveField(5)
   final String? jenisKelamin;
+  @HiveField(6)
+  final String? photoProfileUrl;
 }

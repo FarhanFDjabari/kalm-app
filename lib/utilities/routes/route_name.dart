@@ -9,5 +9,7 @@ class RouteName {
   static const AUTH = '/auth';
   static const MOODGRAPH = '/mood-graph';
   static const MOODCAMERA = '/mood-camera';
+  static const MOODCAMERATASK = '/mood-camera-task';
   static const MOODFACTOR = '/mood-factor';
+  static const PROFILE = '/profile';
 }

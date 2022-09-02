@@ -6,19 +6,16 @@ import 'package:kalm/data/model/curhat/curhat_like_model.dart';
 import 'package:kalm/data/model/curhat/curhat_model.dart';
 import 'package:kalm/data/model/curhat/detail_comment_model.dart';
 import 'package:kalm/data/model/curhat/detail_curhat_model.dart';
-import 'package:kalm/data/sources/remote/services/environtment.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CurhatServiceSupa {
-  final client = SupabaseClient(
-      ConfigEnvironments.getEnvironments(), ConfigEnvironments.getPublicKey());
+  final client = Supabase.instance.client;
 
   Future<List<Curhatan>> fetchAllCurhat({required int userId}) async {
     try {
       final response = await client
           .from('curhats')
           .select('id, content, created_at, is_anonymous')
-          .eq('user_id', userId)
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
         final curhatsMapData = response.data as List<dynamic>;
@@ -79,12 +76,50 @@ class CurhatServiceSupa {
     }
   }
 
+  Future<int> curhatLike({required int userId, required int curhatId}) async {
+    try {
+      final response = await client.from('curhat_likes').select().execute();
+
+      if (response.status! >= 200 && response.status! <= 299) {
+        final curhatLikesData = response.data as List<dynamic>;
+
+        final isLikeExist = curhatLikesData
+            .where(
+              (element) =>
+                  element['user_id'] == userId &&
+                  element['curhat_id'] == curhatId,
+            )
+            .isNotEmpty;
+
+        if (isLikeExist) {
+          await client
+              .from('curhat_likes')
+              .delete()
+              .eq('curhat_id', curhatId)
+              .eq('user_id', userId)
+              .execute();
+          return curhatLikesData.length - 1;
+        } else {
+          await client.from('curhat_likes').insert({
+            'created_at': DateTime.now().toIso8601String(),
+            'curhat_id': curhatId,
+            'user_id': userId,
+          }).execute();
+          return curhatLikesData.length + 1;
+        }
+      }
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      throw ErrorDescription(e.toString());
+    }
+  }
+
   Future<userModel.User> fetchUserData({required int userId}) async {
     try {
       final response = await client
           .from('profiles')
           .select('nama_lengkap, username')
-          .eq('user_id', userId)
+          .eq('id', userId)
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
@@ -133,8 +168,7 @@ class CurhatServiceSupa {
       final response = await client
           .from('curhats')
           .select('id, content, created_at, is_anonymous')
-          .eq('user_id', userId)
-          .eq('topic', category)
+          .eq('category', category)
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
@@ -243,6 +277,7 @@ class CurhatServiceSupa {
     try {
       final response = await client.from('curhats').insert({
         'user_id': userId,
+        'created_at': DateTime.now().toIso8601String(),
         'is_anonymous': isAnonymous,
         'content': content,
         'topic': topic,
@@ -267,6 +302,25 @@ class CurhatServiceSupa {
     }
   }
 
+  Future<String> deleteCurhat(
+      {required int userId, required int curhatId}) async {
+    try {
+      final response = await client
+          .from('curhats')
+          .delete()
+          .eq('user_id', userId)
+          .eq('curhat_id', curhatId)
+          .execute();
+
+      if (response.status! >= 200 && response.status! <= 299) {
+        return "Postingan telah dihapus";
+      }
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      throw ErrorDescription(e.toString());
+    }
+  }
+
   Future<Comment> createNewComment({
     required int userId,
     required int curhatId,
@@ -276,6 +330,7 @@ class CurhatServiceSupa {
     try {
       final response = await client.from('comments').insert({
         'user_id': userId,
+        'created_at': DateTime.now().toIso8601String(),
         'curhat_id': curhatId,
         'content': content,
         'is_anonymous': isAnonymous

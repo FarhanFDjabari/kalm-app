@@ -69,7 +69,9 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
       {required String imagePath}) async {
     try {
       final client = await moodRecognitionService();
-      final result = await client.getMoodRecognition(imagePath: imagePath);
+      final result = await client.getMoodRecognition(
+        body: {'image_path': imagePath},
+      );
 
       if (result != null) {
         return Right(result as Map<String, dynamic>);

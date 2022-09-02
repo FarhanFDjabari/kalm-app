@@ -32,3 +32,15 @@ class WeeklyInsightLoaded extends MoodTrackerState {
 }
 
 class MoodTrackerSaved extends MoodTrackerState {}
+
+class MoodTrackerImageSaved extends MoodTrackerState {
+  final String path;
+
+  MoodTrackerImageSaved(this.path);
+}
+
+class MoodTrackerPredictionLoaded extends MoodTrackerState {
+  final Category category;
+
+  MoodTrackerPredictionLoaded(this.category);
+}

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kalm/presentation/cubit/auth/auth_cubit.dart';
@@ -66,6 +67,18 @@ class _ViewState extends State<View> {
                       CircleAvatar(
                         backgroundColor: accentColor,
                         radius: 35,
+                        child: Center(
+                          child: state is AuthLoadSuccess &&
+                                  state.user.photoProfileUrl?.isNotEmpty == true
+                              ? Image.network(
+                                  state.user.photoProfileUrl!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'assets/picture/profile_picture_placeholder.png',
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                       SizedBox(height: 15),
                       Column(
@@ -73,9 +86,7 @@ class _ViewState extends State<View> {
                         children: [
                           Container(
                             child: Text(
-                              state is AuthLoadSuccess
-                                  ? state.user.name!
-                                  : 'Andini Paramita',
+                              state is AuthLoadSuccess ? state.user.name! : '-',
                               overflow: TextOverflow.fade,
                               style:
                                   kalmOfflineTheme.textTheme.bodyText1!.apply(
@@ -89,7 +100,7 @@ class _ViewState extends State<View> {
                             child: Text(
                               state is AuthLoadSuccess
                                   ? state.user.email!
-                                  : 'andini@gmail.com',
+                                  : '-',
                               overflow: TextOverflow.fade,
                               style:
                                   kalmOfflineTheme.textTheme.bodyText1!.apply(
@@ -131,8 +142,8 @@ class _ViewState extends State<View> {
                 ),
                 ListTile(
                   onTap: () {
-                    Navigator.pop(context);
                     builderContext.read<AuthCubit>().logout();
+                    Navigator.pop(context);
                   },
                   leading: Icon(
                     Iconsax.logout,
@@ -169,14 +180,42 @@ class _ViewState extends State<View> {
 
           return shouldPop;
         },
-        child: PageView(
-          children: pages,
-          controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
+        child: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                PageView(
+                  children: pages,
+                  controller: _pageController,
+                  physics: NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                ),
+                if (state is AuthLoading)
+                  Positioned.fill(
+                    child: Center(
+                      child: Container(
+                        width: 65,
+                        height: 65,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: primaryColor.withOpacity(0.5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: CircularProgressIndicator(
+                            color: tertiaryColor,
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
           },
         ),
       ),

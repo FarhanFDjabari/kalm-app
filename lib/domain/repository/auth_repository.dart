@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/auth/login_entity.dart';
 import 'package:kalm/domain/entity/auth/user_entity.dart';
+import 'package:supabase/supabase.dart';
 
 abstract class AuthRepository {
-  Future<Either<String, LoginEntity>> signIn({
+  Future<Either<String, UserEntity>> signIn({
     required String email,
     required String password,
   });
@@ -23,4 +26,9 @@ abstract class AuthRepository {
   Future<Either<String, UserEntity>> getCurrentUser();
 
   Future<bool> logout();
+
+  Future<Session?> checkSession();
+
+  Future<Either<String, UserEntity>> updateUserProfile(
+      {required int userId, String? username, File? profilePhoto});
 }

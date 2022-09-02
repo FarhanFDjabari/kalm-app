@@ -3,12 +3,10 @@ import 'package:kalm/data/model/meditation/music_topic_model.dart';
 import 'package:kalm/data/model/meditation/playlist_model.dart';
 import 'package:kalm/data/model/meditation/playlist_music_item_model.dart';
 import 'package:kalm/data/model/meditation/rounded_image_model.dart';
-import 'package:kalm/data/sources/remote/services/environtment.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MeditationServiceSupa {
-  final client = SupabaseClient(
-      ConfigEnvironments.getEnvironments(), ConfigEnvironments.getPublicKey());
+  final client = Supabase.instance.client;
 
   Future<List<Playlist>> fetchAllPlaylist({
     required int userId,
@@ -32,7 +30,46 @@ class MeditationServiceSupa {
             description: playlist['description'] as String?,
             quantity: playlist['banyak_lagu'] as String?,
             roundedImage: RoundedImage(url: playlist['image']),
-            squaredImage: RoundedImage(thumbnail: playlist['thumbnail']),
+            squaredImage: RoundedImage(url: playlist['thumbnail']),
+            playlistMusicItems: playlistMusicsData,
+          );
+        }));
+
+        return playlistsData;
+      }
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
+    } catch (e) {
+      print(e.toString());
+      throw ErrorDescription(e.toString());
+    }
+  }
+
+  Future<List<Playlist>> getRecomendedPlaylist({required int moodPoint}) async {
+    try {
+      // DEV TODO: make this recomended playlist logic work (current logic is pick random)
+
+      final response =
+          await client.from('playlists').select().limit(10).execute();
+
+      if (response.status! >= 200 && response.status! <= 299) {
+        final playlistsMapData = response.data as List<dynamic>;
+
+        final playlistsData =
+            await Future.wait<Playlist>(playlistsMapData.map((playlist) async {
+          final topicData = await getTopic(topicId: playlist['topic_id']);
+          final playlistMusicsData =
+              await getMusicPlaylist(playlistId: playlist['id']);
+
+          return Playlist(
+            id: playlist['id'] as int?,
+            topicId: playlist['topic_id'] as String?,
+            topic: topicData,
+            name: playlist['name'] as String?,
+            description: playlist['description'] as String?,
+            quantity: playlist['banyak_lagu'] as String?,
+            roundedImage: RoundedImage(url: playlist['image']),
+            squaredImage: RoundedImage(url: playlist['thumbnail']),
             playlistMusicItems: playlistMusicsData,
           );
         }));
@@ -91,8 +128,7 @@ class MeditationServiceSupa {
             musicUrl: music['music_url'] as String?,
             name: music['name'] as String?,
             roundedImage: RoundedImage(url: music['image'] as String?),
-            squaredImage:
-                RoundedImage(thumbnail: music['thumbnail'] as String?),
+            squaredImage: RoundedImage(url: music['thumbnail'] as String?),
           );
         }).toList();
 
@@ -111,10 +147,19 @@ class MeditationServiceSupa {
     required String category,
   }) async {
     try {
+      final topicData = await client
+          .from('playlist_topic')
+          .select('id')
+          .eq('name', category)
+          .execute();
+      if (topicData.hasError) throw ErrorDescription(topicData.error!.message);
+
+      final topicId = topicData.data as List<dynamic>;
+
       final response = await client
           .from('playlists')
           .select()
-          .eq('topic_id', category)
+          .eq('topic_id', topicId.isNotEmpty ? topicId.first['id'] : -1)
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
         final playlistsMapData = response.data as List<dynamic>;
@@ -188,6 +233,33 @@ class MeditationServiceSupa {
       print(e.toString());
       throw ErrorDescription(e.toString());
     }
+  }
+
+  Future<List<PlaylistMusicItem>> fetchMusicByKeyword(
+      {required String keyword}) async {
+    final response = await client
+        .from('musics')
+        .select()
+        .like('name', '%$keyword%')
+        .execute();
+
+    if (response.hasError) throw ErrorDescription(response.error!.message);
+
+    final musicsMapData = response.data as List<dynamic>;
+
+    final musicsData = musicsMapData.map((music) {
+      return PlaylistMusicItem(
+        id: music['id'] as int?,
+        playlistId: music['playlist_id'] as String?,
+        duration: music['duration'] as String?,
+        musicUrl: music['music_url'] as String?,
+        name: music['name'] as String?,
+        roundedImage: RoundedImage(url: music['image'] as String?),
+        squaredImage: RoundedImage(url: music['thumbnail'] as String?),
+      );
+    }).toList();
+
+    return musicsData;
   }
 }
 

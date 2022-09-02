@@ -11,8 +11,8 @@ abstract class MoodRecognitionService {
 
   static Future<MoodRecognitionService> create({
     Map<String, dynamic> headers = const {},
-    int connectTimeout = 30000,
-    int receiveTimeout = 30000,
+    int connectTimeout = 150000,
+    int receiveTimeout = 150000,
   }) async {
     final defHeader = Map<String, dynamic>.from(headers);
     // defHeader["Accept"] = "application/json";
@@ -28,7 +28,7 @@ abstract class MoodRecognitionService {
 
   @POST("mood/predict")
   Future<dynamic> getMoodRecognition(
-      {@Part(name: "image_path") required String imagePath});
+      {@Body() required Map<String, String> body});
 }
 
 final moodRecognitionService = MoodRecognitionService.create;

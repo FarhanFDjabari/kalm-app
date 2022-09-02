@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kalm/presentation/cubit/auth/auth_cubit.dart';
 import 'package:kalm/presentation/widgets/kalm_button.dart';
+import 'package:kalm/presentation/widgets/kalm_dialog.dart';
 import 'package:kalm/presentation/widgets/kalm_dropdown_button.dart';
 import 'package:kalm/presentation/widgets/kalm_loading_button.dart';
 import 'package:kalm/presentation/widgets/kalm_snackbar.dart';
@@ -9,6 +10,7 @@ import 'package:kalm/presentation/widgets/kalm_text_button.dart';
 import 'package:kalm/presentation/widgets/kalm_text_field.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 import 'package:kalm/utilities/routes/route_name.dart';
+import 'package:open_mail_app/open_mail_app.dart';
 
 class Register extends StatefulWidget {
   final PageController pageController;
@@ -41,16 +43,30 @@ class _RegisterState extends State<Register> {
           _isLoading = false;
         } else if (state is AuthLoading) {
           _isLoading = true;
-        } else if (state is AuthSaveSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            KalmSnackbar(
-              duration: Duration(seconds: 2),
-              message: 'Registrasi Berhasil!',
+        } else if (state is AuthRegisterSuccess) {
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   KalmSnackbar(
+          //     duration: Duration(seconds: 2),
+          //     message: 'Registrasi Berhasil!',
+          //   ),
+          // );
+          // Navigator.pushNamedAndRemoveUntil(
+          //     context, RouteName.HOME, (route) => false);
+          _isLoading = false;
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => KalmDialog(
+              title: 'Registrasi Berhasil',
+              subtitle:
+                  'Silahkan cek email kamu untuk melakukan konfirmasi sebelum masuk ke aplikasi',
+              successButtonTitle: 'Oke',
+              onSuccess: () async {
+                Navigator.of(context).pop();
+                await OpenMailApp.openMailApp();
+              },
             ),
           );
-          _isLoading = false;
-          Navigator.pushNamedAndRemoveUntil(
-              context, RouteName.HOME, (route) => false);
         }
       },
       builder: (builderContext, state) {

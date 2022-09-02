@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kalm/data/repository/auth_repository_impl.dart';
+import 'package:kalm/domain/usecases/auth/check_session.dart';
 import 'package:kalm/presentation/widgets/kalm_animation_container.dart';
 import 'package:kalm/presentation/widgets/kalm_dialog.dart';
 import 'package:kalm/styles/kalm_theme.dart';
@@ -27,34 +29,56 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     );
 
     _animationController.forward();
-    checkInternetConnection();
+    initApp();
   }
 
-  checkInternetConnection() async {
+  Future<bool> checkSession() async {
+    final checkSession = CheckSession(repository: AuthRepositoryImpl());
+    final result = await checkSession.execute();
+    final localSession = await GetStorage().read('user_id');
+    if (result != null) {
+      if (localSession != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  initApp() async {
+    final isInternetConnected = await checkInternetConnection();
+    if (isInternetConnected) {
+      final isSessionActive = await checkSession();
+      if (isSessionActive) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteName.HOME,
+          (route) => false,
+        );
+      } else {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteName.ONBOARDING,
+          (route) => false,
+        );
+      }
+    }
+  }
+
+  Future<bool> checkInternetConnection() async {
     try {
       final result = await InternetAddress.lookup(
         'google.com',
         type: InternetAddressType.IPv4,
       );
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        if (await GetStorage().read('user_id') == null)
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            RouteName.ONBOARDING,
-            (route) => false,
-          );
-        else
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            RouteName.HOME,
-            (route) => false,
-          );
+        return true;
       }
+      return false;
     } on SocketException catch (_) {
       showDialog(
         context: context,
         builder: (context) => KalmDialog(
-          title: 'Perangkat kamu tidak terkoneksi dengan internet',
+          title: 'Gagal melakukan koneksi ke server',
           subtitle:
               'Kamu membutuhkan koneksi internet agar dapat menggunakan fitur aplikasi',
           successButtonTitle: 'Oke',
@@ -65,6 +89,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
           },
         ),
       );
+      return false;
     }
   }
 

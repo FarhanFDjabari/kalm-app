@@ -10,42 +10,52 @@ import 'package:kalm/data/model/mood_tracker/mood_tracker_home_model.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_post_response.dart';
 import 'package:kalm/data/model/mood_tracker/mood_tracker_weekly_insight_model.dart';
 import 'package:kalm/data/model/mood_tracker/recomended_playlist_model.dart';
-import 'package:kalm/data/sources/remote/services/environtment.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MoodTrackerServiceSupa {
-  final client = SupabaseClient(
-      ConfigEnvironments.getEnvironments(), ConfigEnvironments.getPublicKey());
+  final client = Supabase.instance.client;
 
   Future<MoodTrackerHomeModel> fetchHomeData({required int userId}) async {
     try {
       final todayDate = DateFormat.yMd().format(DateTime.now());
+      final tomorrowDate =
+          DateFormat.yMd().format(DateTime.now().add(Duration(days: 1)));
       final response = await client
           .from('mood_tracker')
           .select()
           .eq('user_id', userId)
-          .eq('created_at', todayDate)
+          .gte('created_at', todayDate)
+          .lte('created_at', tomorrowDate)
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
         final moodTrackerHomeMapData = response.data as List<dynamic>;
 
-        final moodReasons = await getMoodReason(
-            moodTrackerId: moodTrackerHomeMapData.first['id']);
+        if (moodTrackerHomeMapData.isNotEmpty) {
+          final moodReasons = await getMoodReason(
+              moodTrackerId: moodTrackerHomeMapData.first['id'] as int);
 
-        final recomendedPlaylists = await getRecomendedPlaylist(
-          reasons: moodReasons,
-          moodPoint: moodTrackerHomeMapData.first['mood'],
-        );
+          final recomendedPlaylists = await getRecomendedPlaylist(
+            reasons: moodReasons,
+            moodPoint: moodTrackerHomeMapData.first['mood'],
+          );
 
-        // bool isTodayFinished = checkIfTodayIsFinished(date: date);
+          // bool isTodayFinished = checkIfTodayIsFinished(date: date);
 
-        return MoodTrackerHomeModel(
-          isTodayFinished: moodTrackerHomeMapData.isNotEmpty,
-          mood: moodTrackerHomeMapData.first['mood'] as int?,
-          reasons: moodReasons,
-          reccomendedPlaylists: recomendedPlaylists,
-        );
+          return MoodTrackerHomeModel(
+            isTodayFinished: moodTrackerHomeMapData.isNotEmpty,
+            mood: moodTrackerHomeMapData.first['mood'] as int?,
+            reasons: moodReasons,
+            reccomendedPlaylists: recomendedPlaylists,
+          );
+        } else {
+          return MoodTrackerHomeModel(
+            isTodayFinished: moodTrackerHomeMapData.isNotEmpty,
+            mood: null,
+            reasons: [],
+            reccomendedPlaylists: [],
+          );
+        }
       }
 
       print(response.error!.message);
@@ -96,6 +106,8 @@ class MoodTrackerServiceSupa {
   Future<List<RecomendedPlaylist>> getRecomendedPlaylist(
       {required List<MoodReason> reasons, required int moodPoint}) async {
     try {
+      // DEV TODO: make this recomended playlist logic work (current logic is pick random)
+
       final response =
           await client.from('playlists').select().range(0, 3).execute();
 
@@ -131,11 +143,16 @@ class MoodTrackerServiceSupa {
   }) async {
     try {
       final todayDate = DateFormat.yMd().format(DateTime.now());
+      final tomorrowDate =
+          DateFormat.yMd().format(DateTime.now().add(Duration(days: 1)));
       final response = await client
           .from('mood_tracker')
           .select()
           .eq('user_id', userId)
-          .eq('created_at', todayDate)
+          .gte('created_at', todayDate)
+          .lte('created_at', tomorrowDate)
+          .limit(1)
+          .single()
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
@@ -151,8 +168,9 @@ class MoodTrackerServiceSupa {
         );
 
         final dailyMoodData = MoodTrackerDailyInsightModel(
-          isTodayFinished: true,
-          mood: dailyMoodMapData.first['mood'],
+          isTodayFinished:
+              dailyMoodMapData.first['mood'] != null ? true : false,
+          mood: dailyMoodMapData.first['mood'] as int?,
           reasons: moodReasons,
           reccomendedPlaylists: recommendedPlaylists,
         );
@@ -319,8 +337,10 @@ class MoodTrackerServiceSupa {
     required List<String> reasons,
   }) async {
     try {
+      final currentDate = DateFormat.yMd().format(DateTime.now());
       final response = await client.from('mood_tracker').insert({
         "mood": mood,
+        'created_at': currentDate,
         "user_id": userId,
       }).execute();
 
@@ -331,6 +351,7 @@ class MoodTrackerServiceSupa {
                 reasons.map((reason) async {
           return await client.from('mood_tracker_reasons').insert({
             'mood_tracker_id': moodTrackerMapData.first['id'],
+            'created_at': currentDate,
             'reason': reason
           }).execute();
         }));
@@ -354,23 +375,29 @@ class MoodTrackerServiceSupa {
     try {
       final fileName = image.uri.pathSegments.last;
 
-      final storageList = await client.storage
-          .from('images')
-          .list(path: '/mood_images/$userId');
+      final storageList =
+          await client.storage.from('images').list(path: 'mood_images/$userId');
       final filesToRemove = storageList.data
-          ?.map((e) => '/mood_images/$userId/${e.name}')
+          ?.map((e) => 'mood_images/$userId/${e.name}')
           .toList();
       await client.storage.from('images').remove(filesToRemove ?? []);
 
       final response = await client.storage.from('images').upload(
-            '/mood_images/$userId/$fileName',
+            'mood_images/$userId/$fileName',
             image,
           );
       if (response.error == null) {
-        return response.data ?? "";
+        final publicUrlData = client.storage
+            .from('images')
+            .getPublicUrl('mood_images/$userId/$fileName');
+
+        if (publicUrlData.hasError)
+          throw ErrorDescription(publicUrlData.error!.message);
+
+        return publicUrlData.data ?? "";
       }
       print(response.error!.message);
-      return response.error!.message;
+      throw ErrorDescription(response.error!.message);
     } catch (e) {
       print(e.toString());
       throw ErrorDescription(e.toString());

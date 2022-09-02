@@ -4,9 +4,11 @@ import 'package:kalm/presentation/views/curhat/curhat_home.dart';
 import 'package:kalm/presentation/views/journey/journey_page.dart';
 import 'package:kalm/presentation/views/journey/mood_task/mood_camera_task.dart';
 import 'package:kalm/presentation/views/meditation/meditation_audio_list.dart';
+import 'package:kalm/presentation/views/mood_tracker/mood_camera.dart';
 import 'package:kalm/presentation/views/mood_tracker/mood_graph_page.dart';
 import 'package:kalm/presentation/views/mood_tracker/mood_tracker_page.dart';
 import 'package:kalm/presentation/views/onboarding/onboarding_page.dart';
+import 'package:kalm/presentation/views/profile/profile_page.dart';
 import 'package:kalm/presentation/views/splash.dart';
 import 'package:kalm/presentation/views/view.dart';
 import 'package:kalm/utilities/routes/route_name.dart';
@@ -23,5 +25,7 @@ class AppRoutes {
     RouteName.AUTH: (context) => AuthPage(),
     RouteName.MOODGRAPH: (context) => MoodGraphPage(),
     RouteName.MOODCAMERA: (context) => MoodCamera(),
+    RouteName.MOODCAMERATASK: (context) => MoodCameraTask(),
+    RouteName.PROFILE: (context) => ProfilePage(),
   };
 }
