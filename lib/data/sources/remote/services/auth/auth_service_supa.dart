@@ -157,13 +157,16 @@ class AuthServiceSupa {
         final response = await client
             .from('profiles')
             .update({
-              'username': username,
+              username != null ? 'username' : username: "",
               'profile_image': profilePhotoUrlData.data,
             })
-            .eq('user_id', userId)
+            .eq('id', userId)
             .execute();
 
-        if (response.hasError) throw ErrorDescription(response.error!.message);
+        if (response.hasError) {
+          print(response.error!.message);
+          throw ErrorDescription(response.error!.message);
+        }
 
         final userData = response.data as List<dynamic>;
 
@@ -183,7 +186,7 @@ class AuthServiceSupa {
           .update({
             'username': username,
           })
-          .eq('user_id', userId)
+          .eq('id', userId)
           .execute();
 
       if (response.hasError) throw ErrorDescription(response.error!.message);

@@ -106,16 +106,38 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: primaryColor,
+                          BlocBuilder<AuthCubit, AuthState>(
+                            builder: (context, state) {
+                              return CircleAvatar(
+                                backgroundColor: accentColor,
+                                radius: 20,
+                                child: Center(
+                                  child: state is AuthLoadSuccess &&
+                                          state.user.photoProfileUrl
+                                                  ?.isNotEmpty ==
+                                              true
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: Image.network(
+                                            state.user.photoProfileUrl!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : Image.asset(
+                                          'assets/picture/profile_picture_placeholder.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(width: 8),
                           BlocBuilder<AuthCubit, AuthState>(
                             builder: (context, state) {
                               return Text(
                                 state is AuthLoadSuccess
-                                    ? state.user.name!
+                                    ? state.user.username!
                                     : '-',
                                 style: kalmOfflineTheme.textTheme.button!.apply(
                                     color: primaryText, fontSizeFactor: 1.2),

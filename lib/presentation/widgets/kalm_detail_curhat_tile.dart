@@ -67,10 +67,20 @@ class KalmDetailCurhatTile extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: primaryColor,
-                    child: Icon(
-                      Iconsax.user,
-                      color: tertiaryColor,
+                    backgroundColor: accentColor,
+                    child: Center(
+                      child: user.photoProfileUrl?.isNotEmpty == true
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                user.photoProfileUrl!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Image.asset(
+                              'assets/picture/profile_picture_placeholder.png',
+                              fit: BoxFit.cover,
+                            ),
                     ),
                   ),
                   SizedBox(width: 8),
@@ -78,7 +88,7 @@ class KalmDetailCurhatTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isAnonymous == false ? user.name! : 'Anonim',
+                        isAnonymous == false ? user.username! : 'Anonim',
                         style: kalmOfflineTheme.textTheme.button!
                             .apply(color: primaryText),
                       ),

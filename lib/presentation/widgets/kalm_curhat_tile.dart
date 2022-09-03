@@ -72,7 +72,7 @@ class KalmCurhatTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isAnonymous == false ? userData.name! : 'Anonim',
+                          isAnonymous == false ? userData.username! : 'Anonim',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: kalmOfflineTheme.textTheme.button!

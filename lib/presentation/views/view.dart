@@ -70,9 +70,12 @@ class _ViewState extends State<View> {
                         child: Center(
                           child: state is AuthLoadSuccess &&
                                   state.user.photoProfileUrl?.isNotEmpty == true
-                              ? Image.network(
-                                  state.user.photoProfileUrl!,
-                                  fit: BoxFit.cover,
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    state.user.photoProfileUrl!,
+                                    fit: BoxFit.cover,
+                                  ),
                                 )
                               : Image.asset(
                                   'assets/picture/profile_picture_placeholder.png',
@@ -137,7 +140,8 @@ class _ViewState extends State<View> {
                   ),
                   onTap: () {
                     // _drawerController.reverse();
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, RouteName.PROFILE);
                   },
                 ),
                 ListTile(
