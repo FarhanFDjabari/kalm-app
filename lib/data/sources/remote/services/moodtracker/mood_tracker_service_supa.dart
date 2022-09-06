@@ -37,7 +37,7 @@ class MoodTrackerServiceSupa {
 
           final recomendedPlaylists = await getRecomendedPlaylist(
             reasons: moodReasons,
-            moodPoint: moodTrackerHomeMapData.first['mood'],
+            moodPoint: moodTrackerHomeMapData.first['mood'] as int,
           );
 
           // bool isTodayFinished = checkIfTodayIsFinished(date: date);
@@ -87,9 +87,9 @@ class MoodTrackerServiceSupa {
 
         final moodReasonsData = moodReasonsMapData.map((moodReason) {
           return MoodReason(
-            id: moodReason['id'],
-            moodTrackerId: moodReason['mood_tracker_id'],
-            reason: moodReason['reason'],
+            id: moodReason['id'] as int,
+            moodTrackerId: moodReason['mood_tracker_id'].toString(),
+            reason: moodReason['reason'].toString(),
           );
         }).toList();
 
@@ -118,13 +118,12 @@ class MoodTrackerServiceSupa {
           return RecomendedPlaylist(
             id: playlist['id'] as int,
             name: playlist['name'] as String?,
-            createdAt: DateTime.tryParse(playlist['created_at'] as String),
+            createdAt: DateTime.tryParse(playlist['created_at']),
             description2: playlist['description'] as String?,
-            quantity: playlist['quantity'] as String?,
-            topicId: playlist['topic_id'] as String?,
+            quantity: playlist['quantity'].toString(),
+            topicId: playlist['topic_id'].toString(),
             roundedImage: RoundedImage(url: playlist['image'] as String?),
-            squaredImage:
-                RoundedImage(thumbnail: playlist['thumbnail'] as String?),
+            squaredImage: RoundedImage(url: playlist['thumbnail'] as String?),
           );
         }).toList();
 
@@ -156,21 +155,20 @@ class MoodTrackerServiceSupa {
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
-        final dailyMoodMapData = response.data as List<dynamic>;
+        final dailyMoodMapData = response.data;
 
         final moodReasons = await getMoodReason(
-          moodTrackerId: dailyMoodMapData.first['id'],
+          moodTrackerId: dailyMoodMapData['id'],
         );
 
         final recommendedPlaylists = await getRecomendedPlaylist(
           reasons: moodReasons,
-          moodPoint: dailyMoodMapData.first['mood'],
+          moodPoint: dailyMoodMapData['mood'],
         );
 
         final dailyMoodData = MoodTrackerDailyInsightModel(
-          isTodayFinished:
-              dailyMoodMapData.first['mood'] != null ? true : false,
-          mood: dailyMoodMapData.first['mood'] as int?,
+          isTodayFinished: dailyMoodMapData['mood'] != null ? true : false,
+          mood: dailyMoodMapData['mood'] as int?,
           reasons: moodReasons,
           reccomendedPlaylists: recommendedPlaylists,
         );
@@ -211,38 +209,50 @@ class MoodTrackerServiceSupa {
         final dateStop = todaysDate
             .add(Duration(days: DateTime.daysPerWeek - todaysDate.weekday));
 
+        final dateInThisWeek = [
+          dateStart,
+          dateStart.add(const Duration(days: 1)),
+          dateStart.add(const Duration(days: 2)),
+          dateStart.add(const Duration(days: 3)),
+          dateStart.add(const Duration(days: 4)),
+          dateStart.add(const Duration(days: 5)),
+          dateStop,
+        ];
+
         var moodTrackersData = await Future.wait<MoodTracker>(
             moodTrackersMapData.mapIndexed((index, moodTrackerMap) async {
           final moodReasons =
               await getMoodReason(moodTrackerId: moodTrackerMap['id']);
           return MoodTracker(
             index: index,
-            createdAt: moodTrackerMap['created_at'],
-            updatedAt: moodTrackerMap['created_at'],
-            mood: moodTrackerMap['mood'],
+            createdAt: DateTime.tryParse(moodTrackerMap['created_at']) ??
+                DateTime.now(),
+            updatedAt: DateTime.tryParse(moodTrackerMap['created_at']) ??
+                DateTime.now(),
+            mood: moodTrackerMap['mood'] as int,
             reasons: moodReasons,
           );
         }));
 
         int index = 0;
-        for (var i = dateStart;
-            i.isBefore(dateStop) || i.isAtSameMomentAs(dateStop);
-            i.add(const Duration(days: 1))) {
+        for (var i = 0; i < dateInThisWeek.length; i++) {
           var existedItem = moodTrackersData.firstWhereOrNull((moodTracker) {
-            final isDateIsAfterOrNow = moodTracker.createdAt.isAfter(i) ||
-                moodTracker.createdAt.isAtSameMomentAs(i);
-            final isDateIsBeforeOrNow =
-                moodTracker.createdAt.isBefore(i.add(Duration(days: 1))) ||
+            final isDateIsAfterOrNow =
+                moodTracker.createdAt.isAfter(dateInThisWeek[i]) ||
+                    moodTracker.createdAt.isAtSameMomentAs(dateInThisWeek[i]);
+            final isDateIsBeforeOrNow = (i == dateInThisWeek.length - 1)
+                ? true
+                : moodTracker.createdAt.isBefore(dateInThisWeek[i + 1]) ||
                     moodTracker.createdAt
-                        .isAtSameMomentAs(i.add(Duration(days: 1)));
+                        .isAtSameMomentAs(dateInThisWeek[i + 1]);
             return isDateIsAfterOrNow && isDateIsBeforeOrNow;
           });
 
           if (existedItem == null) {
             final newItem = MoodTracker(
               index: index,
-              createdAt: i,
-              updatedAt: i,
+              createdAt: dateInThisWeek[i],
+              updatedAt: dateInThisWeek[i],
               mood: 0,
               reasons: [],
             );
@@ -280,6 +290,7 @@ class MoodTrackerServiceSupa {
           }
         });
         var finalSortedMood = "";
+
         sortedMood.entries.forEachIndexed((index, element) {
           if (index > 0) {
             if (element.value > sortedMood.entries.toList()[index - 1].value) {
@@ -312,7 +323,9 @@ class MoodTrackerServiceSupa {
         });
         var accumulatedReason = <ListAccReason>[];
         listAccReasonData.forEach((key, value) {
-          accumulatedReason.add(ListAccReason(factor: key, total: value));
+          if (value > 0) {
+            accumulatedReason.add(ListAccReason(factor: key, total: value));
+          }
         });
 
         final weeklyMoodData = MoodTrackerWeeklyInsightModel(

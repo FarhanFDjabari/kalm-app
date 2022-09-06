@@ -90,8 +90,8 @@ class _WeeklyMoodTabState extends State<WeeklyMoodTab> {
                           child: Container(
                             alignment: Alignment.center,
                             child: Text(
-                              '${getTimeRange(state.weeklyInsightData.moodTrackers[0].createdAt)} '
-                              'sd. ${getTimeRange(state.weeklyInsightData.moodTrackers[6].createdAt)}',
+                              '${getTimeRange(state.weeklyInsightData.moodTrackers.first.createdAt)} '
+                              'sd. ${getTimeRange(state.weeklyInsightData.moodTrackers.last.createdAt)}',
                               style: kalmOfflineTheme.textTheme.bodyText2!
                                   .copyWith(
                                       fontWeight: FontWeight.bold,

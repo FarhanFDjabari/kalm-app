@@ -18,17 +18,18 @@ class MeditationServiceSupa {
 
         final playlistsData =
             await Future.wait<Playlist>(playlistsMapData.map((playlist) async {
-          final topicData = await getTopic(topicId: playlist['topic_id']);
+          final topicData =
+              await getTopic(topicId: playlist['topic_id'] as int);
           final playlistMusicsData =
-              await getMusicPlaylist(playlistId: playlist['id']);
+              await getMusicPlaylist(playlistId: playlist['id'] as int);
 
           return Playlist(
             id: playlist['id'] as int?,
-            topicId: playlist['topic_id'] as String?,
+            topicId: playlist['topic_id'].toString(),
             topic: topicData,
             name: playlist['name'] as String?,
             description: playlist['description'] as String?,
-            quantity: playlist['banyak_lagu'] as String?,
+            quantity: playlist['quantity'].toString(),
             roundedImage: RoundedImage(url: playlist['image']),
             squaredImage: RoundedImage(url: playlist['thumbnail']),
             playlistMusicItems: playlistMusicsData,
@@ -63,11 +64,11 @@ class MeditationServiceSupa {
 
           return Playlist(
             id: playlist['id'] as int?,
-            topicId: playlist['topic_id'] as String?,
+            topicId: playlist['topic_id'].toString(),
             topic: topicData,
             name: playlist['name'] as String?,
             description: playlist['description'] as String?,
-            quantity: playlist['banyak_lagu'] as String?,
+            quantity: playlist['quantity'].toString(),
             roundedImage: RoundedImage(url: playlist['image']),
             squaredImage: RoundedImage(url: playlist['thumbnail']),
             playlistMusicItems: playlistMusicsData,
@@ -123,7 +124,7 @@ class MeditationServiceSupa {
         final musicsData = musicsMapData.map((music) {
           return PlaylistMusicItem(
             id: music['id'] as int?,
-            playlistId: music['playlist_id'] as String?,
+            playlistId: music['playlist_id'].toString(),
             duration: music['duration'] as String?,
             musicUrl: music['music_url'] as String?,
             name: music['name'] as String?,
@@ -172,11 +173,11 @@ class MeditationServiceSupa {
 
           return Playlist(
             id: playlist['id'] as int?,
-            topicId: playlist['topic_id'] as String?,
+            topicId: playlist['topic_id'].toString(),
             topic: topicData,
             name: playlist['name'] as String?,
             description: playlist['description'] as String?,
-            quantity: playlist['banyak_lagu'] as String,
+            quantity: playlist['quantity'].toString(),
             roundedImage: RoundedImage(url: playlist['image'] as String?),
             squaredImage:
                 RoundedImage(thumbnail: playlist['thumbnail'] as String?),
@@ -213,11 +214,11 @@ class MeditationServiceSupa {
 
         final playlistDetailData = Playlist(
           id: playlistDetailMapData.first['id'] as int?,
-          topicId: playlistDetailMapData.first['topic_id'] as String?,
+          topicId: playlistDetailMapData.first['topic_id'].toString(),
           topic: topicData,
           name: playlistDetailMapData.first['name'] as String?,
           description: playlistDetailMapData.first['description'] as String?,
-          quantity: playlistDetailMapData.first['banyak_lagu'] as String?,
+          quantity: playlistDetailMapData.first['quantity'].toString(),
           roundedImage: RoundedImage(
               url: playlistDetailMapData.first['image'] as String?),
           squaredImage: RoundedImage(
@@ -250,7 +251,7 @@ class MeditationServiceSupa {
     final musicsData = musicsMapData.map((music) {
       return PlaylistMusicItem(
         id: music['id'] as int?,
-        playlistId: music['playlist_id'] as String?,
+        playlistId: music['playlist_id'].toString(),
         duration: music['duration'] as String?,
         musicUrl: music['music_url'] as String?,
         name: music['name'] as String?,

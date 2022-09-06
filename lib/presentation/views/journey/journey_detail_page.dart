@@ -251,7 +251,8 @@ class JourneyDetailPage extends StatelessWidget {
                             if (state is JourneyDetailLoaded)
                               return ListView.builder(
                                   itemCount:
-                                      state.detailJourney.components!.length,
+                                      state.detailJourney.components?.length ??
+                                          0,
                                   padding: const EdgeInsets.only(top: 0),
                                   itemBuilder: (_, index) {
                                     ComponentEntity task =
@@ -268,7 +269,7 @@ class JourneyDetailPage extends StatelessWidget {
                                             : primaryColor,
                                         title: getTitleFromType(task.modelType),
                                         subtitle: getSubtitleFromType(
-                                            task.modelType, task.name!),
+                                            task.modelType, task.name ?? "-"),
                                         onTap: () {
                                           taskRouteMap(
                                             context,

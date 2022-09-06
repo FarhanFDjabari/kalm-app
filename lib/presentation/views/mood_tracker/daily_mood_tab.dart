@@ -128,14 +128,14 @@ class _DailyMoodTabState extends State<DailyMoodTab> {
                             child: Column(
                               children: [
                                 CachedNetworkImage(
-                                  imageUrl: playlist.roundedImage!.url!,
+                                  imageUrl: playlist.roundedImage?.url ?? "",
                                   placeholder: (_, value) {
                                     return CircularProgressIndicator(
                                       color: primaryColor,
                                     );
                                   },
                                   imageBuilder: (_, __) => Image.network(
-                                    playlist.squaredImage!.url!,
+                                    playlist.squaredImage?.url ?? "",
                                     scale: 1.8,
                                   ),
                                 ),

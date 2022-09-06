@@ -34,7 +34,7 @@ class JourneyServiceSupa {
             createdAt:
                 DateTime.tryParse(journeys['created_at']) ?? DateTime.now(),
             author: journeys['author'] as String,
-            urutan: journeys['urutan'] as String?,
+            urutan: journeys['urutan'].toString(),
             name: journeys['name'] as String?,
             title: journeys['title'] as String,
             description2: journeys['description'] as String,
@@ -141,7 +141,7 @@ class JourneyServiceSupa {
         if (componentHistoryList.hasError)
           throw ErrorDescription(componentHistoryList.error!.message);
 
-        final componentsHistory = componentHistoryList as List<dynamic>;
+        final componentsHistory = componentHistoryList.data as List<dynamic>;
 
         final journeyComponents = await Future.wait<Component>(
           journeyComponentsMapData.map((journeyComponent) async {
@@ -185,7 +185,7 @@ class JourneyServiceSupa {
                   DateTime.now(),
               journeyId: journeyComponent['journey_id'] as int,
               name: journeyComponent['name'] as String?,
-              urutan: journeyComponent['urutan'] as String,
+              urutan: journeyComponent['urutan'].toString(),
               isFinished: isFinished,
             );
           }),
@@ -269,7 +269,7 @@ class JourneyServiceSupa {
               DateTime.tryParse(journalTaskMapData.first['created_at']) ??
                   DateTime.now(),
           journeyComponentId: journalTaskMapData.first['in_model_id'] as int,
-          journeyId: journalTaskMapData.first['journey_id'],
+          journeyId: journalTaskMapData.first['journey_id'] as int,
           questions: journalQuestionsData,
         );
 
@@ -381,7 +381,7 @@ class JourneyServiceSupa {
           content: quoteMapData.first['content'] as String,
           author: quoteMapData.first['author'] as String,
           createdAt: DateTime.parse(quoteMapData.first['created_at']),
-          journeyId: quoteMapData.first['journey_id'] as String,
+          journeyId: quoteMapData.first['journey_id'].toString(),
         );
 
         return quoteData;
@@ -412,7 +412,7 @@ class JourneyServiceSupa {
       author: randomQuoteData['author'] as String,
       createdAt:
           DateTime.tryParse(randomQuoteData['created_at']) ?? DateTime.now(),
-      journeyId: randomQuoteData['journey_id'] as String,
+      journeyId: randomQuoteData['journey_id'].toString(),
     );
 
     return quoteData;
@@ -476,11 +476,11 @@ class JourneyServiceSupa {
           name: playlistMusicItemMapData.first['name'] as String?,
           duration: playlistMusicItemMapData.first['duration'] as String?,
           musicUrl: playlistMusicItemMapData.first['music_url'] as String?,
-          playlistId: playlistMusicItemMapData.first['playlist_id'] as String?,
+          playlistId: playlistMusicItemMapData.first['playlist_id'].toString(),
           roundedImage: RoundedImage(
               url: playlistMusicItemMapData.first['image'] as String?),
           squaredImage: RoundedImage(
-              url: playlistMusicItemMapData.first['id'] as String?),
+              url: playlistMusicItemMapData.first['image'] as String?),
         );
 
         return playlistMusicItemData;

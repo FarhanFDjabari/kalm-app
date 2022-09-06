@@ -215,11 +215,12 @@ class _MeditationPageState extends State<MeditationPage>
                           itemCount: playlistList.length,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           itemBuilder: (_, index) => KalmMeditationTile(
-                            playlistId: playlistList[index].id!,
-                            imagePath: playlistList[index].squaredImage!.url!,
-                            series: playlistList[index].quantity!,
-                            description: playlistList[index].description!,
-                            title: playlistList[index].name!,
+                            playlistId: playlistList[index].id ?? 0,
+                            imagePath:
+                                playlistList[index].squaredImage!.url ?? "",
+                            series: playlistList[index].quantity ?? "0",
+                            description: playlistList[index].description ?? "-",
+                            title: playlistList[index].name ?? "-",
                           ),
                         ),
                       );

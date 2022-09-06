@@ -16,6 +16,7 @@ class CurhatServiceSupa {
       final response = await client
           .from('curhats')
           .select('id, content, created_at, is_anonymous')
+          .order('created_at')
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
         final curhatsMapData = response.data as List<dynamic>;
@@ -148,6 +149,7 @@ class CurhatServiceSupa {
           .from('comments')
           .select()
           .eq('curhat_id', curhatId)
+          .order('created_at')
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
         return response;
@@ -169,6 +171,7 @@ class CurhatServiceSupa {
           .from('curhats')
           .select('id, content, created_at, is_anonymous')
           .eq('category', category)
+          .order('created_at')
           .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {

@@ -23,7 +23,7 @@ class KalmJourneyImageCard extends StatelessWidget {
         },
         imageBuilder: (_, __) => Image.network(
           imagePath,
-          scale: 1.5,
+          scale: 1.8,
         ),
         errorWidget: (_, value, __) {
           return Image.asset(

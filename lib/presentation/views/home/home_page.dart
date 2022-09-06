@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kalm/domain/entity/mood_tracker/recomended_playlist_entity.dart';
 import 'package:kalm/presentation/cubit/auth/auth_cubit.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
 import 'package:kalm/presentation/widgets/kalm_meditation_tile.dart';
@@ -178,19 +179,25 @@ class _HomePageState extends State<HomePage>
                                     child: ListView.builder(
                                         itemCount: 4,
                                         itemBuilder: (_, index) {
-                                          List playlistList = state
-                                              .moodTrackerData
-                                              .reccomendedPlaylists!;
+                                          List<RecomendedPlaylistEntity>?
+                                              playlistList = state
+                                                  .moodTrackerData
+                                                  .reccomendedPlaylists;
                                           return KalmMeditationTile(
-                                            imagePath: playlistList[index]
-                                                .squaredImage!
-                                                .url!,
-                                            title: playlistList[index].name!,
-                                            description: playlistList[index]
-                                                .description2!,
+                                            imagePath: playlistList?[index]
+                                                    .squaredImage!
+                                                    .url ??
+                                                "-",
+                                            title: playlistList?[index].name ??
+                                                "-",
+                                            description: playlistList?[index]
+                                                    .description2 ??
+                                                "-",
                                             series:
-                                                playlistList[index].quantity!,
-                                            playlistId: playlistList[index].id!,
+                                                playlistList?[index].quantity ??
+                                                    "0",
+                                            playlistId:
+                                                playlistList?[index].id ?? 0,
                                           );
                                         }),
                                   );
