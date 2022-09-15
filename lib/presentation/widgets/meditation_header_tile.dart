@@ -48,7 +48,7 @@ class MeditationHeaderTile extends StatelessWidget {
               color: tertiaryColor,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: musicList!.isNotEmpty
+            child: musicList?.isNotEmpty == true
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,

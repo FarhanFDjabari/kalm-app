@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kalm/domain/entity/auth/user_entity.dart';
 import 'package:kalm/domain/entity/curhat/detail_comment_entity.dart';
 import 'package:kalm/presentation/cubit/curhat/curhat_cubit.dart';
 import 'package:kalm/presentation/widgets/kalm_curhat_reply_tile.dart';
@@ -102,11 +103,11 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                       child: Column(
                         children: [
                           KalmDetailCurhatTile(
-                            user: state.detailCurhatan.user!,
-                            content: state.detailCurhatan.content!,
-                            topic: state.detailCurhatan.category!,
+                            user: state.detailCurhatan.user ?? UserEntity(),
+                            content: state.detailCurhatan.content ?? "",
+                            topic: state.detailCurhatan.category ?? "-",
                             postedAt: state.detailCurhatan.createdAt,
-                            likeCount: state.detailCurhatan.curhatLike!,
+                            likeCount: state.detailCurhatan.curhatLike ?? [],
                             isAnonymous: state.detailCurhatan.isAnonymous,
                           ),
                           const SizedBox(height: 15),
@@ -137,7 +138,7 @@ class _CurhatDetailPageState extends State<CurhatDetailPage> {
                           Container(
                             height: state.detailCurhatan.comments!.isEmpty
                                 ? 200
-                                : null,
+                                : 200,
                             child: RefreshIndicator(
                               onRefresh: () async {},
                               color: primaryColor,

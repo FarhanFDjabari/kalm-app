@@ -103,13 +103,93 @@ class MoodTrackerServiceSupa {
     }
   }
 
+  Future<int> recommendedTopicId(
+      {required List<MoodReason> reasons, required int moodPoint}) async {
+    final reasonMap = <String, int>{
+      'Tidur': 0,
+      'Pekerjaan': 0,
+      'Hubungan': 0,
+      'Keluarga': 0,
+      'Teman': 0,
+      'Pendidikan': 0,
+      'Finansial': 0,
+      'Lainnya': 0,
+    };
+
+    for (var reason in reasons) {
+      if (reason.reason?.contains('Tidur') == true) {
+        reasonMap['Tidur'] = (reasonMap['Tidur'] as int) + 1;
+      }
+      if (reason.reason?.contains('Pekerjaan') == true) {
+        reasonMap['Pekerjaan'] = (reasonMap['Pekerjaan'] as int) + 1;
+      }
+      if (reason.reason?.contains('Hubungan') == true) {
+        reasonMap['Hubungan'] = (reasonMap['Hubungan'] as int) + 1;
+      }
+      if (reason.reason?.contains('Keluarga') == true) {
+        reasonMap['Keluarga'] = (reasonMap['Keluarga'] as int) + 1;
+      }
+      if (reason.reason?.contains('Teman') == true) {
+        reasonMap['Teman'] = (reasonMap['Teman'] as int) + 1;
+      }
+      if (reason.reason?.contains('Pendidikan') == true) {
+        reasonMap['Pendidikan'] = (reasonMap['Pendidikan'] as int) + 1;
+      }
+      if (reason.reason?.contains('Finansial') == true) {
+        reasonMap['Finansial'] = (reasonMap['Finansial'] as int) + 1;
+      }
+      if (reason.reason?.contains('Lainnya') == true) {
+        reasonMap['Lainnya'] = (reasonMap['Lainnya'] as int) + 1;
+      }
+    }
+
+    String result = "";
+
+    reasonMap.forEach((key, value) {
+      if (value > 0) {
+        result += "$key|";
+      }
+    });
+
+    if (result.contains("Tidur")) {
+      return 2;
+    }
+    if (result.contains("Pekerjaan")) {
+      return 3;
+    }
+    if (result.contains("Hubungan")) {
+      return 4;
+    }
+    if (result.contains("Keluarga")) {
+      return 4;
+    }
+    if (result.contains("Teman")) {
+      return 5;
+    }
+    if (result.contains("Pendidikan")) {
+      return 5;
+    }
+    if (result.contains("Finansial")) {
+      return 5;
+    }
+    if (result.contains("Lainnya")) {
+      return 6;
+    }
+    return 1;
+  }
+
   Future<List<RecomendedPlaylist>> getRecomendedPlaylist(
       {required List<MoodReason> reasons, required int moodPoint}) async {
     try {
-      // DEV TODO: make this recomended playlist logic work (current logic is pick random)
+      final recommendedTopicid =
+          await recommendedTopicId(reasons: reasons, moodPoint: moodPoint);
 
-      final response =
-          await client.from('playlists').select().range(0, 3).execute();
+      final response = await client
+          .from('playlists')
+          .select()
+          .eq('topic_id', recommendedTopicid)
+          .range(0, 3)
+          .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
         final playlistsMapData = response.data as List<dynamic>;

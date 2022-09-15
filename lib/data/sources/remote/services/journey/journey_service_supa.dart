@@ -366,11 +366,10 @@ class JourneyServiceSupa {
     required int journeyId,
   }) async {
     try {
-      final response = await client
-          .from('quotes')
-          .select()
-          .eq('journey_id', journeyId)
-          .execute();
+      final randomIndex = Random().nextInt(9);
+
+      final response =
+          await client.from('quotes').select().eq('id', randomIndex).execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
         final quoteMapData = response.data as List<dynamic>;

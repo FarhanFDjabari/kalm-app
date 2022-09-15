@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kalm/styles/kalm_theme.dart';
+import 'package:marquee/marquee.dart';
 
 class KalmPlaylistTile extends StatefulWidget {
   final Color iconColor;
@@ -48,12 +49,26 @@ class _KalmPlaylistTileState extends State<KalmPlaylistTile> {
         overflow: TextOverflow.ellipsis,
         style: kalmOfflineTheme.textTheme.subtitle1!.apply(color: primaryText),
       ),
-      subtitle: Text(
-        widget.subtitle,
-        overflow: TextOverflow.ellipsis,
-        style:
-            kalmOfflineTheme.textTheme.subtitle1!.apply(color: secondaryText),
-      ),
+      subtitle: widget.subtitle.length > 35
+          ? SizedBox(
+              height: 12,
+              child: Marquee(
+                text: widget.subtitle,
+                blankSpace: 50.0,
+                numberOfRounds: 3,
+                scrollAxis: Axis.horizontal,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                pauseAfterRound: Duration(seconds: 4),
+                style: kalmOfflineTheme.textTheme.subtitle1!
+                    .apply(color: secondaryText),
+              ),
+            )
+          : Text(
+              widget.subtitle,
+              overflow: TextOverflow.ellipsis,
+              style: kalmOfflineTheme.textTheme.subtitle1!
+                  .apply(color: secondaryText),
+            ),
       trailing: widget.trailing,
     );
   }

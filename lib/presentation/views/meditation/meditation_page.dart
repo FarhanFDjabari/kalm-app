@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
 import 'package:kalm/presentation/cubit/meditation/meditation_cubit.dart';
-import 'package:kalm/presentation/views/meditation/meditation_search_page.dart';
 import 'package:kalm/presentation/widgets/kalm_icon_button.dart';
 import 'package:kalm/presentation/widgets/kalm_meditation_tile.dart';
 import 'package:kalm/presentation/widgets/kalm_snackbar.dart';
-import 'package:kalm/presentation/widgets/kalm_text_button.dart';
 import 'package:kalm/presentation/widgets/meditation_header_tile.dart';
 import 'package:kalm/utilities/iconsax_icons.dart';
 import 'package:kalm/styles/kalm_theme.dart';
@@ -23,12 +22,17 @@ class _MeditationPageState extends State<MeditationPage>
 
   int selectedIndex = 0;
 
+  PlaylistEntity? recommendedMusic;
+
   @override
   void initState() {
     super.initState();
     context
         .read<MeditationCubit>()
         .fetchAllPlaylist(GetStorage().read('user_id') ?? 0);
+    context
+        .read<MeditationCubit>()
+        .fetchRecommendedPlaylist(GetStorage().read("today_mood_point") ?? 0);
   }
 
   List<Map<String, dynamic>> topicData = [
@@ -122,26 +126,37 @@ class _MeditationPageState extends State<MeditationPage>
           children: [
             BlocBuilder<MeditationCubit, MeditationState>(
               builder: (context, state) {
-                if (state is MeditationPlaylistLoaded) {
+                if (state is MeditationRecommendedPlaylistLoaded) {
+                  recommendedMusic = state.playlistList[0];
+
                   if (state.playlistList.isNotEmpty) {
                     return MeditationHeaderTile(
-                      musicList: state.playlistList[0].playlistMusicItems,
+                      musicList: recommendedMusic?.playlistMusicItems,
                     );
                   } else {
                     return MeditationHeaderTile(musicList: []);
                   }
-                } else
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 20),
-                    width: double.infinity,
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: primaryColor,
+                } else {
+                  if (state is MeditationRecommendLoading) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 20),
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else if (state is MeditationLoadError) {
+                    return MeditationHeaderTile(musicList: []);
+                  } else {
+                    return MeditationHeaderTile(
+                      musicList: recommendedMusic?.playlistMusicItems,
+                    );
+                  }
+                }
               },
             ),
             Padding(

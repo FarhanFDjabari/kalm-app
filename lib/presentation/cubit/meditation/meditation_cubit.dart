@@ -3,6 +3,7 @@ import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
 import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
+import 'package:kalm/domain/usecases/meditation/get_recomended_playlist.dart';
 import 'package:meta/meta.dart';
 
 part 'meditation_state.dart';
@@ -12,11 +13,13 @@ class MeditationCubit extends Cubit<MeditationState> {
     required this.getAllPlaylist,
     required this.getAllPlaylistByCategory,
     required this.getPlaylistDetail,
+    required this.getRecommendedPlaylist,
   }) : super(MeditationInitial());
 
   final GetAllPlaylistByCategory getAllPlaylistByCategory;
   final GetAllPlaylist getAllPlaylist;
   final GetPlaylistDetail getPlaylistDetail;
+  final GetRecommendedPlaylist getRecommendedPlaylist;
 
   void fetchAllPlaylist(int userId) async {
     emit(MeditationLoading());
@@ -26,6 +29,20 @@ class MeditationCubit extends Cubit<MeditationState> {
       result.fold(
         (l) => emit(MeditationLoadError('Error: $l')),
         (r) => emit(MeditationPlaylistLoaded(r)),
+      );
+    } catch (error) {
+      emit(MeditationLoadError('Error: $error'));
+    }
+  }
+
+  void fetchRecommendedPlaylist(int moodPoint) async {
+    emit(MeditationRecommendLoading());
+    try {
+      final result = await getRecommendedPlaylist.execute(moodPoint: moodPoint);
+
+      result.fold(
+        (l) => emit(MeditationLoadError('Error: $l')),
+        (r) => emit(MeditationRecommendedPlaylistLoaded(r)),
       );
     } catch (error) {
       emit(MeditationLoadError('Error: $error'));

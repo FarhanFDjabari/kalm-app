@@ -45,4 +45,17 @@ class MeditationRepositoryImpl extends MeditationRepository {
       return Left(e.toString());
     }
   }
+
+  @override
+  Future<Either<String, List<PlaylistEntity>>> getRecommendedPlaylists(
+      {required int moodPoint}) async {
+    try {
+      final client = meditationServiceSupa;
+      final result = await client.getRecomendedPlaylist(moodPoint: moodPoint);
+
+      return Right(result.map((e) => e.toEntity()).toList());
+    } catch (e) {
+      return Left(e.toString());
+    }
+  }
 }

@@ -15,7 +15,7 @@ class CurhatServiceSupa {
     try {
       final response = await client
           .from('curhats')
-          .select('id, content, created_at, is_anonymous')
+          .select('id, content, created_at, is_anonymous, user_id')
           .order('created_at')
           .execute();
       if (response.status! >= 200 && response.status! <= 299) {
@@ -119,7 +119,7 @@ class CurhatServiceSupa {
     try {
       final response = await client
           .from('profiles')
-          .select('nama_lengkap, username')
+          .select('id, nama_lengkap, username, profile_image')
           .eq('id', userId)
           .execute();
 
@@ -127,9 +127,10 @@ class CurhatServiceSupa {
         // response data: [{id, email, name, username}]
         final userMapData = response.data as List<dynamic>;
         final userData = userModel.User(
-          id: int.tryParse(userMapData.first['id']),
+          id: userMapData.first['id'] as int?,
           name: userMapData.first['nama_lengkap'] as String?,
           username: userMapData.first['username'] as String?,
+          photoProfileUrl: userMapData.first['profile_image'] as String?,
         );
 
         return userData;
@@ -169,7 +170,7 @@ class CurhatServiceSupa {
     try {
       final response = await client
           .from('curhats')
-          .select('id, content, created_at, is_anonymous')
+          .select('id, content, created_at, is_anonymous, user_id')
           .eq('category', category)
           .order('created_at')
           .execute();
@@ -209,11 +210,8 @@ class CurhatServiceSupa {
     required int curhatId,
   }) async {
     try {
-      final response = await client
-          .from('curhats')
-          .select()
-          .eq('curhat_id', curhatId)
-          .execute();
+      final response =
+          await client.from('curhats').select().eq('id', curhatId).execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
         final detailCurhatMapData = response.data as List<dynamic>;
@@ -231,8 +229,8 @@ class CurhatServiceSupa {
 
             return DetailComment(
               id: comment['id'] as int?,
-              curhatanId: comment['curhat_id'] as String?,
-              userId: comment['user_id'] as String?,
+              curhatanId: comment['curhat_id'].toString(),
+              userId: comment['user_id'].toString(),
               username: userCommentData.username,
               isAnonymous: comment['is_anonymous'] as bool?,
               content: comment['content'] as String?,
@@ -252,7 +250,7 @@ class CurhatServiceSupa {
 
         final detailCurhatData = DetailCurhatan(
           id: detailCurhatMapData.first['id'] as int?,
-          category: detailCurhatMapData.first['topic'] as String?,
+          category: detailCurhatMapData.first['category'] as String?,
           content: detailCurhatMapData.first['content'] as String?,
           createdAt: DateTime.tryParse(detailCurhatMapData.first['created_at']),
           isAnonymous: detailCurhatMapData.first['is_anonymous'] as bool?,
@@ -278,12 +276,22 @@ class CurhatServiceSupa {
     required String topic,
   }) async {
     try {
+      final topicData = await client
+          .from('curhat_category')
+          .select('id')
+          .eq('name', topic)
+          .execute();
+      if (topicData.hasError) throw ErrorDescription(topicData.error!.message);
+
+      final topicId = topicData.data as List<dynamic>;
+
       final response = await client.from('curhats').insert({
         'user_id': userId,
         'created_at': DateTime.now().toIso8601String(),
         'is_anonymous': isAnonymous,
         'content': content,
-        'topic': topic,
+        'category': topic,
+        'topic_id': topicId.isNotEmpty ? topicId.first['id'] : 1,
       }).execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
@@ -336,7 +344,7 @@ class CurhatServiceSupa {
         'created_at': DateTime.now().toIso8601String(),
         'curhat_id': curhatId,
         'content': content,
-        'is_anonymous': isAnonymous
+        'is_anonymous': isAnonymous,
       }).execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
@@ -345,10 +353,10 @@ class CurhatServiceSupa {
           id: commentMapData.first['id'] as int?,
           userId: commentMapData.first['user_id'] as int?,
           content: commentMapData.first['content'] as String?,
-          createdAt: DateTime.tryParse(commentMapData.first['createdAt']),
+          createdAt: DateTime.tryParse(commentMapData.first['created_at']),
           curhatanId: commentMapData.first['curhat_id'] as int?,
           isAnonymous: commentMapData.first['is_anonymous'] as bool?,
-          username: commentMapData.first['user_id'] as String?,
+          username: commentMapData.first['user_id'].toString(),
         );
         return commentData;
       }

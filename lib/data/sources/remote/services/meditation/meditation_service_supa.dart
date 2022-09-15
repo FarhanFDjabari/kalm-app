@@ -46,12 +46,78 @@ class MeditationServiceSupa {
     }
   }
 
+  int recommendedTopicId({required int moodPoint}) {
+    final currentDate = DateTime.now();
+
+    if (currentDate.weekday == DateTime.monday) {
+      if (moodPoint == 0) {
+        return 5;
+      } else if (moodPoint == 1) {
+        return 2;
+      } else {
+        return 3;
+      }
+    } else if (currentDate.weekday == DateTime.tuesday) {
+      if (moodPoint == 0) {
+        return 1;
+      } else if (moodPoint == 1) {
+        return 5;
+      } else {
+        return 2;
+      }
+    } else if (currentDate.weekday == DateTime.wednesday) {
+      if (moodPoint == 0) {
+        return 3;
+      } else if (moodPoint == 1) {
+        return 5;
+      } else {
+        return 2;
+      }
+    } else if (currentDate.weekday == DateTime.thursday) {
+      if (moodPoint == 0) {
+        return 4;
+      } else if (moodPoint == 1) {
+        return 1;
+      } else {
+        return 5;
+      }
+    } else if (currentDate.weekday == DateTime.friday) {
+      if (moodPoint == 0) {
+        return 5;
+      } else if (moodPoint == 1) {
+        return 3;
+      } else {
+        return 1;
+      }
+    } else if (currentDate.weekday == DateTime.saturday) {
+      if (moodPoint == 0) {
+        return 1;
+      } else if (moodPoint == 1) {
+        return 2;
+      } else {
+        return 3;
+      }
+    } else {
+      if (moodPoint == 0) {
+        return 3;
+      } else if (moodPoint == 1) {
+        return 4;
+      } else {
+        return 2;
+      }
+    }
+  }
+
   Future<List<Playlist>> getRecomendedPlaylist({required int moodPoint}) async {
     try {
-      // DEV TODO: make this recomended playlist logic work (current logic is pick random)
+      final topicId = recommendedTopicId(moodPoint: moodPoint);
 
-      final response =
-          await client.from('playlists').select().limit(10).execute();
+      final response = await client
+          .from('playlists')
+          .select()
+          .eq('topic_id', topicId)
+          .limit(10)
+          .execute();
 
       if (response.status! >= 200 && response.status! <= 299) {
         final playlistsMapData = response.data as List<dynamic>;

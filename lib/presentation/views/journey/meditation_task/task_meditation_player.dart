@@ -31,6 +31,10 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
   @override
   void initState() {
     super.initState();
+    context.read<JourneyCubit>().getMeditationTask(
+          GetStorage().read('user_id'),
+          widget.taskId,
+        );
 
     _audioPlayer.onPlayerStateChanged.listen((audioState) {
       if (audioState == PlayerState.stopped) {
@@ -102,7 +106,7 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
             subtitle:
                 'Kamu dapat kembali untuk melakukan aktivitas selanjutnya atau tetap disini untuk mendengarkan meditasi',
             successButtonTitle: 'Oke',
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.275,
             onSuccess: () => Navigator.of(context).pop(),
           );
         });
@@ -110,10 +114,6 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<JourneyCubit>().getMeditationTask(
-          GetStorage().read('user_id'),
-          widget.taskId,
-        );
     return Material(
       child: BlocListener<JourneyCubit, JourneyState>(
         listener: (context, state) {
@@ -171,7 +171,7 @@ class _TaskMeditationPlayerState extends State<TaskMeditationPlayer> {
                           imageBuilder: (_, image) {
                             return Image.network(
                               state.meditationTask.roundedImage.url!,
-                              scale: 1.8,
+                              scale: 1,
                             );
                           },
                           placeholder: (_, __) {

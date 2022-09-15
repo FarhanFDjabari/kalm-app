@@ -85,7 +85,10 @@ class MoodTrackerCubit extends Cubit<MoodTrackerState> {
 
       result.fold(
         (l) => emit(MoodTrackerError(l)),
-        (r) => emit(MoodTrackerSaved()),
+        (r) {
+          GetStorage().write("today_mood_point", mood);
+          emit(MoodTrackerSaved());
+        },
       );
     } catch (error) {
       emit(MoodTrackerError(error.toString()));

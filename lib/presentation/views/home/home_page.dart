@@ -177,7 +177,9 @@ class _HomePageState extends State<HomePage>
                                     .isNotEmpty) {
                                   return Container(
                                     child: ListView.builder(
-                                        itemCount: 4,
+                                        itemCount: state.moodTrackerData
+                                                .reccomendedPlaylists?.length ??
+                                            0,
                                         itemBuilder: (_, index) {
                                           List<RecomendedPlaylistEntity>?
                                               playlistList = state

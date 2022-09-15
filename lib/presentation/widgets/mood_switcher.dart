@@ -73,25 +73,27 @@ class _MoodSwitcherState extends State<MoodSwitcher> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Buruk'),
-                  Text('Baik'),
-                ],
-              ),
-              KalmSlider(
-                onChanged: (value) {
-                  setState(() {
-                    moodValue = value.toInt();
-                  });
-                },
-                trackHeight: 8,
-                inactiveColor: tertiaryColor,
-                value: moodValue.toDouble(),
-                max: 2,
-                min: 0,
-              ),
+              if (!widget.todayFinished)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Buruk'),
+                    Text('Baik'),
+                  ],
+                ),
+              if (!widget.todayFinished)
+                KalmSlider(
+                  onChanged: (value) {
+                    setState(() {
+                      moodValue = value.toInt();
+                    });
+                  },
+                  trackHeight: 8,
+                  inactiveColor: tertiaryColor,
+                  value: moodValue.toDouble(),
+                  max: 2,
+                  min: 0,
+                ),
               SizedBox(height: 32),
               if (widget.todayFinished)
                 Padding(

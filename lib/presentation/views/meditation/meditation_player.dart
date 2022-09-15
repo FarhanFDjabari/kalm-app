@@ -66,7 +66,7 @@ class _MeditationPlayerState extends State<MeditationPlayer> {
                 imageBuilder: (_, image) {
                   return Image.network(
                     widget.musicList[widget.audioIndex].roundedImage!.url!,
-                    scale: 1.8,
+                    scale: 1,
                   );
                 },
                 placeholder: (_, __) {

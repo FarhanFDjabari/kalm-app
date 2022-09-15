@@ -8,6 +8,9 @@ abstract class MeditationRepository {
     required int userId,
     required String category,
   });
+  Future<Either<String, List<PlaylistEntity>>> getRecommendedPlaylists({
+    required int moodPoint,
+  });
   Future<Either<String, PlaylistEntity>> getPlaylistDetail({
     required int userId,
     required int playlistId,
