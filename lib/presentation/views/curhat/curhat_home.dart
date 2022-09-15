@@ -141,9 +141,12 @@ class _CurhatHomeState extends State<CurhatHome>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 15.0,
+                vertical: 10.0,
+              ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     child: Text(
@@ -152,28 +155,28 @@ class _CurhatHomeState extends State<CurhatHome>
                           .apply(color: primaryText, fontSizeFactor: 1.1),
                     ),
                   ),
-                  KalmTextButton(
-                    width: 120,
-                    height: 20,
-                    primaryColor: primaryColor,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Lihat Semua',
-                          style: kalmOfflineTheme.textTheme.bodyText1!
-                              .apply(color: primaryText, fontSizeFactor: 1),
-                        ),
-                        SizedBox(width: 5),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: primaryText,
-                          size: 16,
-                        )
-                      ],
-                    ),
-                    onPressed: () {},
-                  ),
+                  // KalmTextButton(
+                  //   width: 120,
+                  //   height: 20,
+                  //   primaryColor: primaryColor,
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.end,
+                  //     children: [
+                  //       Text(
+                  //         'Lihat Semua',
+                  //         style: kalmOfflineTheme.textTheme.bodyText1!
+                  //             .apply(color: primaryText, fontSizeFactor: 1),
+                  //       ),
+                  //       SizedBox(width: 5),
+                  //       Icon(
+                  //         Icons.arrow_forward_ios_rounded,
+                  //         color: primaryText,
+                  //         size: 16,
+                  //       )
+                  //     ],
+                  //   ),
+                  //   onPressed: () {},
+                  // ),
                 ],
               ),
             ),

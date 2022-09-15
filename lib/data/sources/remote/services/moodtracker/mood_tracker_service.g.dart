@@ -34,12 +34,12 @@ class _MoodTrackerService implements MoodTrackerService {
 
   @override
   Future<ApiResponse<MoodTrackerDailyInsightModel>> fetchDailyMoodInsight(
-      {required userId}) async {
+      {required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('user_id', userId.toString()));
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerDailyInsightModel>>(
             Options(method: 'POST', headers: _headers, extra: _extra)
@@ -53,12 +53,12 @@ class _MoodTrackerService implements MoodTrackerService {
 
   @override
   Future<ApiResponse<MoodTrackerWeeklyInsightModel>> fetchWeeklyMoodInsight(
-      {required userId}) async {
+      {required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('user_id', userId.toString()));
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerWeeklyInsightModel>>(
             Options(method: 'POST', headers: _headers, extra: _extra)
@@ -72,19 +72,15 @@ class _MoodTrackerService implements MoodTrackerService {
 
   @override
   Future<ApiResponse<MoodTrackerPostResponse>> postMoodTracker(
-      {required userId, required mood, required reasons}) async {
+      {required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('user_id', userId.toString()));
-    _data.fields.add(MapEntry('mood', mood.toString()));
-    reasons.forEach((i) {
-      _data.fields.add(MapEntry('reasons', i));
-    });
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<MoodTrackerPostResponse>>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
+            Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'api/v1/mood-tracks',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));

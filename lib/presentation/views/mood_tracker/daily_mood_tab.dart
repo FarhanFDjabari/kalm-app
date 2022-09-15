@@ -143,6 +143,8 @@ class _DailyMoodTabState extends State<DailyMoodTab> {
                                 Text(
                                   playlist.name!,
                                   overflow: TextOverflow.ellipsis,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
                                   style: kalmOfflineTheme.textTheme.bodyText1!
                                       .apply(
                                           color: primaryText,

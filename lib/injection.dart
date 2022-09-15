@@ -39,19 +39,27 @@ import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
 import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_daily_mood_insight.dart';
+import 'package:kalm/domain/usecases/mood_tracker/get_mood_recognition.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_mood_tracker_home_data.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_weekly_mood_insight.dart';
 import 'package:kalm/domain/usecases/mood_tracker/post_mood.dart';
+import 'package:kalm/domain/usecases/mood_tracker/post_mood_image.dart';
 import 'package:kalm/presentation/cubit/auth/auth_cubit.dart';
 import 'package:kalm/presentation/cubit/curhat/curhat_cubit.dart';
 import 'package:kalm/presentation/cubit/journey/journey_cubit.dart';
 import 'package:kalm/presentation/cubit/meditation/meditation_cubit.dart';
 import 'package:kalm/presentation/cubit/mood_tracker/mood_tracker_cubit.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final locator = GetIt.instance;
 
 Future<void> init() async {
+  await Supabase.initialize(
+    url: 'https://xtxiyjuvarutzorjpudq.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0eGl5anV2YXJ1dHpvcmpwdWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyNzQ0MDUsImV4cCI6MTk3Njg1MDQwNX0.XOeN0u6qNEOJ7wJrorI3U5FPAC4Uo97AvU8t8WTAu20',
+  );
   // cubit
   locator.registerFactory(
     () => AuthCubit(
@@ -96,6 +104,8 @@ Future<void> init() async {
       getMoodTrackerHomeData: locator(),
       getWeeklyMoodInsight: locator(),
       postMood: locator(),
+      getMoodRecognition: locator(),
+      postMoodImage: locator(),
     ),
   );
   // usecases
@@ -120,6 +130,8 @@ Future<void> init() async {
   locator.registerLazySingleton(() => GetQuote(repository: locator()));
   locator.registerLazySingleton(() => PostJournalTask(repository: locator()));
   locator
+      .registerLazySingleton(() => GetMoodRecognition(repository: locator()));
+  locator
       .registerLazySingleton(() => PostMeditationTask(repository: locator()));
 
   locator.registerLazySingleton(() => GetAllPlaylist(repository: locator()));
@@ -134,6 +146,7 @@ Future<void> init() async {
   locator
       .registerLazySingleton(() => GetWeeklyMoodInsight(repository: locator()));
   locator.registerLazySingleton(() => PostMood(repository: locator()));
+  locator.registerLazySingleton(() => PostMoodImage(repository: locator()));
 
   // repository
   locator.registerLazySingleton<AuthRepository>(

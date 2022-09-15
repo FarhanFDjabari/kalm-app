@@ -32,6 +32,9 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
   @override
   void initState() {
     super.initState();
+    context
+        .read<JourneyCubit>()
+        .getJourneyTask(GetStorage().read('user_id'), widget.taskId);
     _speechToText = SpeechToText();
   }
 
@@ -87,9 +90,6 @@ class _JourneyChapterPageState extends State<JourneyChapterPage> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<JourneyCubit>()
-        .getJourneyTask(GetStorage().read('user_id'), widget.taskId);
     return Material(
       child: BlocListener<JourneyCubit, JourneyState>(
         listener: (context, state) {

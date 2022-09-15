@@ -13,11 +13,16 @@ import 'package:kalm/presentation/widgets/kalm_playlist_tile.dart';
 import 'package:kalm/presentation/widgets/kalm_snackbar.dart';
 import 'package:kalm/styles/kalm_theme.dart';
 
-class JourneyDetailPage extends StatelessWidget {
+class JourneyDetailPage extends StatefulWidget {
   final int journeyId;
 
   JourneyDetailPage({required this.journeyId});
 
+  @override
+  State<JourneyDetailPage> createState() => _JourneyDetailPageState();
+}
+
+class _JourneyDetailPageState extends State<JourneyDetailPage> {
   String getTitleFromType(String type) {
     switch (type) {
       case "mood_trackers":
@@ -85,10 +90,15 @@ class JourneyDetailPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     context
         .read<JourneyCubit>()
-        .getJourneyDetail(GetStorage().read('user_id'), journeyId);
+        .getJourneyDetail(GetStorage().read('user_id'), widget.journeyId);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocListener<JourneyCubit, JourneyState>(
       listener: (context, state) {
         if (state is JourneyError) {

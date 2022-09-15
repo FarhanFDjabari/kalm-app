@@ -106,9 +106,31 @@ class _PostCurhatPageState extends State<PostCurhatPage> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: primaryColor,
+                          BlocBuilder<AuthCubit, AuthState>(
+                            builder: (context, state) {
+                              return CircleAvatar(
+                                radius: 20,
+                                backgroundColor: accentColor,
+                                child: Center(
+                                  child: state is AuthLoadSuccess &&
+                                          state.user.photoProfileUrl
+                                                  ?.isNotEmpty ==
+                                              true
+                                      ? ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: Image.network(
+                                            state.user.photoProfileUrl!,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : Image.asset(
+                                          'assets/picture/profile_picture_placeholder.png',
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
+                              );
+                            },
                           ),
                           SizedBox(width: 8),
                           BlocBuilder<AuthCubit, AuthState>(

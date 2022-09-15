@@ -66,6 +66,21 @@ class _ViewState extends State<View> {
                       CircleAvatar(
                         backgroundColor: accentColor,
                         radius: 35,
+                        child: Center(
+                          child: state is AuthLoadSuccess &&
+                                  state.user.photoProfileUrl?.isNotEmpty == true
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.network(
+                                    state.user.photoProfileUrl!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Image.asset(
+                                  'assets/picture/profile_picture_placeholder.png',
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                       SizedBox(height: 15),
                       Column(
@@ -73,9 +88,7 @@ class _ViewState extends State<View> {
                         children: [
                           Container(
                             child: Text(
-                              state is AuthLoadSuccess
-                                  ? state.user.name!
-                                  : 'Andini Paramita',
+                              state is AuthLoadSuccess ? state.user.name! : '-',
                               overflow: TextOverflow.fade,
                               style:
                                   kalmOfflineTheme.textTheme.bodyText1!.apply(
@@ -89,7 +102,7 @@ class _ViewState extends State<View> {
                             child: Text(
                               state is AuthLoadSuccess
                                   ? state.user.email!
-                                  : 'andini@gmail.com',
+                                  : '-',
                               overflow: TextOverflow.fade,
                               style:
                                   kalmOfflineTheme.textTheme.bodyText1!.apply(
@@ -126,13 +139,14 @@ class _ViewState extends State<View> {
                   ),
                   onTap: () {
                     // _drawerController.reverse();
-                    Navigator.pop(context);
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, RouteName.PROFILE);
                   },
                 ),
                 ListTile(
                   onTap: () {
-                    Navigator.pop(context);
                     builderContext.read<AuthCubit>().logout();
+                    Navigator.pop(context);
                   },
                   leading: Icon(
                     Iconsax.logout,

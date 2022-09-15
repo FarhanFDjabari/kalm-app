@@ -17,7 +17,11 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   Future<Either<String, MoodTrackerDailyInsightEntity>> getDailyMoodInsight(
       {required int userId}) async {
     final client = await moodTrackerClient();
-    final response = client.fetchDailyMoodInsight(userId: userId);
+    final response = client.fetchDailyMoodInsight(
+      body: {
+        "user_id": userId,
+      },
+    );
     final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
@@ -47,7 +51,11 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   Future<Either<String, MoodTrackerWeeklyInsightEntity>> getWeeklyMoodInsight(
       {required int userId}) async {
     final client = await moodTrackerClient();
-    final response = client.fetchWeeklyMoodInsight(userId: userId);
+    final response = client.fetchWeeklyMoodInsight(
+      body: {
+        'user_id': userId,
+      },
+    );
     final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
@@ -64,8 +72,13 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
       required int mood,
       required List<String> reasons}) async {
     final client = await moodTrackerClient();
-    final response =
-        client.postMoodTracker(userId: userId, mood: mood, reasons: reasons);
+    final response = client.postMoodTracker(
+      body: {
+        "user_id": userId,
+        "mood": mood,
+        "reasons": [...reasons],
+      },
+    );
     final result = await response.validateStatus().handleError((onError) {
       return Left(onError.toString());
     });
@@ -81,7 +94,9 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
       {required String imagePath}) async {
     try {
       final client = await moodRecognitionService();
-      final result = await client.getMoodRecognition(imagePath: imagePath);
+      final result = await client.getMoodRecognition(
+        body: {'image_path': imagePath},
+      );
 
       if (result != null) {
         return Right(result as Map<String, dynamic>);
@@ -96,26 +111,34 @@ class MoodTrackerRepositoryImpl extends MoodTrackerRepository {
   Future<String> postMoodImage(
       {required File image, required int userId}) async {
     try {
-      final client = SupabaseClient('https://xtxiyjuvarutzorjpudq.supabase.co',
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh0eGl5anV2YXJ1dHpvcmpwdWRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyNzQ0MDUsImV4cCI6MTk3Njg1MDQwNX0.XOeN0u6qNEOJ7wJrorI3U5FPAC4Uo97AvU8t8WTAu20');
+      final client = Supabase.instance.client;
+
       final fileName = image.uri.pathSegments.last;
 
       final storageList = await client.storage
           .from('images')
-          .list(path: '/mood_images/$userId');
+          .list(path: 'mood_images/old_service/$userId');
       final filesToRemove = storageList.data
-          ?.map((e) => '/mood_images/$userId/${e.name}')
+          ?.map((e) => 'mood_images/old_service/$userId/${e.name}')
           .toList();
       await client.storage.from('images').remove(filesToRemove ?? []);
 
       final response = await client.storage.from('images').upload(
-            '/mood_images/$userId/$fileName',
+            'mood_images/old_service/$userId/$fileName',
             image,
           );
       if (response.error == null) {
-        return response.data ?? "";
+        final publicUrlData = client.storage
+            .from('images')
+            .getPublicUrl('mood_images/old_service/$userId/$fileName');
+
+        if (publicUrlData.hasError)
+          throw ErrorDescription(publicUrlData.error!.message);
+
+        return publicUrlData.data ?? "";
       }
-      return response.error!.message;
+      print(response.error!.message);
+      throw ErrorDescription(response.error!.message);
     } catch (e) {
       throw ErrorDescription(e.toString());
     }

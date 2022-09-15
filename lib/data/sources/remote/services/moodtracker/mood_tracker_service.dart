@@ -37,19 +37,17 @@ abstract class MoodTrackerService {
 
   @POST('api/v1/mood-tracks/index-harian')
   Future<ApiResponse<MoodTrackerDailyInsightModel>> fetchDailyMoodInsight({
-    @Part(name: "user_id") required int userId,
+    @Body() required Map<String, dynamic> body,
   });
 
   @POST('api/v1/mood-tracks/index-mingguan')
   Future<ApiResponse<MoodTrackerWeeklyInsightModel>> fetchWeeklyMoodInsight({
-    @Part(name: "user_id") required int userId,
+    @Body() required Map<String, dynamic> body,
   });
 
-  @GET('api/v1/mood-tracks')
+  @POST('api/v1/mood-tracks')
   Future<ApiResponse<MoodTrackerPostResponse>> postMoodTracker({
-    @Part(name: "user_id") required int userId,
-    @Part(name: "mood") required int mood,
-    @Part(name: "reasons") required List<String> reasons,
+    @Body() required Map<String, dynamic> body,
   });
 }
 

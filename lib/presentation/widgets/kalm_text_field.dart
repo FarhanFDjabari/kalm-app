@@ -4,6 +4,7 @@ import 'package:kalm/styles/kalm_theme.dart';
 class KalmTextField extends StatefulWidget {
   final TextEditingController kalmTextFieldController;
   final bool isObscure;
+  final bool? isEnable;
   final int minLines;
   final int? maxLines;
   final TextInputType keyboardType;
@@ -31,6 +32,7 @@ class KalmTextField extends StatefulWidget {
       this.maxLines,
       this.focusNode,
       this.isObscure = false,
+      this.isEnable = true,
       this.validator});
 
   @override
@@ -59,6 +61,7 @@ class _KalmTextFieldState extends State<KalmTextField> {
     return TextFormField(
       focusNode: widget.focusNode ?? null,
       controller: widget.kalmTextFieldController,
+      enabled: widget.isEnable,
       style: TextStyle(
         color: widget.accentColor,
       ),

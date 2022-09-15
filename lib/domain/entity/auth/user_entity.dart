@@ -11,6 +11,7 @@ class UserEntity extends HiveObject {
     this.email,
     this.username,
     this.jenisKelamin,
+    this.photoProfileUrl,
   });
 
   @HiveField(0)
@@ -23,4 +24,6 @@ class UserEntity extends HiveObject {
   final String? username;
   @HiveField(4)
   final String? jenisKelamin;
+  @HiveField(6)
+  final String? photoProfileUrl;
 }

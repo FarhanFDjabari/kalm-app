@@ -16,12 +16,12 @@ class _MoodRecognitionService implements MoodRecognitionService {
   String? baseUrl;
 
   @override
-  Future<dynamic> getMoodRecognition({required imagePath}) async {
+  Future<dynamic> getMoodRecognition({required body}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry('image_path', imagePath));
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio.fetch(_setStreamType<dynamic>(
         Options(method: 'POST', headers: _headers, extra: _extra)
             .compose(_dio.options, 'mood/predict',
