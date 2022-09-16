@@ -15,6 +15,12 @@ class MeditationPlaylistLoaded extends MeditationState {
   MeditationPlaylistLoaded(this.playlistList);
 }
 
+class SavedMeditationItemLoaded extends MeditationState {
+  final List<PlaylistMusicItemEntity> playlistList;
+
+  SavedMeditationItemLoaded(this.playlistList);
+}
+
 class MeditationRecommendedPlaylistLoaded extends MeditationState {
   final List<PlaylistEntity> playlistList;
 
@@ -33,4 +39,12 @@ class MeditationLoadError extends MeditationState {
   MeditationLoadError(this.errorMessage);
 }
 
+class MeditationSaveError extends MeditationState {
+  final String errorMessage;
+
+  MeditationSaveError(this.errorMessage);
+}
+
 class MeditationAudioStateChange extends MeditationState {}
+
+class MeditationSaveSuccess extends MeditationState {}

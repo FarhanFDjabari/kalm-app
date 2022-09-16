@@ -42,6 +42,8 @@ import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
 import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
 import 'package:kalm/domain/usecases/meditation/get_recomended_playlist.dart';
+import 'package:kalm/domain/usecases/meditation/get_saved_meditations.dart';
+import 'package:kalm/domain/usecases/meditation/save_meditation_item.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_daily_mood_insight.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_mood_recognition.dart';
 import 'package:kalm/domain/usecases/mood_tracker/get_mood_tracker_home_data.dart';
@@ -103,6 +105,8 @@ Future<void> init() async {
       getAllPlaylistByCategory: locator(),
       getPlaylistDetail: locator(),
       getRecommendedPlaylist: locator(),
+      saveMeditationItem: locator(),
+      getSavedMeditations: locator(),
     ),
   );
   locator.registerFactory(
@@ -147,6 +151,10 @@ Future<void> init() async {
   locator.registerLazySingleton(() => GetPlaylistDetail(repository: locator()));
   locator.registerLazySingleton(
       () => GetRecommendedPlaylist(repository: locator()));
+  locator
+      .registerLazySingleton(() => GetSavedMeditations(repository: locator()));
+  locator
+      .registerLazySingleton(() => SaveMeditationItem(repository: locator()));
 
   locator
       .registerLazySingleton(() => GetDailyMoodInsight(repository: locator()));

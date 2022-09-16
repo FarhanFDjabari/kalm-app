@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 
 abstract class MeditationRepository {
   Future<Either<String, List<PlaylistEntity>>> getAllPlaylist(
@@ -15,4 +16,6 @@ abstract class MeditationRepository {
     required int userId,
     required int playlistId,
   });
+  Future<bool> saveMusicItem({required PlaylistMusicItemEntity music});
+  Future<Either<String, List<PlaylistMusicItemEntity>>> getSavedMusics();
 }

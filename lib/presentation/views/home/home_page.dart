@@ -106,13 +106,13 @@ class _HomePageState extends State<HomePage>
             ),
           ),
           actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Iconsax.notification5,
-                color: primaryText,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {},
+            //   icon: Icon(
+            //     Iconsax.notification5,
+            //     color: primaryText,
+            //   ),
+            // ),
           ],
         ),
         body: BlocBuilder<MoodTrackerCubit, MoodTrackerState>(

@@ -1,9 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:kalm/domain/entity/meditation/playlist_entity.dart';
+import 'package:kalm/domain/entity/meditation/playlist_music_item_entity.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist.dart';
 import 'package:kalm/domain/usecases/meditation/get_all_playlist_by_category.dart';
 import 'package:kalm/domain/usecases/meditation/get_playlist_detail.dart';
 import 'package:kalm/domain/usecases/meditation/get_recomended_playlist.dart';
+import 'package:kalm/domain/usecases/meditation/get_saved_meditations.dart';
+import 'package:kalm/domain/usecases/meditation/save_meditation_item.dart';
 import 'package:meta/meta.dart';
 
 part 'meditation_state.dart';
@@ -14,12 +17,16 @@ class MeditationCubit extends Cubit<MeditationState> {
     required this.getAllPlaylistByCategory,
     required this.getPlaylistDetail,
     required this.getRecommendedPlaylist,
+    required this.saveMeditationItem,
+    required this.getSavedMeditations,
   }) : super(MeditationInitial());
 
   final GetAllPlaylistByCategory getAllPlaylistByCategory;
   final GetAllPlaylist getAllPlaylist;
   final GetPlaylistDetail getPlaylistDetail;
   final GetRecommendedPlaylist getRecommendedPlaylist;
+  final SaveMeditationItem saveMeditationItem;
+  final GetSavedMeditations getSavedMeditations;
 
   void fetchAllPlaylist(int userId) async {
     emit(MeditationLoading());
@@ -78,6 +85,35 @@ class MeditationCubit extends Cubit<MeditationState> {
       );
     } catch (error) {
       emit(MeditationLoadError('Error: $error'));
+    }
+  }
+
+  void saveMusic(PlaylistMusicItemEntity item) async {
+    emit(MeditationLoading());
+    try {
+      final result = await saveMeditationItem.execute(music: item);
+
+      if (result) {
+        emit(MeditationSaveSuccess());
+      }
+    } catch (e) {
+      emit(MeditationSaveError(e.toString()));
+    }
+  }
+
+  void getSavedMusics() async {
+    emit(MeditationLoading());
+    try {
+      final result = await getSavedMeditations.execute();
+
+      result.fold(
+        (l) => emit(MeditationLoadError(l)),
+        (r) {
+          emit(SavedMeditationItemLoaded(r));
+        },
+      );
+    } catch (e) {
+      emit(MeditationLoadError(e.toString()));
     }
   }
 }
